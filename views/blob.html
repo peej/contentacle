@@ -1,0 +1,30 @@
+{extends file="shell.html"}
+
+{block name="head"}
+    {$section="page"}
+    {$title=$repo->name}
+    {$nav="full"}
+    {$footer=true}
+    <link rel="stylesheet" href="/assets/css/page.css">
+{/block}
+
+{block name="content"}
+    <header>
+        <div>
+            <h1>
+                <a href="/{$user->username}/{$repo->name}">{$repo->name}</a>
+                {assign var="pathPartPath" value="/{$user->username}/{$repo->name}/blob/{$branch}"}
+                {foreach $path as $pathPart}
+                    {assign var="pathPartPath" value="{$pathPartPath}/{$pathPart}"}
+                    / <a href="{$pathPartPath}">{$pathPart}</a>
+                {/foreach}
+            </h1>
+            <div class="commit">
+                <a href="/{$commit->user}">{$commit->email|name}</a> wrote {$commit->date|relative} <a href="/{$user->username}/{$repo->name}/history/{$commit->sha}">{$commit->message}</a>
+            </div>
+        </div>
+    </header>
+    <div>
+        {$content}
+    </div>
+{/block}

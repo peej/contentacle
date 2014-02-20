@@ -1,0 +1,22 @@
+{extends file="shell.html"}
+
+{block name="head"}
+    {$section="user"}
+    {$title=$user->username}
+    {$nav="full"}
+    {$footer=true}
+    <link rel="stylesheet" href="/assets/css/home.css">
+{/block}
+
+{block name="content"}
+    <div>
+        <h1>{$user->username}</h1>
+        <p>{$user->name}</p>
+
+        <ul>
+            {foreach $user->repos as $repo}
+                <li><a href="/{$user->username}/{$repo->name}">{$repo->name}</a></li>
+            {/foreach}
+        </ul>
+    </div>
+{/block}

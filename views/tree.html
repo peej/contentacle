@@ -1,0 +1,54 @@
+{extends file="shell.html"}
+
+{block name="head"}
+    {$section="files"}
+    {$title=$repo->name}
+    {$nav="full"}
+    {$footer=true}
+    <link rel="stylesheet" href="/assets/css/files.css">
+{/block}
+
+{block name="content"}
+    <div>
+        <h1>{$repo->name}</h1>
+        <p>{$repo->description|default:"No description provided"}</p>
+
+        <div class="path">
+            <a href="/{$user->username}/{$repo->name}/tree/{$branch}">{$branch}</a>
+            {if $path}
+                {assign var="pathPartPath" value="/{$user->username}/{$repo->name}/tree/{$branch}"}
+                {foreach $pathParts as $pathPart}
+                    {assign var="pathPartPath" value="{$pathPartPath}/{$pathPart}"}
+                    / <a href="{$pathPartPath}">{$pathPart}</a>
+                {/foreach}
+            {/if}
+        </div>
+
+        <div class="commit-metadata">
+            <a href="/{$commit->user}">{$commit->email|name}</a> wrote {$commit->date|relative} <a href="/{$user->username}/{$repo->name}/history/{$commit->sha}">{$commit->message}</a>
+        </div>
+        <table>
+            {foreach $tree as $file}
+                {if $file|get_class == "Git\Tree"}
+                    <tr>
+                        <td><span class="icon-folder"></span></td>
+                        <td><a href="/{$user->username}/{$repo->name}/tree/{$branch}/{$path}{$file->filename}">{$file->filename}</a></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                {else}
+                    <tr>
+                        <td><span class="icon-page"></span></td>
+                        <td><a href="/{$user->username}/{$repo->name}/blob/{$branch}/{$file->filename}">{$file->filename|@basename}</a></td>
+                        <td><a href="/{$user->username}/{$repo->name}/history/{$file->history[0]->sha}">{$file->message}</a></td>
+                        <td>{$file->date|relative}</td>
+                    </tr>
+                {/if}
+            {/foreach}
+        </table>
+
+        <div class="button-bar">
+            <a href="new.php" class="button icon-plus" title="Create a new page">New</a>
+        </div>
+    </div>
+{/block}
