@@ -23,6 +23,7 @@ $app->container['smarty'] = function($c) {
     $smarty->setTemplateDir('../views');
     $smarty->setCompileDir('/tmp');
     require_once __DIR__.'/../src/modifier.relative_date.php';
+    require_once __DIR__.'/../src/modifier.pluralise.php';
     $smarty->registerPlugin('modifier', 'relative', 'smarty_modifier_relative_date');
     $smarty->registerPlugin('modifier', 'username', array($c['store'], 'emailToUsername'));
     $smarty->registerPlugin('modifier', 'name', array($c['store'], 'emailToName'));

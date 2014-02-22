@@ -12,6 +12,8 @@ Background:
 Scenario: View a repo
     Given I am on "/testuser/testrepo"
     Then I should see "testrepo"
+    And I should see "Test Repo"
+    And I should see "This is a test repo created by the test suite."
     And I should see a link "master" to "/testuser/testrepo/tree/master"
     And I should see a link "testfile.txt" to "/testuser/testrepo/blob/master/testfile.txt"
     And I should see a link "dir" to "/testuser/testrepo/tree/master/dir"
@@ -59,3 +61,4 @@ Scenario: View commit history
     Then I should see "testfile.txt"
     And I should see "this is a test"
     And I should see "line 2"
+    And I should see "Commit contains 1 changed file with 10 additions and 0 deletions"

@@ -20,8 +20,8 @@ class User {
         $userData = $this->container['store']->load($username);
 
         $this->username = strtolower($username);
-        $this->password = $userData->password;
-        $this->name = $userData->name;
+        $this->password = @$userData->password;
+        $this->name = @$userData->name;
 
         $this->repos = $this->loadRepos($username);
     }
@@ -33,7 +33,7 @@ class User {
         
         $repos = array();
         foreach (glob($repoGlob, GLOB_ONLYDIR) as $repoPath) {
-            $repo = new \Contentacle\Models\Repo($repoPath);
+            $repo = new \Contentacle\Models\Repo($this->container, $repoPath);
             $repos[$repo->name] = $repo;
         }
         return $repos;

@@ -82,6 +82,16 @@ class FeatureContext extends MinkContext
         $this->aRepo($table);
     }
 
+    private function getRepo($username, $reponame, $title, $description)
+    {
+        file_put_contents($this->repoDir.'/'.$username.'/'.$reponame.'.json', json_encode(array(
+            'title' => $title,
+            'description' => $description
+        ), JSON_PRETTY_PRINT));
+        return new Git\Repo($this->repoDir.'/'.$username.'/'.$reponame.'.git');
+        #return new Git\Repo($this->repoDir.'/'.$username.'/'.$reponame);
+    }
+
     /**
      * @Given /^a repo:$/
      */
@@ -92,10 +102,10 @@ class FeatureContext extends MinkContext
                 if (!isset($row['email'])) {
                     $row['email'] = $row['username'].'@localhost';
                 }
-                $repo = new Git\Repo($this->repoDir.'/'.$row['username'].'/'.$row['repo'].'.git');
+                $repo = $this->getRepo($row['username'], $row['repo'], 'Test Repo', 'This is a test repo created by the test suite.');
                 $repo->setUser($row['username'], $row['email']);
                 $repo->add('testfile.txt', 'this is a test');
-                $repo->save('Test commit');
+                $repo->save('Initial commit');
             }
         }
     }
@@ -107,7 +117,7 @@ class FeatureContext extends MinkContext
     {
         if (is_dir($this->repoDir.'/'.$username)) {
             $email = $username.'@localhost';
-            $repo = new Git\Repo($this->repoDir.'/'.$username.'/'.$repoName.'.git');
+            $repo = $this->getRepo($username, $repoName, 'Test Repo', 'This is a test repo created by the test suite.');
             $repo->setUser($username, $email);
             foreach ($table->getHash() as $row) {
                 $repo->add($row['filename'], $row['content']);

@@ -33,7 +33,7 @@ body {
 }
 
 .cthulhu:before, #nav-button:before { content: "\e600"; }
-.icon-github:before { content: "\e601"; }
+.icon-branch:before { content: "\e601"; }
 .icon-prop:before, #props-button:before { content: "\e603"; }
 .icon-pages:before { content: "\e604"; }
 .icon-page:before { content: "\e605"; }

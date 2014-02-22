@@ -19,6 +19,7 @@ class Commit extends Resource {
             try {
                 $commit = $repo->commit($sha);
                 $changes = array();
+                $additions = $deletions = 0;
                 foreach ($commit->diff as $filename => $lines) {
                     foreach ($lines as $line) {
                         preg_match('/^([0-9]+)([+ -])(.*)$/', $line, $matches);
@@ -26,13 +27,17 @@ class Commit extends Resource {
                             'type' => $matches[2],
                             'line' => $matches[3]
                         );
+                        $additions += ($matches[2] == '+');
+                        $deletions += ($matches[2] == '-');
                     }
                 }
                 return [200, [
                     'user' => $user,
                     'repo' => $repo,
                     'commit' => $commit,
-                    'changes' => $changes
+                    'changes' => $changes,
+                    'additions' => $additions,
+                    'deletions' => $deletions
                 ]];
             } catch (\Git\Exception $e) {
                 throw new \Tonic\NotFoundException;

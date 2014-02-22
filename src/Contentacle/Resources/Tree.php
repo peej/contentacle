@@ -22,7 +22,6 @@ class Tree extends Resource {
             try {
                 $commit = $repo->commit();
                 $tree = $repo->tree($path);
-                var_dump($tree->entries()['indir.txt']->history[0]->sha);
                 return [200, [
                     'user' => $user,
                     'repo' => $repo,

@@ -5,7 +5,6 @@
     {$title=$repo->name}
     {$nav="full"}
     {$footer=true}
-    <link rel="stylesheet" href="/assets/css/files.css">
     <link rel="stylesheet" href="/assets/css/commit.css">
 {/block}
 
@@ -17,6 +16,9 @@
         <div class="commit-metadata">
             <a href="/{$user->username}">{$user->name}</a> wrote {$commit->date|relative}
         </div>
+
+        <p>Commit contains <strong>{$changes|@count} changed {"file"|pluralise:{$changes|@count}}</strong> with <strong>{$additions} {"addition"|pluralise:$additions}</strong> and <strong>{$deletions} {"deletion"|pluralise:$deletions}</strong></p>
+
         <ul>
             {foreach $changes as $filename => $lines}
                 <li>

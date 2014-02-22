@@ -10,10 +10,10 @@
 
 {block name="content"}
     <div>
-        <h1>{$repo->name}</h1>
+        <h1>{$repo->title|default:$repo->name}</h1>
         <p>{$repo->description|default:"No description provided"}</p>
 
-        <div class="path">
+        <div class="path icon-folder">
             <a href="/{$user->username}/{$repo->name}/tree/{$branch}">{$branch}</a>
             {if $path}
                 {assign var="pathPartPath" value="/{$user->username}/{$repo->name}/tree/{$branch}"}
