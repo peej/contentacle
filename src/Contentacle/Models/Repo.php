@@ -11,7 +11,11 @@ class Repo extends \Git\Repo
     {
         parent::__construct($repoPath);
         
-        $this->name = substr(basename($repoPath), 0, -4);
+        if ($this->bare) {
+            $this->name = substr(basename($repoPath), 0, -4);
+        } else {
+            $this->name = basename($repoPath);
+        }
         $this->username = basename(dirname($repoPath));
 
         $metadata = $container['store']->getRepoMetadata($this->username, $this->name);

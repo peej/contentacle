@@ -1,5 +1,14 @@
 default:
-  extensions:
-    Behat\MinkExtension\Extension:
-      base_url: 'http://localhost:8080'
-      goutte: ~
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:    'http://localhost:8080'
+            goutte:      ~
+        Sanpi\Behatch\Extension:
+            contexts:
+                #browser: ~
+                #debug: ~
+                #system: ~
+                #json: ~
+                #table: ~
+                rest: ~
+                #xml: ~

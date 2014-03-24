@@ -4,16 +4,20 @@ namespace Contentacle\Resources;
 
 class Resource extends \Tonic\Resource
 {
+    /**
+     * @method get
+     * @provides text/yaml
+     */
+    function getYaml() {
+        return call_user_method_array('get', $this, func_get_args());
+    }
 
-    function template($name)
-    {
-        $this->after(function ($response) use ($name) {
-            $smarty = $this->app->container['smarty'];
-            if (is_array($response->body)) {
-                $smarty->assign($response->body);
-            }
-            $response->body = $smarty->fetch($name);
-        });
+    /**
+     * @method get
+     * @provides application/json
+     */
+    function getJson() {
+        return call_user_method_array('get', $this, func_get_args());
     }
 
     function secure()

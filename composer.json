@@ -1,5 +1,5 @@
 {
-    "name": "peej/contentacle",
+    "name": "Contentacle API",
     "description": "The Git and Markdown powered content management system",
     "keywords": ["cms", "markdown"],
     "homepage": "http://peej.github.com/contentacle",
@@ -13,17 +13,18 @@
     "require": {
         "php": ">=5.3.0",
         "pimple/pimple": "2.*",
-        "smarty/smarty": "3.*",
         "peej/tonic": "3.*",
         "peej/git": "dev-master",
-        "michelf/php-markdown": "1.*"
+        "michelf/php-markdown": "1.*",
+        "mustangostang/spyc": "0.5.*",
+        "zf1/zend-search-lucene": "1.*"
     },
     "require-dev": {
         "phpspec/phpspec": "2.0.*@dev",
         "behat/behat": "2.*",
-        "behat/mink": "1.*",
         "behat/mink-extension": "1.*",
-        "behat/mink-goutte-driver": "1.*"
+        "behat/mink-goutte-driver": "1.*",
+        "sanpi/behatch-contexts": "*"
     },
     "autoload": {
         "psr-0": {

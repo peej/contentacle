@@ -4,16 +4,15 @@ namespace Contentacle\Resources;
 
 /**
  * @uri /
+ * @uri /home
  */
 class Home extends Resource {
 
-    /**
-     * @method get
-     * @template home.html
-     */
     function get()
     {
-        return [200];
+        return new \Tonic\Response(200, array(
+            'users' => '/users'
+        ));
     }
 
 }
