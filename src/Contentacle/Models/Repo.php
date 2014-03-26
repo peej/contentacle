@@ -2,24 +2,23 @@
 
 namespace Contentacle\Models;
 
-class Repo extends \Git\Repo
+class Repo extends Model
 {
-    public $name, $username;
-    public $title, $description;
+    private $git;
 
-    function __construct($container, $repoPath)
+    function __construct($data, $gitProvider)
     {
-        parent::__construct($repoPath);
-        
-        if ($this->bare) {
-            $this->name = substr(basename($repoPath), 0, -4);
-        } else {
-            $this->name = basename($repoPath);
-        }
-        $this->username = basename(dirname($repoPath));
+        parent::__construct(array(
+            'username' => true,
+            'name' => true,
+            'title' => 'Un-named repo',
+            'url' => function ($data) {
+                return '/users/'.$data['username'].'/repos/'.$data['name'];
+            },
+            'description' => true
+        ), $data);
 
-        $metadata = $container['store']->getRepoMetadata($this->username, $this->name);
-        $this->title = $metadata->title;
-        $this->description = $metadata->description;
+        $this->git = $gitProvider($data['username'], $data['name']);
+
     }
 }
