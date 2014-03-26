@@ -4,22 +4,20 @@ namespace Contentacle\Resources;
 
 class Resource extends \Tonic\Resource
 {
+    protected $container;
+
+    function setContainer($container)
+    {
+        $this->container = $container;
+    }
+
     /**
      * @method get
      * @provides text/yaml
-     */
-    function getYaml() {
-        return call_user_method_array('get', $this, func_get_args());
-    }
-
-    /**
-     * @method get
      * @provides application/json
      */
-    function getJson() {
-        return call_user_method_array('get', $this, func_get_args());
-    }
-
+    function get() {}
+    
     function secure()
     {
         

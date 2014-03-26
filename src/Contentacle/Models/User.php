@@ -18,4 +18,9 @@ class User extends Model
             }
         ), $data);
     }
+
+    function loadRepos($repoProvider)
+    {
+        $this->repos = $repoProvider->getRepos($this->username);
+    }
 }

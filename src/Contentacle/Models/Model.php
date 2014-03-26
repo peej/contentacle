@@ -16,4 +16,14 @@ class Model
             }
         }
     }
+
+    /**
+     * Return a property of the model
+     * @param str $name
+     * @return mixed
+     */
+    public function prop($name)
+    {
+        return $this->$name;
+    }
 }

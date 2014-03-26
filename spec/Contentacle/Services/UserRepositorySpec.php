@@ -16,9 +16,12 @@ class UserRepositorySpec extends ObjectBehavior
     
     function let()
     {
-        $this->beConstructedWith(array(
-            'repo_dir' => $this->repoDir
-        ));
+        $this->beConstructedWith(
+            $this->repoDir,
+            function ($data) {
+                return new \Contentacle\Models\User($data);
+            }
+        );
         @mkdir($this->repoDir);
         @mkdir($this->repoDir.'/cobb');
         file_put_contents($this->repoDir.'/cobb/profile.json', json_encode(array(
@@ -42,6 +45,15 @@ class UserRepositorySpec extends ObjectBehavior
     {
         $this->getUsers()->shouldHaveCount(1);
         $user = $this->getUsers()['cobb'];
+        $user->shouldHaveType('Contentacle\Models\User');
+        $user->url->shouldBe('/users/cobb');
+        $user->name->shouldBe('Dominick Cobb');
+        $user->username->shouldBe('cobb');
+    }
+
+    function it_should_retrieve_a_given_user()
+    {
+        $user = $this->getUser('cobb');
         $user->shouldHaveType('Contentacle\Models\User');
         $user->url->shouldBe('/users/cobb');
         $user->name->shouldBe('Dominick Cobb');

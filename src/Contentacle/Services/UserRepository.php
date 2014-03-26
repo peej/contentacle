@@ -2,26 +2,36 @@
 
 namespace Contentacle\Services;
 
-class UserRepository {
-    
-    private $container;
+class UserRepository
+{
+    private $repoDir, $userProvider;
 
-    function __construct($container)
+    function __construct($repoDir, $userProvider)
     {
-        $this->container = $container;
+        $this->repoDir = $repoDir;
+        $this->userProvider = $userProvider;
     }
 
     function getUsers()
     {
-        $repoDir = $this->container['repo_dir'];
         $users = array();
-        foreach (glob($repoDir.'/*', GLOB_ONLYDIR) as $userDir) {
-            if (file_exists($userDir.'/profile.json')) {
-                $userDetails = json_decode(file_get_contents($userDir.'/profile.json'), true);
-                $user = new \Contentacle\Models\User($userDetails);
-                $users[$user->username] = $user;
-            }
+        foreach (glob($this->repoDir.'/*', GLOB_ONLYDIR) as $userDir) {
+            $user = $this->getUser(basename($userDir));
+            $users[$user->username] = $user;
         }
         return $users;
+    }
+
+    function getUser($username)
+    {
+        $profilePath = $this->repoDir.'/'.$username.'/profile.json';
+
+        if (file_exists($profilePath)) {
+            $data = json_decode(file_get_contents($profilePath), true);
+        } else {
+            $data = array();
+        }   
+
+        return $this->userProvider->__invoke($data);
     }
 }
