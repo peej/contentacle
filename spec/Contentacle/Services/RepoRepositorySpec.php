@@ -16,32 +16,33 @@ class RepoRepositorySpec extends ObjectBehavior
     
     function let()
     {
+        @mkdir($this->repoDir);
+        @mkdir($this->repoDir.'/cobb');
+
         $yaml = new \Contentacle\Services\Yaml;
+        $git = new \Git\Repo(
+            $this->repoDir.'/cobb/extraction'
+        );
 
         $this->beConstructedWith(
             $this->repoDir,
-            function ($data) {
-                return new \Contentacle\Models\Repo($data, function ($username, $repoName) {
-                    return new \Git\Repo($this->repoDir.'/'.$username.'/'.$repoName);
-                });
-            },
-            $yaml
+            function ($data) use ($git, $yaml) {
+                return new \Contentacle\Models\Repo($data, function () use ($git) {
+                    return $git;
+                }, $yaml);
+            }
         );
-        @mkdir($this->repoDir);
-        @mkdir($this->repoDir.'/cobb');
-        @mkdir($this->repoDir.'/cobb/extraction');
 
-        file_put_contents($this->repoDir.'/cobb/extraction/contentacle.yaml', $yaml->encode(array(
+        $git->add('contentacle.yaml', $yaml->encode(array(
             'title' => 'Extraction 101',
             'description' => 'Extraction information for Ariadne'
-        )));
+        )), 'Initial commit');
+
     }
 
     function letgo()
     {
-        unlink($this->repoDir.'/cobb/extraction/contentacle.yaml');
-        rmdir($this->repoDir.'/cobb/extraction');
-        rmdir($this->repoDir.'/cobb');
+        exec('rm -rf '.$this->repoDir);
     }
 
     function it_is_initializable()

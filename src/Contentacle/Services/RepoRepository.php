@@ -4,13 +4,12 @@ namespace Contentacle\Services;
 
 class RepoRepository
 {
-    private $repoDir, $repoProvider, $yaml;
+    private $repoDir, $repoProvider;
 
-    function __construct($repoDir, $repoProvider, $yaml)
+    function __construct($repoDir, $repoProvider)
     {
         $this->repoDir = $repoDir;
         $this->repoProvider = $repoProvider;
-        $this->yaml = $yaml;
     }
 
     function getRepos($username)
@@ -26,14 +25,7 @@ class RepoRepository
 
     function getRepo($username, $repoName)
     {
-        $metadataPath = $this->repoDir.'/'.$username.'/'.$repoName.'/contentacle.yaml';
-
-        if (file_exists($metadataPath)) {
-            $data = $this->yaml->decode(file_get_contents($metadataPath), true);
-        } else {
-            $data = array();
-        }
-
+        $data = array();
         $data['username'] = $username;
         $data['name'] = $repoName;
 

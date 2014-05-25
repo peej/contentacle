@@ -15,12 +15,15 @@ class User extends Model
             'password' => true,
             'email' => function ($data) {
                 return $data['username'].'@localhost';
+            },
+            'repos' => function ($data) {
+                return '/users/'.$data['username'].'/repos';
             }
         ), $data);
     }
 
-    function loadRepos($repoProvider)
+    function loadRepos($repoRepository)
     {
-        $this->repos = $repoProvider->getRepos($this->username);
+        $this->repos = $repoRepository->getRepos($this->username);
     }
 }

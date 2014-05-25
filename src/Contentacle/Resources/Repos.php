@@ -7,13 +7,13 @@ namespace Contentacle\Resources;
  */
 class Repos extends Resource {
 
-    /**
-     * @method get
-     * @json
-     */
     function get($username)
     {
-        return [200, ['test']];
+        $repoRepo = $this->container['repo_repository'];
+
+        $repos = $repoRepo->getRepos($username);
+
+        return new \Tonic\Response(200, $repos);
     }
 
 }

@@ -17,6 +17,11 @@ class Model
         }
     }
 
+    function __get($name)
+    {
+        return $this->prop($name);
+    }
+
     /**
      * Return a property of the model
      * @param str $name
@@ -24,6 +29,6 @@ class Model
      */
     public function prop($name)
     {
-        return $this->$name;
+        return isset($this->$name) ? $this->$name : null;
     }
 }
