@@ -58,16 +58,25 @@ class Repo extends Model
                 );
             }
         } else {
-            $document = $this->git->file($this->path);
-            if ($document) {
-                $this->document = array(
-                    'url' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/documents/'.$this->path,
-                    'filename' => $document->filename,
-                    'content' => $document->getContent(),
-                    'raw' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/raw/'.$this->path,
-                    'history' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/history/'.$this->path
-                );
-            }
+            $this->loadDocument($branch, $path);
+        }
+    }
+
+    public function loadDocument($branch = 'master', $path = '')
+    {
+        $this->branch = $branch;
+        $this->path = $path;
+
+        $this->git->setBranch($this->branch);
+        $document = $this->git->file($this->path);
+        if ($document) {
+            $this->document = array(
+                'url' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/documents/'.$this->path,
+                'filename' => $document->filename,
+                'content' => $document->getContent(),
+                'raw' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/raw/'.$this->path,
+                'history' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/history/'.$this->path
+            );
         }
     }
 }

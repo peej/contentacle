@@ -26,7 +26,7 @@ class RawSpec extends ObjectBehavior
 
     function it_should_show_a_documents_raw_content($repo)
     {
-        $repo->loadDocuments('master', 'totem.txt')->shouldBeCalled();
+        $repo->loadDocument('master', 'totem.txt')->shouldBeCalled();
         $response = $this->get('cobb', 'extraction', 'master', 'totem.txt');
         $response->body->shouldBe('totem');
     }

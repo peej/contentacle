@@ -14,7 +14,7 @@ class Raw extends Resource {
         $path = $this->fixPath($path, $username, $repoName, $branch, 'raw');
 
         $repo = $repoRepo->getRepo($username, $repoName);
-        $repo->loadDocuments($branch, $path);
+        $repo->loadDocument($branch, $path);
 
         if ($repo->document) {
             $response = new \Tonic\Response(200, $repo->document['content']);
