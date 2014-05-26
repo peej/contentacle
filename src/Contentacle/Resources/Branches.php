@@ -7,6 +7,10 @@ namespace Contentacle\Resources;
  */
 class Branches extends Resource {
 
+    /**
+     * @provides text/yaml
+     * @provides application/json
+     */
     function get($username, $repoName)
     {
         $repoRepo = $this->container['repo_repository'];

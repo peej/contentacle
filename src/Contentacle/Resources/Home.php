@@ -8,6 +8,10 @@ namespace Contentacle\Resources;
  */
 class Home extends Resource {
 
+    /**
+     * @provides text/yaml
+     * @provides application/json
+     */
     function get()
     {
         return new \Tonic\Response(200, array(

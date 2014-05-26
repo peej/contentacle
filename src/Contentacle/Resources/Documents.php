@@ -8,17 +8,19 @@ namespace Contentacle\Resources;
  */
 class Documents extends Resource {
 
+    /**
+     * @provides text/yaml
+     * @provides application/json
+     */
     function get($username, $repoName, $branch, $path = null)
     {
         $repoRepo = $this->container['repo_repository'];
 
-        if (isset($_SERVER['REQUEST_URI'])) {
-            $path = substr($_SERVER['REQUEST_URI'], strlen('/users/'.$username.'/repos/'.$repoName.'/branches/'.$branch.'/documents/'));
-        }
+        $path = $this->fixPath($path, $username, $repoName, $branch, 'documents');
         
         $repo = $repoRepo->getRepo($username, $repoName);
         $repo->loadDocuments($branch, $path);
-
+        
         if ($repo->documents) {
             return new \Tonic\Response(200, $repo->documents);
         } elseif ($repo->document) {

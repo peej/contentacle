@@ -8,6 +8,10 @@ namespace Contentacle\Resources;
 class User extends Resource
 {
 
+    /**
+     * @provides text/yaml
+     * @provides application/json
+     */
     function get($username)
     {
         $userRepo = $this->container['user_repository'];
