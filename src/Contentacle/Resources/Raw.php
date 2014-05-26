@@ -14,13 +14,13 @@ class Raw extends Resource {
         $path = $this->fixPath($path, $username, $repoName, $branch, 'raw');
 
         $repo = $repoRepo->getRepo($username, $repoName);
-        $repo->loadDocument($branch, $path);
 
-        if ($repo->document) {
-            $response = new \Tonic\Response(200, $repo->document['content']);
+        try {
+            $document = $repo->document($branch, $path);
+            $response = new \Tonic\Response(200, $document['content']);
             $response->contentType = 'text/plain';
             return $response;
-        } else {
+        } catch (\Exception $e) {
             throw new \Tonic\NotFoundException;
         }
     }

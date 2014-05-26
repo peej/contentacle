@@ -9,12 +9,10 @@ class DocumentsSpec extends ObjectBehavior
 {
     function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
     {
-        $repo->loadDocuments('master', null)->willReturn();
-        $repo->loadDocuments('master', 'new-york/the-hotel')->willReturn();
-        $repo->loadDocuments('master', 'totem.txt')->willReturn();
-        $repo->loadDocuments(Argument::cetera())->willThrow(new \Tonic\NotFoundException);
-        $repo->prop('documents')->willReturn(array());
-        $repo->prop('document')->willReturn(array());
+        $repo->documents('master', null)->willReturn(array());
+        $repo->documents('master', 'new-york/the-hotel')->willReturn(array());
+        $repo->documents('master', 'totem.txt')->willReturn(array());
+        $repo->documents(Argument::cetera())->willThrow(new \Tonic\NotFoundException);
         
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
         $pimple->offsetGet('repo_repository')->willReturn($repoRepo);
@@ -30,24 +28,21 @@ class DocumentsSpec extends ObjectBehavior
 
     function it_should_show_document_listing($repo)
     {
-        $repo->loadDocuments('master', null)->shouldBeCalled();
-        $repo->prop('documents')->willReturn('documents');
+        $repo->documents('master', null)->willReturn('documents')->shouldBeCalled();
         $response = $this->get('cobb', 'extraction', 'master');
         $response->body->shouldBe('documents');
     }
 
     function it_should_show_document_listing_within_a_subdirectory($repo)
     {
-        $repo->loadDocuments('master', 'new-york/the-hotel')->shouldBeCalled();
-        $repo->prop('documents')->willReturn('documents');
+        $repo->documents('master', 'new-york/the-hotel')->willReturn('documents')->shouldBeCalled();
         $response = $this->get('cobb', 'extraction', 'master', 'new-york/the-hotel');
         $response->body->shouldBe('documents');
     }
 
     function it_should_show_a_single_document($repo)
     {
-        $repo->loadDocuments('master', 'totem.txt')->shouldBeCalled();
-        $repo->prop('document')->willReturn('document');
+        $repo->documents('master', 'totem.txt')->willReturn('document')->shouldBeCalled();
         $response = $this->get('cobb', 'extraction', 'master', 'totem.txt');
         $response->body->shouldBe('document');
     }

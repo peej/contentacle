@@ -42,41 +42,57 @@ class Repo extends Model
         return in_array($branchName, $this->git->getBranches());
     }
 
-    public function loadDocuments($branch = 'master', $path = '')
+    public function documents($branch = 'master', $path = '')
     {
-        $this->branch = $branch;
-        $this->path = $path;
-
-        $this->git->setBranch($this->branch);
-        $tree = $this->git->tree($this->path);
+        $this->git->setBranch($branch);
+        $tree = $this->git->tree($path);
         if ($tree && method_exists($tree, 'entries')) {
-            $this->documents = array();
+            $documents = array();
             foreach ($tree->entries() as $filename => $item) {
-                $this->documents[$filename] = array(
+                $documents[$filename] = array(
                     'url' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/documents/'.$item->filename,
                     'filename' => $item->filename
                 );
             }
-        } else {
-            $this->loadDocument($branch, $path);
+            return $documents;
         }
+        throw new \Exception("Path '$path' does not exist");
     }
 
-    public function loadDocument($branch = 'master', $path = '')
+    public function document($branch = 'master', $path = '')
     {
-        $this->branch = $branch;
-        $this->path = $path;
-
-        $this->git->setBranch($this->branch);
-        $document = $this->git->file($this->path);
+        $this->git->setBranch($branch);
+        $document = $this->git->file($path);
         if ($document) {
-            $this->document = array(
-                'url' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/documents/'.$this->path,
+            return array(
+                'url' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/documents/'.$path,
                 'filename' => $document->filename,
                 'content' => $document->getContent(),
-                'raw' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/raw/'.$this->path,
-                'history' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/history/'.$this->path
+                'raw' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/raw/'.$path,
+                'history' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/history/'.$path
             );
         }
+        throw new \Exception("Document '$path' does not exist");
+    }
+
+    public function history($branch = 'master', $path = '')
+    {
+        $this->git->setBranch($branch);
+        $file = $this->git->file($path);
+        if ($file) {
+            $history = array();
+            foreach ($file->getHistory() as $commit) {
+                $history[] = array(
+                    'sha' => $commit->sha,
+                    'message' => $commit->message,
+                    'date' => $commit->date,
+                    'username' => $commit->user,
+                    'email' => $commit->email,
+                    'url' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/commits/'.$commit->sha
+                );
+            }
+            return $history;
+        }
+        throw new \Exception("Path '$path' not found in branch '$branch'");
     }
 }

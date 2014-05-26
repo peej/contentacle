@@ -19,14 +19,16 @@ class Documents extends Resource {
         $path = $this->fixPath($path, $username, $repoName, $branch, 'documents');
         
         $repo = $repoRepo->getRepo($username, $repoName);
-        $repo->loadDocuments($branch, $path);
-        
-        if ($repo->documents) {
-            return new \Tonic\Response(200, $repo->documents);
-        } elseif ($repo->document) {
-            return new \Tonic\Response(200, $repo->document);
-        } else {
-            throw new \Tonic\NotFoundException;
+        try {
+            $documents = $repo->documents($branch, $path);
+            return new \Tonic\Response(200, $documents);
+        } catch (\Exception $e) {
+            try {
+                $document = $repo->document($branch, $path);
+                return new \Tonic\Response(200, $document);
+            } catch (\Exception $e) {
+                throw new \Tonic\NotFoundException;
+            }
         }
     }
 }

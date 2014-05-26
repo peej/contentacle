@@ -7,7 +7,7 @@ use Prophecy\Argument;
 
 class RepoSpec extends ObjectBehavior
 {
-    function let(\Git\Repo $repo, \Contentacle\Services\Yaml $yaml, \Git\Tree $rootTree, \Git\Tree $subTree, \Git\Blob $totem)
+    function let(\Git\Repo $repo, \Contentacle\Services\Yaml $yaml, \Git\Tree $rootTree, \Git\Tree $subTree, \Git\Blob $totem, \Git\Commit $commit)
     {
         $repo->file('contentacle.yaml')->willReturn('Contentacle YAML');
         $yaml->decode(Argument::any())->willReturn(array(
@@ -28,8 +28,18 @@ class RepoSpec extends ObjectBehavior
         $repo->tree('new-york/the-hotel')->willReturn($subTree);
 
         $totem->getContent()->willReturn('A Totem is an object that is used to test if oneself is in one\'s own reality and not in another person\'s dream.');
-        $repo->tree('totem.txt')->willReturn(null);
         $repo->file('totem.txt')->willReturn($totem);
+        $repo->tree('totem.txt')->willReturn(null);
+
+        $totem->getHistory()->willReturn(array(
+            (object)array(
+                'sha' => '123456',
+                'message' => 'Added information about forever spinning totems',
+                'date' => '1392493822',
+                'user' => 'cobb',
+                'email' => 'cobb@localhost'
+            )
+        ));
 
         $data = array(
             'username' => 'cobb',
@@ -69,35 +79,43 @@ class RepoSpec extends ObjectBehavior
 
     function it_should_load_document_metadata()
     {
-        $this->loadDocuments();
-        $this->documents->shouldBe(array(
+        $documents = $this->documents();
+        $documents->shouldBe(array(
             'totem.txt' => array(
                 'url' => '/users/cobb/repos/extraction/branches/master/documents/totem.txt',
                 'filename' => 'totem.txt'
             )
         ));
-        $this->document->shouldBe(null);
     }
 
     function it_should_load_document_metadata_from_within_a_subdirectory()
     {
-        $this->loadDocuments('master', 'new-york/the-hotel');
-        $this->documents->shouldBe(array(
+        $documents = $this->documents('master', 'new-york/the-hotel');
+        $documents->shouldBe(array(
             'mr-charles.txt' => array(
                 'url' => '/users/cobb/repos/extraction/branches/master/documents/mr-charles.txt',
                 'filename' => 'mr-charles.txt'
             )
         ));
-        $this->document->shouldBe(null);
     }
 
     function it_should_load_a_documents_metadata()
     {
-        $this->loadDocuments('master', 'totem.txt');
-        $this->documents->shouldBe(null);
-        $this->document['url']->shouldBe('/users/cobb/repos/extraction/branches/master/documents/totem.txt');
-        $this->document['content']->shouldBe('A Totem is an object that is used to test if oneself is in one\'s own reality and not in another person\'s dream.');
-        $this->document['raw']->shouldBe('/users/cobb/repos/extraction/branches/master/raw/totem.txt');
-        $this->document['history']->shouldBe('/users/cobb/repos/extraction/branches/master/history/totem.txt');
+        $document = $this->document('master', 'totem.txt');
+        $document['url']->shouldBe('/users/cobb/repos/extraction/branches/master/documents/totem.txt');
+        $document['content']->shouldBe('A Totem is an object that is used to test if oneself is in one\'s own reality and not in another person\'s dream.');
+        $document['raw']->shouldBe('/users/cobb/repos/extraction/branches/master/raw/totem.txt');
+        $document['history']->shouldBe('/users/cobb/repos/extraction/branches/master/history/totem.txt');
+    }
+
+    function it_should_load_a_documents_history()
+    {
+        $history = $this->history('master', 'totem.txt');
+        $history[0]['sha']->shouldBe('123456');
+        $history[0]['message']->shouldBe('Added information about forever spinning totems');
+        $history[0]['date']->shouldBe('1392493822');
+        $history[0]['username']->shouldBe('cobb');
+        $history[0]['email']->shouldBe('cobb@localhost');
+        $history[0]['url']->shouldBe('/users/cobb/repos/extraction/branches/master/commits/123456');
     }
 }

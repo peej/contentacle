@@ -9,8 +9,7 @@ class RawSpec extends ObjectBehavior
 {
     function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
     {
-        $repo->loadDocuments('master', 'totem.txt')->willReturn();
-        $repo->prop('document')->willReturn(array('content' => 'totem'));
+        $repo->document('master', 'totem.txt')->willReturn(array('content' => 'totem'));
         
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
         $pimple->offsetGet('repo_repository')->willReturn($repoRepo);
@@ -26,7 +25,7 @@ class RawSpec extends ObjectBehavior
 
     function it_should_show_a_documents_raw_content($repo)
     {
-        $repo->loadDocument('master', 'totem.txt')->shouldBeCalled();
+        $repo->document('master', 'totem.txt')->shouldBeCalled();
         $response = $this->get('cobb', 'extraction', 'master', 'totem.txt');
         $response->body->shouldBe('totem');
     }
