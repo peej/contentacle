@@ -10,7 +10,8 @@ class DocumentsSpec extends ObjectBehavior
     function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
     {
         $repo->loadDocuments('master', null)->willReturn();
-        $repo->loadDocuments('master', '/woo/yay')->willReturn();
+        $repo->loadDocuments('master', 'new-york/the-hotel')->willReturn();
+        $repo->loadDocuments('master', 'totem.txt')->willReturn();
         $repo->loadDocuments(Argument::cetera())->willThrow(new \Tonic\NotFoundException);
         $repo->prop('documents')->willReturn(array());
         $repo->prop('document')->willReturn(array());
@@ -37,17 +38,17 @@ class DocumentsSpec extends ObjectBehavior
 
     function it_should_show_document_listing_within_a_subdirectory($repo)
     {
-        $repo->loadDocuments('master', '/woo/yay')->shouldBeCalled();
+        $repo->loadDocuments('master', 'new-york/the-hotel')->shouldBeCalled();
         $repo->prop('documents')->willReturn('documents');
-        $response = $this->get('cobb', 'extraction', 'master', '/woo/yay');
+        $response = $this->get('cobb', 'extraction', 'master', 'new-york/the-hotel');
         $response->body->shouldBe('documents');
     }
 
     function it_should_show_a_single_document($repo)
     {
-        $repo->loadDocuments('master', null)->shouldBeCalled();
+        $repo->loadDocuments('master', 'totem.txt')->shouldBeCalled();
         $repo->prop('document')->willReturn('document');
-        $response = $this->get('cobb', 'extraction', 'master');
+        $response = $this->get('cobb', 'extraction', 'master', 'totem.txt');
         $response->body->shouldBe('document');
     }
 
