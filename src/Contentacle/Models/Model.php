@@ -31,4 +31,8 @@ class Model
     {
         return isset($this->$name) ? $this->$name : null;
     }
+
+    public function props() {
+        return get_object_vars($this);
+    }
 }

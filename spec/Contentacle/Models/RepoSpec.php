@@ -31,15 +31,23 @@ class RepoSpec extends ObjectBehavior
         $repo->file('totem.txt')->willReturn($totem);
         $repo->tree('totem.txt')->willReturn(null);
 
-        $totem->getHistory()->willReturn(array(
-            (object)array(
-                'sha' => '123456',
-                'message' => 'Added information about forever spinning totems',
-                'date' => '1392493822',
-                'user' => 'cobb',
-                'email' => 'cobb@localhost'
+        $commit->sha = '123456';
+        $commit->getMetadata('parents')->willReturn(array('654321'));
+        $commit->getMetadata('message')->willReturn('Added information about forever spinning totems');
+        $commit->getMetadata('date')->willReturn('1392493822');
+        $commit->getMetadata('user')->willReturn('cobb');
+        $commit->getMetadata('email')->willReturn('cobb@localhost');
+        $commit->getFiles()->willReturn(array('totem.txt', 'new-york/the-hotel/mr-charles.txt'));
+        $commit->getMetadata('diff')->willReturn(array(
+            'totem.txt' => array(
+                '1+A Totem is an object that is used to test if oneself is in one\'s own reality and not in another person\'s dream.'
             )
         ));
+        
+        $repo->commits(null, 25)->willReturn(array($commit));
+        $repo->commit('123456')->willReturn($commit);
+        
+        $totem->getHistory()->willReturn(array($commit));
 
         $data = array(
             'username' => 'cobb',
@@ -58,16 +66,9 @@ class RepoSpec extends ObjectBehavior
 
     function it_should_load_branch_data_from_the_repo()
     {
-        $this->loadBranches();
-        $this->branches->shouldBe(array(
-            'master' => array(
-                'name' => 'master',
-                'url' => '/users/cobb/repos/extraction/branches/master'
-            ),
-            'arthur' => array(
-                'name' => 'arthur',
-                'url' => '/users/cobb/repos/extraction/branches/arthur'
-            )
+        $this->branches()->shouldBe(array(
+            'master',
+            'arthur'
         ));
     }
 
@@ -77,38 +78,33 @@ class RepoSpec extends ObjectBehavior
         $this->hasBranch('eames')->shouldBe(false);
     }
 
-    function it_should_load_document_metadata()
+    function it_should_get_document_metadata()
     {
         $documents = $this->documents();
         $documents->shouldBe(array(
             'totem.txt' => array(
-                'url' => '/users/cobb/repos/extraction/branches/master/documents/totem.txt',
                 'filename' => 'totem.txt'
             )
         ));
     }
 
-    function it_should_load_document_metadata_from_within_a_subdirectory()
+    function it_should_get_document_metadata_from_within_a_subdirectory()
     {
         $documents = $this->documents('master', 'new-york/the-hotel');
         $documents->shouldBe(array(
             'mr-charles.txt' => array(
-                'url' => '/users/cobb/repos/extraction/branches/master/documents/mr-charles.txt',
                 'filename' => 'mr-charles.txt'
             )
         ));
     }
 
-    function it_should_load_a_documents_metadata()
+    function it_should_get_a_documents_metadata()
     {
         $document = $this->document('master', 'totem.txt');
-        $document['url']->shouldBe('/users/cobb/repos/extraction/branches/master/documents/totem.txt');
         $document['content']->shouldBe('A Totem is an object that is used to test if oneself is in one\'s own reality and not in another person\'s dream.');
-        $document['raw']->shouldBe('/users/cobb/repos/extraction/branches/master/raw/totem.txt');
-        $document['history']->shouldBe('/users/cobb/repos/extraction/branches/master/history/totem.txt');
     }
 
-    function it_should_load_a_documents_history()
+    function it_should_get_a_documents_history()
     {
         $history = $this->history('master', 'totem.txt');
         $history[0]['sha']->shouldBe('123456');
@@ -116,6 +112,29 @@ class RepoSpec extends ObjectBehavior
         $history[0]['date']->shouldBe('1392493822');
         $history[0]['username']->shouldBe('cobb');
         $history[0]['email']->shouldBe('cobb@localhost');
-        $history[0]['url']->shouldBe('/users/cobb/repos/extraction/branches/master/commits/123456');
+    }
+
+    function it_should_get_commits()
+    {
+        $commits = $this->commits('master');
+        $commits[0]['sha']->shouldBe('123456');
+        $commits[0]['message']->shouldBe('Added information about forever spinning totems');
+        $commits[0]['date']->shouldBe('1392493822');
+        $commits[0]['username']->shouldBe('cobb');
+        $commits[0]['email']->shouldBe('cobb@localhost');
+    }
+
+    function it_should_get_a_commit()
+    {
+        $commit = $this->commit('master', '123456');
+        $commit['sha']->shouldBe('123456');
+        $commit['parents']->shouldBe(array('654321'));
+        $commit['message']->shouldBe('Added information about forever spinning totems');
+        $commit['date']->shouldBe('1392493822');
+        $commit['username']->shouldBe('cobb');
+        $commit['email']->shouldBe('cobb@localhost');
+        $commit['files']->shouldBe(array(
+            'totem.txt', 'new-york/the-hotel/mr-charles.txt'
+        ));
     }
 }

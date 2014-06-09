@@ -15,6 +15,9 @@ class RepoRepository
     function getRepos($username)
     {
         $userDir = $this->repoDir.'/'.$username;
+        if (!is_dir($userDir)) {
+            throw new RepoException('User "'.$username.'" does not exist');
+        }
         $repos = array();
         foreach (glob($userDir.'/*', GLOB_ONLYDIR) as $repoDir) {
             $repoName = basename($repoDir);
@@ -27,8 +30,9 @@ class RepoRepository
     {
         $data = array();
         $data['username'] = $username;
-        $data['name'] = $repoName;
-
+        $data['name'] = $repoName;;
         return $this->repoProvider->__invoke($data);
     }
 }
+
+class RepoException extends \Exception {}

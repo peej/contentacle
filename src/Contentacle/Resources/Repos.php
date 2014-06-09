@@ -13,11 +13,26 @@ class Repos extends Resource {
      */
     function get($username)
     {
-        $repoRepo = $this->container['repo_repository'];
+        try {
+            $repoRepo = $this->container['repo_repository'];
+            $repos = $repoRepo->getRepos($username);
 
-        $repos = $repoRepo->getRepos($username);
+            $response = new \Contentacle\Responses\Hal();
 
-        return new \Tonic\Response(200, $repos);
+            $response->addLink('self', '/users/'.$username.'/repos'.$this->formatExtension());
+            $response->addForm('add', 'post', array('contentacle/repo+yaml', 'contentacle/repo+json'), 'Create a repo');
+
+            if ($this->embed) {
+                foreach ($repos as $repo) {
+                    $response->embed('repos', $this->getChildResource('\Contentacle\Resources\Repo', array($username, $repo->name)));
+                }
+            }
+            
+            return $response;
+
+        } catch (\Contentacle\Services\RepoException $e) {
+            throw new \Tonic\NotFoundException;
+        }
     }
 
 }

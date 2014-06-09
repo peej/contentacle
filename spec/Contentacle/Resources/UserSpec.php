@@ -7,28 +7,29 @@ use Prophecy\Argument;
 
 class UserSpec extends ObjectBehavior
 {
-    function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\UserRepository $userRepo, \Contentacle\Models\User $user, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
+    function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\UserRepository $userRepo, \Contentacle\Services\RepoRepository $repoRepo)
     {
-        $repo->prop('url')->willReturn('/users/cobb/repos/extraction');
-        $repo->prop('username')->willReturn('cobb');
-        $repo->prop('name')->willReturn('Extraction 101');
-        $repo->prop('description')->willReturn('Extraction instructions for Ariadne');
+        $repo = (object)array(
+            'name' => 'extraction',
+            'username' => 'cobb',
+            'title' => 'Extraction 101',
+            'description' => 'Extraction instructions for Ariadne'
+        );
 
         $repoRepo->getRepos('cobb')->willReturn(array(
             'extraction' => $repo
         ));
-        $pimple->offsetGet('repo_repository')->willReturn($repoRepo);
+        $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
 
-        $user->prop('url')->willReturn('/users/cobb');
-        $user->prop('username')->willReturn('cobb');
-        $user->prop('name')->willReturn('Dominick Cobb');
-        $user->loadRepos($repoRepo)->will(function () use ($user, $repo) {
-            $user->prop('repos')->willReturn(array(
-                'test' => $repo
-            ));
-        });
-
+        $user = (object)array(
+            'username' => 'cobb',
+            'name' => 'Dominick Cobb'
+        );
+        
         $userRepo->getUser('cobb')->willReturn($user);
+        $userRepo->getUser(Argument::cetera())->willThrow(new \Contentacle\Services\UserException);
+        
+        $pimple->offsetGet('repo_repository')->willReturn($repoRepo);
         $pimple->offsetGet('user_repository')->willReturn($userRepo);
 
         $this->beConstructedWith($app, $request);
@@ -42,12 +43,19 @@ class UserSpec extends ObjectBehavior
 
     function it_should_show_user_details()
     {
-        $this->get('cobb')->body->prop('url')->shouldBe('/users/cobb');
-        $this->get('cobb')->body->prop('username')->shouldBe('cobb');
-        $this->get('cobb')->body->prop('name')->shouldBe('Dominick Cobb');
-        $this->get('cobb')->body->prop('repos')->shouldBeArray();
-        $this->get('cobb')->body->prop('repos')['test']->prop('url')->shouldBe('/users/cobb/repos/extraction');
-        $this->get('cobb')->body->prop('repos')['test']->prop('name')->shouldBe('Extraction 101');
-        $this->get('cobb')->body->prop('repos')['test']->prop('description')->shouldBe('Extraction instructions for Ariadne');
+        $body = $this->get('cobb')->body;
+        $body['username']->shouldBe('cobb');
+        $body['name']->shouldBe('Dominick Cobb');
+        $body['_embedded']['repos']->shouldBeArray();
+        $body['_embedded']['repos'][0]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction');
+        $body['_embedded']['repos'][0]['name']->shouldBe('extraction');
+        $body['_embedded']['repos'][0]['username']->shouldBe('cobb');
+        $body['_embedded']['repos'][0]['title']->shouldBe('Extraction 101');
+        $body['_embedded']['repos'][0]['description']->shouldBe('Extraction instructions for Ariadne');
+    }
+
+    function it_should_error_for_unknown_user()
+    {
+        $this->shouldThrow('\Tonic\NotFoundException')->duringGet('ariadne');
     }
 }

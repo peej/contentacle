@@ -10,7 +10,11 @@ class Repo extends Model
     {
         $this->git = $gitProvider($data['username'], $data['name']);
 
-        $repoMetadata = $yaml->decode($this->git->file('contentacle.yaml'));
+        try {
+            $repoMetadata = $yaml->decode($this->git->file('contentacle.yaml'));
+        } catch (\Git\Exception $e) {
+            $repoMetadata = array();
+        }
 
         $data = array_merge($data, $repoMetadata);
 
@@ -18,23 +22,13 @@ class Repo extends Model
             'username' => true,
             'name' => true,
             'title' => 'Un-named repo',
-            'url' => function ($data) {
-                return '/users/'.$data['username'].'/repos/'.$data['name'];
-            },
             'description' => true
         ), $data);
     }
 
-    public function loadBranches()
+    public function branches()
     {
-        $this->branches = array();
-        $branches = $this->git->getBranches();
-        foreach ($branches as $branch) {
-            $this->branches[$branch] = array(
-                'name' => $branch,
-                'url' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch
-            );
-        }
+        return $this->git->getBranches();
     }
 
     public function hasBranch($branchName)
@@ -49,10 +43,7 @@ class Repo extends Model
         if ($tree && method_exists($tree, 'entries')) {
             $documents = array();
             foreach ($tree->entries() as $filename => $item) {
-                $documents[$filename] = array(
-                    'url' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/documents/'.$item->filename,
-                    'filename' => $item->filename
-                );
+                $documents[$filename] = $item->filename;
             }
             return $documents;
         }
@@ -65,11 +56,13 @@ class Repo extends Model
         $document = $this->git->file($path);
         if ($document) {
             return array(
-                'url' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/documents/'.$path,
                 'filename' => $document->filename,
-                'content' => $document->getContent(),
-                'raw' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/raw/'.$path,
-                'history' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/history/'.$path
+                'sha' => $document->sha,
+                'username' => 'tbd',
+                'email' => $document->email,
+                'author' => $document->user,
+                'branch' => $branch,
+                'content' => $document->getContent()
             );
         }
         throw new \Exception("Document '$path' does not exist");
@@ -87,12 +80,43 @@ class Repo extends Model
                     'message' => $commit->message,
                     'date' => $commit->date,
                     'username' => $commit->user,
-                    'email' => $commit->email,
-                    'url' => '/users/'.$this->username.'/repos/'.$this->name.'/branches/'.$branch.'/commits/'.$commit->sha
+                    'email' => $commit->email
                 );
             }
             return $history;
         }
         throw new \Exception("Path '$path' not found in branch '$branch'");
+    }
+
+    public function commits($branch = 'master', $sha = null, $number = 25)
+    {
+        $this->git->setBranch($branch);
+        $commits = array();
+        foreach ($this->git->commits($sha, $number) as $commit) {
+            $commits[] = array(
+                'sha' => $commit->sha,
+                'message' => $commit->message,
+                'date' => $commit->date,
+                'username' => $commit->user,
+                'email' => $commit->email
+            );
+        }
+        return $commits;
+    }
+
+    public function commit($branch, $sha)
+    {
+        $commit = $this->git->commit($sha);
+
+        return array(
+            'sha' => $commit->sha,
+            'parents' => $commit->parents,
+            'message' => $commit->message,
+            'date' => $commit->date,
+            'username' => $commit->user,
+            'email' => $commit->email,
+            'files' => $commit->getFiles(),
+            'diff' => $commit->diff
+        );
     }
 }

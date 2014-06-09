@@ -20,7 +20,11 @@ $container['yaml'] = function () {
 };
 $container['git'] = function ($c) {
     return function ($username, $repoName) use ($c) {
-        return new Git\Repo($c['repo_dir'].'/'.$username.'/'.$repoName);
+        $repoDir = $c['repo_dir'].'/'.$username.'/'.$repoName;
+        if (!is_dir($repoDir)) {
+            throw new Git\Exception;
+        }
+        return new Git\Repo($repoDir);
     };
 };
 $container['user_repository'] = function ($c) {
@@ -43,20 +47,28 @@ $container['repo'] = function ($c) {
 $request = new Tonic\Request(array(
     'uri' => $_SERVER['REQUEST_URI'],
     'mimetypes' => array(
-        'yml' => 'text/yaml',
         'yaml' => 'text/yaml',
+        'yml' => 'text/yaml',
         'json' => 'application/json'
     )
 ));
 
+// switch out alternative mimetypes
+if ($pos = array_search('application/yaml', $request->accept) !== false) {
+    $request->accept[$pos] = 'text/yaml';
+}
+if ($pos = array_search('text/json', $request->accept) !== false) {
+    $request->accept[$pos] = 'application/json';
+}
+
 // add YAML if not in accept array
-if (!array_search('text/yaml', $request->accept)) {
+if (array_search('text/yaml', $request->accept) === false) {
     $request->accept[] = 'text/yaml';
 }
 
 if ($request->contentType == 'application/yaml' || $request->contentType == 'text/yaml') {
     $request->data = $container['yaml']->decode($request->data);
-} elseif ($request->contentType == 'application/json') {
+} elseif ($request->contentType == 'application/json' || $request->contentType == 'text/json') {
     $request->data = json_decode($request->data);
 }
 
@@ -79,7 +91,7 @@ try {
 
 if ($response->contentType == 'application/yaml' || $response->contentType == 'text/yaml') {
     $response->body = $container['yaml']->encode($response->body);
-} elseif ($response->contentType == 'application/json') {
+} elseif ($response->contentType == 'application/json' || $response->contentType == 'text/json') {
     $response->body = json_encode($response->body, JSON_PRETTY_PRINT);
 }
 

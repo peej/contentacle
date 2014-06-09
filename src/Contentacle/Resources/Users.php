@@ -7,7 +7,6 @@ namespace Contentacle\Resources;
  */
 class Users extends Resource
 {
-
     /**
      * @provides text/yaml
      * @provides application/json
@@ -15,8 +14,19 @@ class Users extends Resource
     function get()
     {
         $userRepo = $this->container['user_repository'];
-        $users = $userRepo->getUsers();
-        return new \Tonic\Response(200, $users);
+        
+        $response = new \Contentacle\Responses\Hal();
+
+        $response->addLink('self', '/users'.$this->formatExtension());
+        $response->addForm('add', 'post', array('contentacle/user+yaml', 'contentacle/user+json'), 'Create a user');
+
+        if ($this->embed) {
+            foreach ($userRepo->getUsers() as $user) {
+                $response->embed('users', $this->getChildResource('\Contentacle\Resources\User', array($user->username)));
+            }
+        }
+
+        return $response;
     }
 
 }

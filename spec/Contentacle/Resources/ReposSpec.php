@@ -7,24 +7,32 @@ use Prophecy\Argument;
 
 class ReposSpec extends ObjectBehavior
 {
-    function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo1, \Contentacle\Models\Repo $repo2)
+    function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\RepoRepository $repoRepo)
     {
-        $repo1->prop('url')->willReturn('/users/cobb/repos/extraction');
-        $repo1->prop('username')->willReturn('cobb');
-        $repo1->prop('name')->willReturn('extraction');
-        $repo1->prop('title')->willReturn('Extraction 101');
-        $repo1->prop('description')->willReturn('Extraction instructions for Ariadne');
+        $repo1 = (object)array(
+            'name' => 'extraction',
+            'username' => 'cobb',
+            'title' => 'Extraction 101',
+            'description' => 'Extraction instructions for Ariadne'
+        );
 
-        $repo2->prop('url')->willReturn('/users/cobb/repos/inception');
-        $repo2->prop('username')->willReturn('cobb');
-        $repo2->prop('name')->willReturn('inception');
-        $repo2->prop('title')->willReturn('Inception');
-        $repo2->prop('description')->willReturn('Notes on the concept of inception for Eames');
+        $repo2 = (object)array(
+            'name' => 'inception',
+            'username' => 'cobb',
+            'title' => 'Inception',
+            'description' => 'Notes on the concept of inception for Eames'
+        );
 
         $repoRepo->getRepos('cobb')->willReturn(array(
             'extraction' => $repo1,
             'inception' => $repo2
         ));
+        $repoRepo->getRepos(Argument::cetera())->willThrow(new \Contentacle\Services\RepoException);
+
+        $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo1);
+        $repoRepo->getRepo('cobb', 'inception')->willReturn($repo2);
+        $repoRepo->getRepo(Argument::cetera())->willThrow(new \Git\Exception);
+
         $pimple->offsetGet('repo_repository')->willReturn($repoRepo);
 
         $this->beConstructedWith($app, $request);
@@ -38,11 +46,20 @@ class ReposSpec extends ObjectBehavior
 
     function it_should_get_a_list_of_a_users_repos()
     {
-        $response = $this->get('cobb');
-        $response->body->shouldHaveCount(2);
-        $response->body['extraction']->prop('url')->shouldBe('/users/cobb/repos/extraction');
-        $response->body['extraction']->prop('name')->shouldBe('extraction');
-        $response->body['extraction']->prop('title')->shouldBe('Extraction 101');
-        $response->body['inception']->prop('url')->shouldBe('/users/cobb/repos/inception');
+        $body = $this->get('cobb')->body;
+        $body['_links']['self']['href']->shouldBe('/users/cobb/repos');
+        $body['_embedded']['repos'][0]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction');
+        $body['_embedded']['repos'][0]['_links']['branches']['href']->shouldBe('/users/cobb/repos/extraction/branches');
+        $body['_embedded']['repos'][0]['name']->shouldBe('extraction');
+        $body['_embedded']['repos'][0]['title']->shouldBe('Extraction 101');
+        $body['_embedded']['repos']->shouldHaveCount(2);
+        $body['_embedded']['repos'][1]['_links']['self']['href']->shouldBe('/users/cobb/repos/inception');
+        $body['_embedded']['repos'][1]['name']->shouldBe('inception');
+        $body['_embedded']['repos'][1]['title']->shouldBe('Inception');
+    }
+
+    function it_should_error_for_unknown_user()
+    {
+        $this->shouldThrow('\Tonic\NotFoundException')->duringGet('ariadne');
     }
 }

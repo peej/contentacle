@@ -9,16 +9,23 @@ class RepoSpec extends ObjectBehavior
 {
     function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
     {
-        $repo->prop('url')->willReturn('/users/cobb/repos/extraction');
-        $repo->prop('username')->willReturn('cobb');
         $repo->prop('name')->willReturn('extraction');
+        $repo->prop('username')->willReturn('cobb');
         $repo->prop('title')->willReturn('Extraction 101');
         $repo->prop('description')->willReturn('Extraction instructions for Ariadne');
-        $repo->loadBranches()->will(function () use ($repo) {
-            $repo->prop('branches')->willReturn(array(array('name' => 'master'), array('name' => 'branch')));
-        });
+        $repo->props()->willReturn(array(
+            'name' => 'extraction',
+            'username' => 'cobb',
+            'title' => 'Extraction 101',
+            'description' => 'Extraction instructions for Ariadne'
+        ));
+        $repo->branches()->willReturn(array('master', 'branch'));
+        $repo->hasBranch('master')->willReturn(true);
+        $repo->hasBranch('branch')->willReturn(true);
         
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
+        $repoRepo->getRepo(Argument::cetera())->willThrow(new \Git\Exception);
+        
         $pimple->offsetGet('repo_repository')->willReturn($repoRepo);
 
         $this->beConstructedWith($app, $request);
@@ -32,15 +39,21 @@ class RepoSpec extends ObjectBehavior
 
     function it_should_get_a_list_of_a_users_repos()
     {
-        $response = $this->get('cobb', 'extraction');
-        $response->body->prop('url')->shouldBe('/users/cobb/repos/extraction');
-        $response->body->prop('name')->shouldBe('extraction');
-        $response->body->prop('title')->shouldBe('Extraction 101');
-        $response->body->prop('description')->shouldBe('Extraction instructions for Ariadne');
-        $response->body->prop('username')->shouldBe('cobb');
+        $body = $this->get('cobb', 'extraction')->body;
+        $body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction');
+        $body['name']->shouldBe('extraction');
+        $body['title']->shouldBe('Extraction 101');
+        $body['description']->shouldBe('Extraction instructions for Ariadne');
+        $body['username']->shouldBe('cobb');
         
-        $response->body->prop('branches')->shouldHaveCount(2);
-        $response->body->prop('branches')[0]['name']->shouldBe('master');
-        $response->body->prop('branches')[1]['name']->shouldBe('branch');
+        $body['_embedded']['branches']->shouldHaveCount(2);
+        $body['_embedded']['branches'][0]['name']->shouldBe('master');
+        $body['_embedded']['branches'][1]['name']->shouldBe('branch');
+    }
+
+    function it_should_error_for_unknown_repo()
+    {
+        $this->shouldThrow('\Tonic\NotFoundException')->duringGet('ariadne', 'extraction');
+        $this->shouldThrow('\Tonic\NotFoundException')->duringGet('cobb', 'inception');
     }
 }

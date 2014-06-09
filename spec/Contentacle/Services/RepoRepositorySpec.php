@@ -55,7 +55,6 @@ class RepoRepositorySpec extends ObjectBehavior
         $this->getRepos('cobb')->shouldHaveCount(1);
         $repo = $this->getRepos('cobb')['extraction'];
         $repo->shouldHaveType('Contentacle\Models\Repo');
-        $repo->url->shouldBe('/users/cobb/repos/extraction');
         $repo->name->shouldBe('extraction');
         $repo->title->shouldBe('Extraction 101');
         $repo->username->shouldBe('cobb');
@@ -66,7 +65,6 @@ class RepoRepositorySpec extends ObjectBehavior
     {
         $repo = $this->getRepo('cobb', 'extraction');
         $repo->shouldHaveType('Contentacle\Models\Repo');
-        $repo->url->shouldBe('/users/cobb/repos/extraction');
         $repo->name->shouldBe('extraction');
         $repo->title->shouldBe('Extraction 101');
         $repo->username->shouldBe('cobb');

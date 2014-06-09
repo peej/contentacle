@@ -9,11 +9,14 @@ class BranchesSpec extends ObjectBehavior
 {
     function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
     {
-        $repo->loadBranches()->will(function () use ($repo) {
-            $repo->prop('branches')->willReturn(array(array('name' => 'master'), array('name' => 'branch')));
-        });
+        $repo->prop(Argument::any())->willReturn();
+        $repo->branches()->willReturn(array('master', 'branch'));
+        $repo->hasBranch('master')->willReturn(true);
+        $repo->hasBranch('branch')->willReturn(true);
         
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
+        $repoRepo->getRepo(Argument::cetera())->willThrow(new \Git\Exception);
+
         $pimple->offsetGet('repo_repository')->willReturn($repoRepo);
 
         $this->beConstructedWith($app, $request);
@@ -27,8 +30,15 @@ class BranchesSpec extends ObjectBehavior
 
     function it_should_list_branches()
     {
-        $response = $this->get('cobb', 'extraction');
-        $response->body[0]['name']->shouldBe('master');
-        $response->body[1]['name']->shouldBe('branch');
+        $body = $this->get('cobb', 'extraction')->body;
+        $body['_embedded']['branches']->shouldHaveCount(2);
+        $body['_embedded']['branches'][0]['name']->shouldBe('master');
+        $body['_embedded']['branches'][1]['name']->shouldBe('branch');
+    }
+
+    function it_should_error_for_unknown_repo()
+    {
+        $this->shouldThrow('\Tonic\NotFoundException')->duringGet('ariadne', 'extraction');
+        $this->shouldThrow('\Tonic\NotFoundException')->duringGet('cobb', 'inception');
     }
 }

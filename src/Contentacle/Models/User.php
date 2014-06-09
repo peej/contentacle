@@ -9,21 +9,10 @@ class User extends Model
         parent::__construct(array(
             'username' => true,
             'name' => 'Un-named user',
-            'url' => function ($data) {
-                return '/users/'.$data['username'];
-            },
             'password' => true,
             'email' => function ($data) {
                 return $data['username'].'@localhost';
-            },
-            'repos' => function ($data) {
-                return '/users/'.$data['username'].'/repos';
             }
         ), $data);
-    }
-
-    function loadRepos($repoRepository)
-    {
-        $this->repos = $repoRepository->getRepos($this->username);
     }
 }

@@ -46,7 +46,6 @@ class UserRepositorySpec extends ObjectBehavior
         $this->getUsers()->shouldHaveCount(1);
         $user = $this->getUsers()['cobb'];
         $user->shouldHaveType('Contentacle\Models\User');
-        $user->url->shouldBe('/users/cobb');
         $user->name->shouldBe('Dominick Cobb');
         $user->username->shouldBe('cobb');
     }
@@ -55,7 +54,6 @@ class UserRepositorySpec extends ObjectBehavior
     {
         $user = $this->getUser('cobb');
         $user->shouldHaveType('Contentacle\Models\User');
-        $user->url->shouldBe('/users/cobb');
         $user->name->shouldBe('Dominick Cobb');
         $user->username->shouldBe('cobb');
     }

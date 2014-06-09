@@ -26,12 +26,12 @@ class UserRepository
     {
         $profilePath = $this->repoDir.'/'.$username.'/profile.json';
 
-        if (file_exists($profilePath)) {
-            $data = json_decode(file_get_contents($profilePath), true);
-        } else {
-            $data = array();
-        }   
-
+        if (!file_exists($profilePath)) {
+            throw new UserException('User profile "'.$username.'" not found.');
+        }
+        $data = json_decode(file_get_contents($profilePath), true);
         return $this->userProvider->__invoke($data);
     }
 }
+
+class UserException extends \Exception {}

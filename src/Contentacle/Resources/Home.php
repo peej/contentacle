@@ -14,9 +14,12 @@ class Home extends Resource {
      */
     function get()
     {
-        return new \Tonic\Response(200, array(
-            'users' => '/users'
-        ));
+        $response = new \Contentacle\Responses\Hal();
+
+        $response->addLink('self', '/'.$this->formatExtension());
+        $response->addLink('users', '/users'.$this->formatExtension());
+
+        return $response;
     }
 
 }

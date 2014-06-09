@@ -7,18 +7,24 @@ use Prophecy\Argument;
 
 class UsersSpec extends ObjectBehavior
 {
-    function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\UserRepository $userRepo, \Contentacle\Models\User $user1, \Contentacle\Models\User $user2)
+    function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\UserRepository $userRepo)
     {
-        $user1->prop('url')->willReturn('/users/cobb');
-        $user1->prop('username')->willReturn('cobb');
-        $user1->prop('name')->willReturn('Dominick Cobb');
+        $user1 = (object)array(
+            'username' => 'cobb',
+            'name' => 'Dominick Cobb'
+        );
 
-        $user2->prop('url')->willReturn('/users/arthur');
-        $user2->prop('username')->willReturn('arthur');
-        $user2->prop('name')->willReturn('Arthur');
+        $user2 = (object)array(
+            'username' => 'arthur',
+            'name' => 'Arthur'
+        );
 
         $userRepo->getUsers()->willReturn(array($user1, $user2));
+        $userRepo->getUser('cobb')->willReturn($user1);
+        $userRepo->getUser('arthur')->willReturn($user2);
         $pimple->offsetGet('user_repository')->willReturn($userRepo);
+
+        $pimple->offsetGet('repo_repository')->willReturn();
         
         $this->beConstructedWith($app, $request);
         $this->setContainer($pimple);
@@ -29,12 +35,18 @@ class UsersSpec extends ObjectBehavior
         $this->shouldHaveType('Contentacle\Resources\Users');
     }
 
+    function it_should_link_to_itself()
+    {
+        $this->get()->body['_links']['self']['href']->shouldBe('/users');
+        $this->get()->body['_links']['add']['method']->shouldBe('post');
+    }
+
     function it_should_get_a_list_of_users()
     {
-        $this->get()->body->shouldHaveCount(2);
-        $this->get()->body[0]->prop('url')->shouldBe('/users/cobb');
-        $this->get()->body[0]->prop('username')->shouldBe('cobb');
-        $this->get()->body[0]->prop('name')->shouldBe('Dominick Cobb');
-        $this->get()->body[1]->prop('url')->shouldBe('/users/arthur');
+        $this->get()->body['_embedded']['users']->shouldHaveCount(2);
+        $this->get()->body['_embedded']['users'][0]['_links']['self']['href']->shouldBe('/users/cobb');
+        $this->get()->body['_embedded']['users'][0]['username']->shouldBe('cobb');
+        $this->get()->body['_embedded']['users'][0]['name']->shouldBe('Dominick Cobb');
+        $this->get()->body['_embedded']['users'][1]['_links']['self']['href']->shouldBe('/users/arthur');
     }
 }
