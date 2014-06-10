@@ -27,7 +27,7 @@ class ReposSpec extends ObjectBehavior
             'extraction' => $repo1,
             'inception' => $repo2
         ));
-        $repoRepo->getRepos(Argument::cetera())->willThrow(new \Contentacle\Services\RepoException);
+        $repoRepo->getRepos(Argument::cetera())->willThrow(new \Contentacle\Exceptions\RepoException);
 
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo1);
         $repoRepo->getRepo('cobb', 'inception')->willReturn($repo2);

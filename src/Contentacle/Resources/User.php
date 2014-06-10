@@ -34,9 +34,9 @@ class User extends Resource
 
             return $response;
 
-        } catch (\Contentacle\Services\UserException $e) {
+        } catch (\Contentacle\Exceptions\UserException $e) {
             throw new \Tonic\NotFoundException;
-        } catch (\Contentacle\Services\RepoException $e) {
+        } catch (\Contentacle\Exceptions\RepoException $e) {
             throw new \Tonic\NotFoundException;
         }
     }

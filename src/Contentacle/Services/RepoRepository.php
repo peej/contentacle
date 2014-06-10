@@ -16,7 +16,7 @@ class RepoRepository
     {
         $userDir = $this->repoDir.'/'.$username;
         if (!is_dir($userDir)) {
-            throw new RepoException('User "'.$username.'" does not exist');
+            throw new \Contentacle\Exceptions\RepoException('User "'.$username.'" does not exist');
         }
         $repos = array();
         foreach (glob($userDir.'/*', GLOB_ONLYDIR) as $repoDir) {
@@ -34,5 +34,3 @@ class RepoRepository
         return $this->repoProvider->__invoke($data);
     }
 }
-
-class RepoException extends \Exception {}

@@ -27,7 +27,7 @@ class UserSpec extends ObjectBehavior
         );
         
         $userRepo->getUser('cobb')->willReturn($user);
-        $userRepo->getUser(Argument::cetera())->willThrow(new \Contentacle\Services\UserException);
+        $userRepo->getUser(Argument::cetera())->willThrow(new \Contentacle\Exceptions\UserException);
         
         $pimple->offsetGet('repo_repository')->willReturn($repoRepo);
         $pimple->offsetGet('user_repository')->willReturn($userRepo);

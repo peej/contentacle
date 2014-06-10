@@ -30,7 +30,7 @@ class Repos extends Resource {
             
             return $response;
 
-        } catch (\Contentacle\Services\RepoException $e) {
+        } catch (\Contentacle\Exceptions\RepoException $e) {
             throw new \Tonic\NotFoundException;
         }
     }

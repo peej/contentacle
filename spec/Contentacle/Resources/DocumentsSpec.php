@@ -9,10 +9,15 @@ class DocumentsSpec extends ObjectBehavior
 {
     function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
     {
-        $repo->documents('master', null)->willReturn(array());
-        $repo->documents('master', 'new-york/the-hotel')->willReturn(array());
-        $repo->documents('master', 'totem.txt')->willReturn(array());
-        $repo->documents(Argument::cetera())->willThrow(new \Tonic\NotFoundException);
+        $repo->documents('master', null)->willReturn(array('new-york'));
+        $repo->documents('master', 'new-york')->willReturn(array('new-york/the-hotel'));
+        $repo->documents('master', 'new-york/the-hotel')->willReturn(array('new-york/the-hotel/totem.txt'));
+        $repo->documents(Argument::cetera())->willThrow(new \Contentacle\Exceptions\RepoException);
+        $repo->document('master', 'new-york/the-hotel/totem.txt')->willReturn(array(
+            'path' => 'new-york/the-hotel/totem.txt',
+            'filename' => 'totem.txt'
+        ));
+        $repo->document(Argument::cetera())->willThrow(new \Contentacle\Exceptions\RepoException);
         
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
         $pimple->offsetGet('repo_repository')->willReturn($repoRepo);
@@ -28,27 +33,39 @@ class DocumentsSpec extends ObjectBehavior
 
     function it_should_show_document_listing($repo)
     {
-        $repo->documents('master', null)->willReturn('documents')->shouldBeCalled();
+        $repo->documents('master', null)->shouldBeCalled();
         $response = $this->get('cobb', 'extraction', 'master');
-        $response->body->shouldBe('documents');
+        $response->body['filename']->shouldBe('');
+        $response->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/documents');
+        $response->body['_embedded']['documents'][0]['filename']->shouldBe('new-york');
     }
 
     function it_should_show_document_listing_within_a_subdirectory($repo)
     {
-        $repo->documents('master', 'new-york/the-hotel')->willReturn('documents')->shouldBeCalled();
+        $repo->documents('master', 'new-york/the-hotel')->shouldBeCalled();
         $response = $this->get('cobb', 'extraction', 'master', 'new-york/the-hotel');
-        $response->body->shouldBe('documents');
+        $response->body['filename']->shouldBe('the-hotel');
+        $response->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel');
+        $response->body['_embedded']['documents'][0]['filename']->shouldBe('totem.txt');
     }
 
     function it_should_show_a_single_document($repo)
     {
-        $repo->documents('master', 'totem.txt')->willReturn('document')->shouldBeCalled();
-        $response = $this->get('cobb', 'extraction', 'master', 'totem.txt');
-        $response->body->shouldBe('document');
+        $repo->document('master', 'new-york/the-hotel/totem.txt')->shouldBeCalled();
+        $response = $this->get('cobb', 'extraction', 'master', 'new-york/the-hotel/totem.txt');
+        $response->body['filename']->shouldBe('totem.txt');
+        $response->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel/totem.txt');
+        $response->body['_links']['history']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/history/new-york/the-hotel/totem.txt');
+        $response->body['_links']['raw']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/raw/new-york/the-hotel/totem.txt');
     }
 
     function it_should_error_for_unknown_branch()
     {
         $this->shouldThrow('\Tonic\NotFoundException')->duringGet('cobb', 'extraction', 'eames');
+    }
+
+    function it_should_error_for_unknown_path()
+    {
+        $this->shouldThrow('\Tonic\NotFoundException')->duringGet('cobb', 'extraction', 'master', 'paris');
     }
 }

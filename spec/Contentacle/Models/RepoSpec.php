@@ -82,9 +82,7 @@ class RepoSpec extends ObjectBehavior
     {
         $documents = $this->documents();
         $documents->shouldBe(array(
-            'totem.txt' => array(
-                'filename' => 'totem.txt'
-            )
+            'totem.txt' => 'totem.txt'
         ));
     }
 
@@ -92,9 +90,7 @@ class RepoSpec extends ObjectBehavior
     {
         $documents = $this->documents('master', 'new-york/the-hotel');
         $documents->shouldBe(array(
-            'mr-charles.txt' => array(
-                'filename' => 'mr-charles.txt'
-            )
+            'mr-charles.txt' => 'mr-charles.txt'
         ));
     }
 

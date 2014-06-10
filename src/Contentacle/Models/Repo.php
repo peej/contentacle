@@ -47,45 +47,51 @@ class Repo extends Model
             }
             return $documents;
         }
-        throw new \Exception("Path '$path' does not exist");
+        throw new \Contentacle\Exceptions\RepoException("Path '$path' does not exist");
     }
 
     public function document($branch = 'master', $path = '')
     {
         $this->git->setBranch($branch);
-        $document = $this->git->file($path);
-        if ($document) {
-            return array(
-                'filename' => $document->filename,
-                'sha' => $document->sha,
-                'username' => 'tbd',
-                'email' => $document->email,
-                'author' => $document->user,
-                'branch' => $branch,
-                'content' => $document->getContent()
-            );
-        }
-        throw new \Exception("Document '$path' does not exist");
+        try {
+            $document = $this->git->file($path);
+            if (is_a($document, '\Git\Blob')) {
+                return array(
+                    'filename' => basename($document->filename),
+                    'path' => $document->filename,
+                    'type' => 'file',
+                    'sha' => $document->sha,
+                    'username' => 'tbd',
+                    'email' => $document->email,
+                    'author' => $document->user,
+                    'branch' => $branch,
+                    'content' => $document->getContent()
+                );
+            }
+        } catch (\Git\Exception $e) {}
+        throw new \Contentacle\Exceptions\RepoException("Document '$path' does not exist");
     }
 
     public function history($branch = 'master', $path = '')
     {
         $this->git->setBranch($branch);
-        $file = $this->git->file($path);
-        if ($file) {
-            $history = array();
-            foreach ($file->getHistory() as $commit) {
-                $history[] = array(
-                    'sha' => $commit->sha,
-                    'message' => $commit->message,
-                    'date' => $commit->date,
-                    'username' => $commit->user,
-                    'email' => $commit->email
-                );
+        try {
+            $file = $this->git->file($path);
+            if ($file) {
+                $history = array();
+                foreach ($file->getHistory() as $commit) {
+                    $history[] = array(
+                        'sha' => $commit->sha,
+                        'message' => $commit->message,
+                        'date' => $commit->date,
+                        'username' => $commit->user,
+                        'email' => $commit->email
+                    );
+                }
+                return $history;
             }
-            return $history;
-        }
-        throw new \Exception("Path '$path' not found in branch '$branch'");
+        } catch (\Git\Exception $e) {}
+        throw new \Contentacle\Exceptions\RepoException("Path '$path' not found in branch '$branch'");
     }
 
     public function commits($branch = 'master', $sha = null, $number = 25)

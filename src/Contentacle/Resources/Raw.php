@@ -3,7 +3,7 @@
 namespace Contentacle\Resources;
 
 /**
- * @uri /users/:username/repos/:repo/branches/:branch/raw/:path
+ * @uri /users/:username/repos/:repo/branches/:branch/raw/(.+)$
  */
 class Raw extends Resource {
 
@@ -17,11 +17,13 @@ class Raw extends Resource {
 
         try {
             $document = $repo->document($branch, $path);
-            $response = new \Tonic\Response(200, $document['content']);
-            $response->contentType = 'text/plain';
-            return $response;
-        } catch (\Exception $e) {
-            throw new \Tonic\NotFoundException;
-        }
+            if ($document) {
+                $response = new \Tonic\Response(200, $document['content']);
+                $response->contentType = 'text/plain';
+                return $response;
+            }
+        
+        } catch (\Contentacle\Exceptions\RepoException $e) {}
+        throw new \Tonic\NotFoundException;
     }
 }

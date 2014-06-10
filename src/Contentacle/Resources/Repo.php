@@ -21,7 +21,7 @@ class Repo extends Resource
             $response = new \Contentacle\Responses\Hal(200, $repo);
 
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.$this->formatExtension());
-            $response->addLink('branches', '/users/'.$username.'/repos/'.$repoName.'/branches.$this->formatExtension()');
+            $response->addLink('branches', '/users/'.$username.'/repos/'.$repoName.'/branches'.$this->formatExtension());
             $response->addForm('edit', 'patch', array('contentacle/repo+yaml', 'contentacle/repo+json'), 'Edit the repo');
             $response->addForm('delete', 'delete', null, 'Remove the repo');
 
