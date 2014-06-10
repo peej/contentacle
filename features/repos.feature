@@ -2,9 +2,6 @@ Feature:
     As a user
     I should be able to see a users repos
 
-    Background:
-        Given I set the "accept" header to "*/*"
-
     Scenario: View a list of repos
         Given I send a GET request on "/users/peej/repos"
         Then response property "_embedded->repos->0->_links->self->href" should be "/users/peej/repos/test"

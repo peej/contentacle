@@ -21,6 +21,14 @@ class FeatureContext extends MinkContext
     }
 
     /**
+     * @BeforeScenario
+     */
+    public function setHeaders()
+    {
+        $this->getSession()->setRequestHeader('Accept', '*/*');
+    }
+
+    /**
      * Set HTTP header for next request
      *
      * @When /^I set the "(?P<header>[^"]*)" header to "(?P<value>[^"]*)"$/

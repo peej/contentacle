@@ -2,9 +2,6 @@ Feature:
     As a user
     I should be able to see a repos branches
 
-    Background:
-        Given I set the "accept" header to "*/*"
-
     Scenario: View a list of branches
         Given I send a GET request on "/users/peej/repos/test/branches"
         Then response property "_links->self->href" should be "/users/peej/repos/test/branches"

@@ -2,9 +2,6 @@ Feature:
     As a user
     I should be able to see a branches documents
 
-    Background:
-        Given I set the "accept" header to "*/*"
-
     Scenario: View a list of documents
         Given I send a GET request on "/users/peej/repos/test/branches/master/documents"
         Then response property "filename" should be ""

@@ -3,8 +3,7 @@ Feature:
     I should be able to recieve different API response formats
 
     Scenario: Default format
-        Given I set the "Accept" header to "*/*"
-        And I send a GET request on "/users"
+        Given I send a GET request on "/users"
         Then the "Content-Type" response header should be "text/yaml"
         And response property "_links->self->href" should be "/users"
 
