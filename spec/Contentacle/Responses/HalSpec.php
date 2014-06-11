@@ -36,19 +36,50 @@ class HalSpec extends ObjectBehavior
 
     function it_should_contain_forms()
     {
-        $this->addForm('rel', 'post', 'text/plain', 'title');
+        $this->addForm('rel', 'post', null, 'title');
         $this->body['_links']['rel']['method']->shouldBe('post');
-        $this->body['_links']['rel']['content-type'][0]->shouldBe('text/plain');
+        $this->body['_links']['rel']['content-type'][0]->shouldBe('application/hal+yaml');
         $this->body['_links']['rel']['title']->shouldBe('title');
     }
 
     function it_should_contain_forms_with_multiple_accept_mimetypes()
     {
-        $this->addForm('rel', 'post', array('text/plain', 'text/html'), 'title');
+        $this->addForm('rel', 'post', null, 'title', array('text/plain', 'text/html'));
         $this->body['_links']['rel']['method']->shouldBe('post');
         $this->body['_links']['rel']['content-type'][0]->shouldBe('text/plain');
         $this->body['_links']['rel']['content-type'][1]->shouldBe('text/html');
         $this->body['_links']['rel']['title']->shouldBe('title');
+    }
+
+    function it_should_contain_forms_with_the_self_href()
+    {
+        $this->addLink('self', '/url', false, 'title');
+        $this->addForm('rel', 'post', null, 'title');
+        $this->body['_links']['rel']['method']->shouldBe('post');
+        $this->body['_links']['rel']['href']->shouldBe('/url');
+        $this->body['_links']['rel']['content-type'][0]->shouldBe('application/hal+yaml');
+        $this->body['_links']['rel']['title']->shouldBe('title');
+    }
+
+    function it_should_have_the_right_mimetypes_for_post_forms()
+    {
+        $this->addForm('rel', 'post', null, 'title');
+        $this->body['_links']['rel']['content-type'][0]->shouldBe('application/hal+yaml');
+        $this->body['_links']['rel']['content-type'][1]->shouldBe('application/hal+json');
+    }
+
+    function it_should_have_the_right_mimetypes_for_put_forms()
+    {
+        $this->addForm('rel', 'put', null, 'title');
+        $this->body['_links']['rel']['content-type'][0]->shouldBe('application/hal+yaml');
+        $this->body['_links']['rel']['content-type'][1]->shouldBe('application/hal+json');
+    }
+
+    function it_should_have_the_right_mimetypes_for_patch_forms()
+    {
+        $this->addForm('rel', 'patch', null, 'title');
+        $this->body['_links']['rel']['content-type'][0]->shouldBe('application/json-patch+yaml');
+        $this->body['_links']['rel']['content-type'][1]->shouldBe('application/json-patch+json');
     }
 
     function it_should_contain_embedded_resources()
