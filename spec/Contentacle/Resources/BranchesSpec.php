@@ -28,6 +28,18 @@ class BranchesSpec extends ObjectBehavior
         $this->shouldHaveType('Contentacle\Resources\Branches');
     }
 
+    function it_should_link_to_itself()
+    {
+        $this->get('cobb', 'extraction')->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches');
+    }
+
+    function it_should_link_to_create_method() {
+        $body = $this->get('cobb', 'extraction')->body;
+        $body['_links']['cont:create-branch']['method']->shouldBe('post');
+        $body['_links']['cont:create-branch']['content-type']->shouldContain('application/hal+yaml');
+        $body['_links']['cont:create-branch']['content-type']->shouldContain('application/hal+json');
+    }
+
     function it_should_list_branches()
     {
         $body = $this->get('cobb', 'extraction')->body;

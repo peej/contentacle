@@ -8,8 +8,8 @@ namespace Contentacle\Resources;
 class Branches extends Resource {
 
     /**
-     * @provides text/yaml
-     * @provides application/json
+     * @provides application/hal+yaml
+     * @provides application/hal+json
      */
     function get($username, $repoName)
     {
@@ -20,7 +20,7 @@ class Branches extends Resource {
             $response = new \Contentacle\Responses\Hal();
 
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches'.$this->formatExtension());
-            $response->addForm('add', 'post', array('contentacle/branch+yaml', 'contentacle/branch+json'), 'Create a branch');
+            $response->addForm('cont:create-branch', 'post', null, 'Create a branch');
 
             if ($this->embed) {
                 foreach ($repo->branches() as $branchName) {

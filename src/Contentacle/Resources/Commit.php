@@ -8,8 +8,8 @@ namespace Contentacle\Resources;
 class Commit extends Resource {
 
     /**
-     * @provides text/yaml
-     * @provides application/json
+     * @provides application/hal+yaml
+     * @provides application/hal+json
      */
     function get($username, $repoName, $branchName, $sha)
     {

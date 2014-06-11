@@ -8,8 +8,8 @@ namespace Contentacle\Resources;
 class History extends Resource {
 
     /**
-     * @provides text/yaml
-     * @provides application/json
+     * @provides application/hal+yaml
+     * @provides application/hal+json
      */
     function get($username, $repoName, $branchName, $path = null)
     {
@@ -27,8 +27,8 @@ class History extends Resource {
             ));
 
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/history/'.$path.$this->formatExtension());
-            $response->addLink('document', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$path.$this->formatExtension());
-            $response->addLink('raw', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$path.$this->formatExtension());
+            $response->addLink('cont:document', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$path.$this->formatExtension());
+            $response->addLink('cont:raw', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$path.$this->formatExtension());
 
             foreach ($history as $item) {
                 $response->embed('commits', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $item['sha'])));

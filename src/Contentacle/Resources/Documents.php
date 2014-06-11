@@ -8,8 +8,8 @@ namespace Contentacle\Resources;
 class Documents extends Resource {
 
     /**
-     * @provides text/yaml
-     * @provides application/json
+     * @provides application/hal+yaml
+     * @provides application/hal+json
      */
     function get($username, $repoName, $branchName, $path = null, $fixPath = true)
     {
@@ -33,6 +33,7 @@ class Documents extends Resource {
                 $path = '/'.$path;
             }
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents'.$path.$this->formatExtension());
+            $response->addForm('cont:add-document', 'post', null, 'Add a document');
 
             if ($this->embed) {
                 foreach ($documents as $filename) {
@@ -47,8 +48,11 @@ class Documents extends Resource {
 
                 $response = new \Contentacle\Responses\Hal(200, $document);
                 $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$document['path'].$this->formatExtension());
-                $response->addLink('history', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/history/'.$document['path'].$this->formatExtension());
-                $response->addLink('raw', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$document['path'].$this->formatExtension());
+                $response->addLink('cont:history', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/history/'.$document['path'].$this->formatExtension());
+                $response->addLink('cont:raw', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$document['path'].$this->formatExtension());
+                $response->addForm('cont:update-document', 'patch', null, 'Update the document');
+                $response->addForm('cont:delete-document', 'delete', null, 'Delete the document');
+                $response->addForm('cont:edit-document', 'put', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$document['path'].$this->formatExtension(), 'Add a document', '*/*');
 
                 return $response;
 

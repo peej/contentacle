@@ -28,6 +28,11 @@ class CommitSpec extends ObjectBehavior
         $this->shouldHaveType('Contentacle\Resources\Commit');
     }
 
+    function it_should_link_to_itself()
+    {
+        $this->get('cobb', 'extraction', 'master', '123456')->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/commits/123456');
+    }
+
     function it_should_output_a_commit(\Contentacle\Models\Repo $repo)
     {
         $repo->commit('master', '123456')->shouldBeCalled();

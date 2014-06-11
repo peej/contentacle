@@ -37,6 +37,18 @@ class RepoSpec extends ObjectBehavior
         $this->shouldHaveType('Contentacle\Resources\Repo');
     }
 
+    function it_should_link_to_itself()
+    {
+        $this->get('cobb', 'extraction')->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction');
+    }
+
+    function it_should_link_to_edit_method() {
+        $body = $this->get('cobb', 'extraction')->body;
+        $body['_links']['cont:edit-repo']['method']->shouldBe('patch');
+        $body['_links']['cont:edit-repo']['content-type']->shouldContain('application/json-patch+yaml');
+        $body['_links']['cont:edit-repo']['content-type']->shouldContain('application/json-patch+json');
+    }
+
     function it_should_get_a_list_of_a_users_repos()
     {
         $body = $this->get('cobb', 'extraction')->body;

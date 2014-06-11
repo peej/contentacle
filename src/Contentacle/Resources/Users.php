@@ -8,8 +8,8 @@ namespace Contentacle\Resources;
 class Users extends Resource
 {
     /**
-     * @provides text/yaml
-     * @provides application/json
+     * @provides application/hal+yaml
+     * @provides application/hal+json
      */
     function get()
     {
@@ -18,7 +18,7 @@ class Users extends Resource
         $response = new \Contentacle\Responses\Hal();
 
         $response->addLink('self', '/users'.$this->formatExtension());
-        $response->addForm('add', 'post', array('contentacle/user+yaml', 'contentacle/user+json'), 'Create a user');
+        $response->addForm('cont:add-user', 'post', array('application/hal+yaml', 'application/hal+json'), 'Create a user');
 
         if ($this->embed) {
             foreach ($userRepo->getUsers() as $user) {

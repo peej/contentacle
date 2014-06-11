@@ -9,15 +9,15 @@ namespace Contentacle\Resources;
 class Home extends Resource {
 
     /**
-     * @provides text/yaml
-     * @provides application/json
+     * @provides application/hal+yaml
+     * @provides application/hal+json
      */
     function get()
     {
         $response = new \Contentacle\Responses\Hal();
 
         $response->addLink('self', '/'.$this->formatExtension());
-        $response->addLink('users', '/users'.$this->formatExtension());
+        $response->addLink('cont:users', '/users'.$this->formatExtension());
 
         return $response;
     }

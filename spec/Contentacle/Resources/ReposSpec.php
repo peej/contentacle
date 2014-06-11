@@ -44,12 +44,24 @@ class ReposSpec extends ObjectBehavior
         $this->shouldHaveType('Contentacle\Resources\Repos');
     }
 
+    function it_should_link_to_itself()
+    {
+        $this->get('cobb')->body['_links']['self']['href']->shouldBe('/users/cobb/repos');
+    }
+
+    function it_should_link_to_add_method() {
+        $body = $this->get('cobb')->body;
+        $body['_links']['cont:create-repo']['method']->shouldBe('post');
+        $body['_links']['cont:create-repo']['content-type']->shouldContain('application/hal+yaml');
+        $body['_links']['cont:create-repo']['content-type']->shouldContain('application/hal+json');
+    }
+
     function it_should_get_a_list_of_a_users_repos()
     {
         $body = $this->get('cobb')->body;
         $body['_links']['self']['href']->shouldBe('/users/cobb/repos');
         $body['_embedded']['repos'][0]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction');
-        $body['_embedded']['repos'][0]['_links']['branches']['href']->shouldBe('/users/cobb/repos/extraction/branches');
+        $body['_embedded']['repos'][0]['_links']['cont:branches']['href']->shouldBe('/users/cobb/repos/extraction/branches');
         $body['_embedded']['repos'][0]['name']->shouldBe('extraction');
         $body['_embedded']['repos'][0]['title']->shouldBe('Extraction 101');
         $body['_embedded']['repos']->shouldHaveCount(2);

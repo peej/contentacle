@@ -27,6 +27,18 @@ class CommitsSpec extends ObjectBehavior
         $this->shouldHaveType('Contentacle\Resources\Commits');
     }
 
+    function it_should_link_to_itself()
+    {
+        $this->get('cobb', 'extraction', 'master')->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/commits');
+    }
+
+    function it_should_link_to_commit_method() {
+        $body = $this->get('cobb', 'extraction', 'master')->body;
+        $body['_links']['cont:commit']['method']->shouldBe('post');
+        $body['_links']['cont:commit']['content-type']->shouldContain('application/hal+yaml');
+        $body['_links']['cont:commit']['content-type']->shouldContain('application/hal+json');
+    }
+
     function it_should_list_commits($repo)
     {
         $repo->commit('master', '123456')->willReturn(array(

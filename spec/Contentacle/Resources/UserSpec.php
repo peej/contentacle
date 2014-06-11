@@ -41,6 +41,18 @@ class UserSpec extends ObjectBehavior
         $this->shouldHaveType('Contentacle\Resources\User');
     }
 
+    function it_should_link_to_itself()
+    {
+        $this->get('cobb')->body['_links']['self']['href']->shouldBe('/users/cobb');
+    }
+
+    function it_should_link_to_edit_method() {
+        $body = $this->get('cobb')->body;
+        $body['_links']['cont:edit-user']['method']->shouldBe('patch');
+        $body['_links']['cont:edit-user']['content-type']->shouldContain('application/json-patch+yaml');
+        $body['_links']['cont:edit-user']['content-type']->shouldContain('application/json-patch+json');
+    }
+
     function it_should_show_user_details()
     {
         $body = $this->get('cobb')->body;

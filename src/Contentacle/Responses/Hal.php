@@ -25,6 +25,8 @@ class Hal extends \Tonic\Response
         } else {
             $this->body = array();
         }
+
+        #$this->addCuries();
     }
 
     private function hasContent()
@@ -38,6 +40,14 @@ class Hal extends \Tonic\Response
     {
         $this->data[$name] = $value;
         $this->hasContent();
+    }
+
+    private function addCuries() {
+        $this->links['curies'][] = array(
+            'name' => 'cont',
+            'href' => 'http://contentacle.io/rels/{rel}',
+            'templated' => true
+        );
     }
 
     private function addLinkOrForm($rel, $href = null, $templated = false, $method = 'get', $contentType = null, $title = null)
@@ -62,9 +72,24 @@ class Hal extends \Tonic\Response
         $this->addLinkOrForm($rel, $href, $templated, 'get', null, $title);
     }
 
-    public function addForm($rel, $method, $contentType, $title = null)
+    public function addForm($rel, $method, $href = null, $title = null, $contentType = null)
     {
-        $href = isset($this->links['self']['href']) ? $this->links['self']['href'] : null;
+        if ($href == null) {
+            $href = isset($this->links['self']['href']) ? $this->links['self']['href'] : null;
+        }
+        
+        if ($contentType == null) {
+            switch ($method) {
+            case 'post':
+            case 'put':
+                $contentType = array('application/hal+yaml', 'application/hal+json');
+                break;
+            case 'patch':
+                $contentType = array('application/json-patch+yaml', 'application/json-patch+json');
+                break;
+            }
+        }
+
         $this->addLinkOrForm($rel, $href, false, $method, $contentType, $title);
     }
 

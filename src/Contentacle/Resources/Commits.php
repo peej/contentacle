@@ -10,8 +10,8 @@ class Commits extends Resource {
     const PAGESIZE = 25;
 
     /**
-     * @provides text/yaml
-     * @provides application/json
+     * @provides application/hal+yaml
+     * @provides application/hal+json
      */
     function get($username, $repoName, $branchName)
     {
@@ -30,7 +30,7 @@ class Commits extends Resource {
 
             $response = new \Contentacle\Responses\Hal();
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits'.$this->formatExtension());
-            $response->addForm('add', 'post', array('contentacle/commit+yaml', 'contentacle/commit+json'), 'Create a commit');
+            $response->addForm('cont:commit', 'post', null, 'Create a commit');
 
             if ($this->embed) {
                 $commits = $repo->commits($branchName, $start, $end);

@@ -9,8 +9,8 @@ class User extends Resource
 {
 
     /**
-     * @provides text/yaml
-     * @provides application/json
+     * @provides application/hal+yaml
+     * @provides application/hal+json
      */
     function get($username)
     {   
@@ -23,8 +23,8 @@ class User extends Resource
             $response = new \Contentacle\Responses\Hal(200, $user);
 
             $response->addLink('self', '/users/'.$username.$this->formatExtension());
-            $response->addLink('repos', '/users/'.$username.'/repos'.$this->formatExtension());
-            $response->addForm('edit', 'put', array('contentacle/user+yaml', 'contentacle/user+json'), 'Edit the user');
+            $response->addLink('cont:repos', '/users/'.$username.'/repos'.$this->formatExtension());
+            $response->addForm('cont:edit-user', 'patch', array('application/json-patch+yaml', 'application/json-patch+json'), 'Edit the user');
 
             if ($this->embed) {
                 foreach ($repoRepo->getRepos($user->username) as $repo) {

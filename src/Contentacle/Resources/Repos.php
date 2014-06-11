@@ -8,8 +8,8 @@ namespace Contentacle\Resources;
 class Repos extends Resource {
 
     /**
-     * @provides text/yaml
-     * @provides application/json
+     * @provides application/hal+yaml
+     * @provides application/hal+json
      */
     function get($username)
     {
@@ -20,7 +20,7 @@ class Repos extends Resource {
             $response = new \Contentacle\Responses\Hal();
 
             $response->addLink('self', '/users/'.$username.'/repos'.$this->formatExtension());
-            $response->addForm('add', 'post', array('contentacle/repo+yaml', 'contentacle/repo+json'), 'Create a repo');
+            $response->addForm('cont:create-repo', 'post', 'Create a repo');
 
             if ($this->embed) {
                 foreach ($repos as $repo) {

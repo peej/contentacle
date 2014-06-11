@@ -47,28 +47,32 @@ $container['repo'] = function ($c) {
 $request = new Tonic\Request(array(
     'uri' => $_SERVER['REQUEST_URI'],
     'mimetypes' => array(
-        'yaml' => 'text/yaml',
-        'yml' => 'text/yaml',
-        'json' => 'application/json'
+        'yaml' => 'application/hal+yaml',
+        'yml' => 'application/hal+yaml',
+        'json' => 'application/hal+json'
     )
 ));
 
 // switch out alternative mimetypes
-if ($pos = array_search('application/yaml', $request->accept) !== false) {
-    $request->accept[$pos] = 'text/yaml';
-}
-if ($pos = array_search('text/json', $request->accept) !== false) {
-    $request->accept[$pos] = 'application/json';
+foreach (array(
+    'text/yaml' => 'yaml',
+    'application/yaml' => 'yaml',
+    'text/json' => 'json',
+    'application/json' => 'json'
+) as $mimetype => $format) {
+    if ($pos = array_search($mimetype, $request->accept) !== false) {
+        $request->accept[$pos] = 'application/hal+'.$format;
+    }
 }
 
-// add YAML if not in accept array
-if (array_search('text/yaml', $request->accept) === false) {
-    $request->accept[] = 'text/yaml';
+// add HAL if not in accept array
+if (array_search('application/hal+yaml', $request->accept) === false) {
+    $request->accept[] = 'application/hal+yaml';
 }
 
-if ($request->contentType == 'application/yaml' || $request->contentType == 'text/yaml') {
+if ($request->contentType == 'application/hal+yaml') {
     $request->data = $container['yaml']->decode($request->data);
-} elseif ($request->contentType == 'application/json' || $request->contentType == 'text/json') {
+} elseif ($request->contentType == 'application/hal+json') {
     $request->data = json_decode($request->data);
 }
 
@@ -89,10 +93,15 @@ try {
     $response = new Tonic\Response($e->getCode(), $e->getMessage());
 }
 
-if ($response->contentType == 'application/yaml' || $response->contentType == 'text/yaml') {
+if ($response->contentType == 'application/hal+yaml') {
     $response->body = $container['yaml']->encode($response->body);
-} elseif ($response->contentType == 'application/json' || $response->contentType == 'text/json') {
+} elseif ($response->contentType == 'application/hal+json') {
     $response->body = json_encode($response->body, JSON_PRETTY_PRINT);
+}
+
+if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'Mozilla') !== false) {
+    $response->XContentType = $response->contentType;
+    $response->contentType = 'text/plain';
 }
 
 $response->output();
