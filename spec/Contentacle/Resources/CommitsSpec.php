@@ -13,6 +13,20 @@ class CommitsSpec extends ObjectBehavior
         $repo->hasBranch('master')->willReturn(true);
         $repo->hasBranch(Argument::cetera())->willReturn(false);
         
+        $repo->commit('master', '123456')->willReturn(array(
+            'sha' => '123456'
+        ));
+        $repo->commits('master', 0, 24)->willReturn(array(
+            array('sha' => '123456')
+        ));
+
+        $repo->commit('master', '654321')->willReturn(array(
+            'sha' => '654321'
+        ));
+        $repo->commits('master', 25, 49)->willReturn(array(
+            array('sha' => '654321')
+        ));
+        
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
         $repoRepo->getRepo(Argument::cetera())->willThrow(new \Git\Exception);
         
@@ -41,12 +55,8 @@ class CommitsSpec extends ObjectBehavior
 
     function it_should_list_commits($repo)
     {
-        $repo->commit('master', '123456')->willReturn(array(
-            'sha' => '123456'
-        ));
-        $repo->commits('master', 0, 24)->willReturn(array(
-            array('sha' => '123456')
-        ))->shouldBeCalled();
+        $repo->commits('master', 0, 24)->shouldBeCalled();
+
         $body = $this->get('cobb', 'extraction', 'master')->body;
         $body['_embedded']['commits'][0]['sha']->shouldBe('123456');
     }
@@ -60,13 +70,9 @@ class CommitsSpec extends ObjectBehavior
 
     function it_should_list_another_page_of_commits($repo)
     {
-        $repo->commit('master', '654321')->willReturn(array(
-            'sha' => '654321'
-        ));
-        $repo->commits('master', 25, 49)->willReturn(array(
-            array('sha' => '654321')
-        ))->shouldBeCalled();
+        $repo->commits('master', 25, 49)->shouldBeCalled();
         $_GET['page'] = 2;
+        
         $body = $this->get('cobb', 'extraction', 'master')->body;
         $body['_embedded']['commits'][0]['sha']->shouldBe('654321');
     }
