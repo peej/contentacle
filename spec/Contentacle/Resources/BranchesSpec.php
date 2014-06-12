@@ -36,8 +36,8 @@ class BranchesSpec extends ObjectBehavior
     function it_should_link_to_create_method() {
         $body = $this->get('cobb', 'extraction')->body;
         $body['_links']['cont:create-branch']['method']->shouldBe('post');
-        $body['_links']['cont:create-branch']['content-type']->shouldContain('application/hal+yaml');
-        $body['_links']['cont:create-branch']['content-type']->shouldContain('application/hal+json');
+        $body['_links']['cont:create-branch']['content-type']->shouldContain('contentacle/branch+yaml');
+        $body['_links']['cont:create-branch']['content-type']->shouldContain('contentacle/branch+json');
     }
 
     function it_should_list_branches()

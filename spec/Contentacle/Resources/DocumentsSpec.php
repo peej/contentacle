@@ -38,9 +38,9 @@ class DocumentsSpec extends ObjectBehavior
 
     function it_should_link_to_add_method() {
         $body = $this->get('cobb', 'extraction', 'master')->body;
-        $body['_links']['cont:add-document']['method']->shouldBe('post');
-        $body['_links']['cont:add-document']['content-type']->shouldContain('application/hal+yaml');
-        $body['_links']['cont:add-document']['content-type']->shouldContain('application/hal+json');
+        $body['_links']['cont:add-document']['method']->shouldBe('put');
+        $body['_links']['cont:add-document']['content-type']->shouldContain('contentacle/document+yaml');
+        $body['_links']['cont:add-document']['content-type']->shouldContain('contentacle/document+json');
     }
 
     function it_should_link_to_update_method() {
@@ -54,7 +54,7 @@ class DocumentsSpec extends ObjectBehavior
         $body = $this->get('cobb', 'extraction', 'master', 'new-york/the-hotel/totem.txt')->body;
         $body['_links']['cont:edit-document']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/raw/new-york/the-hotel/totem.txt');
         $body['_links']['cont:edit-document']['method']->shouldBe('put');
-        $body['_links']['cont:edit-document']['content-type']->shouldContain('*/*');
+        $body['_links']['cont:edit-document']['content-type']->shouldBe('*/*');
     }
 
     function it_should_link_to_delete_method() {

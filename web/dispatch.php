@@ -47,32 +47,20 @@ $container['repo'] = function ($c) {
 $request = new Tonic\Request(array(
     'uri' => $_SERVER['REQUEST_URI'],
     'mimetypes' => array(
-        'yaml' => 'application/hal+yaml',
-        'yml' => 'application/hal+yaml',
-        'json' => 'application/hal+json'
+        'yaml' => 'text/yaml',
+        'yml' => 'text/yaml',
+        'json' => 'application/json'
     )
 ));
 
-// switch out alternative mimetypes
-foreach (array(
-    'text/yaml' => 'yaml',
-    'application/yaml' => 'yaml',
-    'text/json' => 'json',
-    'application/json' => 'json'
-) as $mimetype => $format) {
-    if ($pos = array_search($mimetype, $request->accept) !== false) {
-        $request->accept[$pos] = 'application/hal+'.$format;
-    }
+// add YAML if not in accept array
+if (array_search('text/yaml', $request->accept) === false) {
+    $request->accept[] = 'text/yaml';
 }
 
-// add HAL if not in accept array
-if (array_search('application/hal+yaml', $request->accept) === false) {
-    $request->accept[] = 'application/hal+yaml';
-}
-
-if ($request->contentType == 'application/hal+yaml') {
+if (substr($request->contentType, -4) == 'yaml') {
     $request->data = $container['yaml']->decode($request->data);
-} elseif ($request->contentType == 'application/hal+json') {
+} elseif (substr($request->contentType, -4) == 'json') {
     $request->data = json_decode($request->data);
 }
 
@@ -93,9 +81,9 @@ try {
     $response = new Tonic\Response($e->getCode(), $e->getMessage());
 }
 
-if ($response->contentType == 'application/hal+yaml') {
+if (substr($response->contentType, -4) == 'yaml') {
     $response->body = $container['yaml']->encode($response->body);
-} elseif ($response->contentType == 'application/hal+json') {
+} elseif (substr($response->contentType, -4) == 'json') {
     $response->body = json_encode($response->body, JSON_PRETTY_PRINT);
 }
 

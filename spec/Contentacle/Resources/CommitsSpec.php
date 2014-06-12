@@ -49,8 +49,8 @@ class CommitsSpec extends ObjectBehavior
     function it_should_link_to_commit_method() {
         $body = $this->get('cobb', 'extraction', 'master')->body;
         $body['_links']['cont:commit']['method']->shouldBe('post');
-        $body['_links']['cont:commit']['content-type']->shouldContain('application/hal+yaml');
-        $body['_links']['cont:commit']['content-type']->shouldContain('application/hal+json');
+        $body['_links']['cont:commit']['content-type']->shouldContain('contentacle/commit+yaml');
+        $body['_links']['cont:commit']['content-type']->shouldContain('contentacle/commit+json');
     }
 
     function it_should_list_commits($repo)
@@ -72,7 +72,7 @@ class CommitsSpec extends ObjectBehavior
     {
         $repo->commits('master', 25, 49)->shouldBeCalled();
         $_GET['page'] = 2;
-        
+
         $body = $this->get('cobb', 'extraction', 'master')->body;
         $body['_embedded']['commits'][0]['sha']->shouldBe('654321');
     }

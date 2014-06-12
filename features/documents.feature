@@ -23,8 +23,8 @@ Feature:
         Then response property "_links->self->href" should be "/users/peej/repos/test/branches/master/documents/afile.txt"
         And response property "filename" should be "afile.txt"
         And response property "content" should be "Some content"
-        And response property "_links->raw->href" should be "/users/peej/repos/test/branches/master/raw/afile.txt"
-        And response property "_links->history->href" should be "/users/peej/repos/test/branches/master/history/afile.txt"
+        And response property "_links->cont:raw->href" should be "/users/peej/repos/test/branches/master/raw/afile.txt"
+        And response property "_links->cont:history->href" should be "/users/peej/repos/test/branches/master/history/afile.txt"
 
     Scenario: View a documents raw content
         Given I send a GET request on "/users/peej/repos/test/branches/master/raw/afile.txt"

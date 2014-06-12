@@ -8,8 +8,8 @@ namespace Contentacle\Resources;
 class Branch extends Resource {
 
     /**
-     * @provides application/hal+yaml
-     * @provides application/hal+json
+     * @provides contentacle/branch+yaml
+     * @provides contentacle/branch+json
      */
     function get($username, $repoName, $branchName)
     {
@@ -29,11 +29,12 @@ class Branch extends Resource {
             $branchUrl = '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName;
 
             $response->addLink('self', $branchUrl.$this->formatExtension());
-            $response->addForm('cont:edit-branch', 'patch', null, 'Rename the branch');
-            $response->addForm('cont:delete-branch', 'delete', null, 'Remove the branch');
+            $response->addForm('cont:edit-branch', 'patch', null, 'application/json-patch', 'Rename the branch');
+            $response->addForm('cont:delete-branch', 'delete', null, null, 'Remove the branch');
             $response->addLink('cont:commits', $branchUrl.'/commits'.$this->formatExtension());
             $response->addLink('cont:documents', $branchUrl.'/documents'.$this->formatExtension());
             
+            $response->contentType = 'contentacle/branch';
             return $response;
 
         } catch (\Git\Exception $e) {

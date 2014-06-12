@@ -52,8 +52,8 @@ class ReposSpec extends ObjectBehavior
     function it_should_link_to_add_method() {
         $body = $this->get('cobb')->body;
         $body['_links']['cont:create-repo']['method']->shouldBe('post');
-        $body['_links']['cont:create-repo']['content-type']->shouldContain('application/hal+yaml');
-        $body['_links']['cont:create-repo']['content-type']->shouldContain('application/hal+json');
+        $body['_links']['cont:create-repo']['content-type']->shouldContain('contentacle/repo+yaml');
+        $body['_links']['cont:create-repo']['content-type']->shouldContain('contentacle/repo+json');
     }
 
     function it_should_get_a_list_of_a_users_repos()

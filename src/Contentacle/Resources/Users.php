@@ -18,7 +18,7 @@ class Users extends Resource
         $response = new \Contentacle\Responses\Hal();
 
         $response->addLink('self', '/users'.$this->formatExtension());
-        $response->addForm('cont:add-user', 'post', array('application/hal+yaml', 'application/hal+json'), 'Create a user');
+        $response->addForm('cont:add-user', 'post', null, 'contentacle/user', 'Create a user');
 
         if ($this->embed) {
             foreach ($userRepo->getUsers() as $user) {

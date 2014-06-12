@@ -42,8 +42,8 @@ class UsersSpec extends ObjectBehavior
 
     function it_should_link_to_add_method() {
         $this->get()->body['_links']['cont:add-user']['method']->shouldBe('post');
-        $this->get()->body['_links']['cont:add-user']['content-type']->shouldContain('application/hal+yaml');
-        $this->get()->body['_links']['cont:add-user']['content-type']->shouldContain('application/hal+json');
+        $this->get()->body['_links']['cont:add-user']['content-type']->shouldContain('contentacle/user+yaml');
+        $this->get()->body['_links']['cont:add-user']['content-type']->shouldContain('contentacle/user+json');
     }
 
     function it_should_get_a_list_of_users()

@@ -18,6 +18,33 @@ class Resource extends \Tonic\Resource
         $this->container = $container;
     }
 
+    protected function provides($mimetype)
+    {
+        if (count($this->request->accept) == 0) return 0;
+
+        $altMimetype = null;
+        if (substr($mimetype, -4) == 'yaml') {
+            $altMimetype = 'text/yaml';
+        } elseif (substr($mimetype, -4) == 'json') {
+            $altMimetype = 'application/json';
+        }
+
+        $pos = array_search($mimetype, $this->request->accept);
+        $altPos = array_search($altMimetype, $this->request->accept);
+        if ($pos === FALSE && $altPos === FALSE) {
+            if (in_array('*/*', $this->request->accept)) {
+                return 0;
+            } else {
+                throw new \Tonic\NotAcceptableException('No matching method for response type "'.join(', ', $this->request->accept).'"');
+            }
+        } else {
+            $this->after(function ($response) use ($mimetype) {
+                $response->contentType = $mimetype;
+            });
+            return count($this->request->accept) - $pos;
+        }
+    }
+
     protected function fixPath($path, $username, $repoName, $branchName, $pathType = 'documents')
     {
         if ($path === true) {
@@ -37,17 +64,17 @@ class Resource extends \Tonic\Resource
         return $response->body;
     }
 
-    protected function formatExtension()
+    protected function formatExtension($prefix = '.')
     {
         if (isset($this->request->accept[0])) {
             switch ($this->request->accept[0]) {
             case 'application/yaml':
             case 'text/yaml':
-                $this->extension = '.yaml';
+                $this->extension = $prefix.'yaml';
                 break;
             case 'application/json':
             case 'text/json':
-                $this->extension = '.json';
+                $this->extension = $prefix.'json';
                 break;
             }
         }

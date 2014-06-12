@@ -30,7 +30,7 @@ class Commits extends Resource {
 
             $response = new \Contentacle\Responses\Hal();
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits'.$this->formatExtension());
-            $response->addForm('cont:commit', 'post', null, 'Create a commit');
+            $response->addForm('cont:commit', 'post', null, 'contentacle/commit', 'Create a commit');
 
             if ($this->embed) {
                 $commits = $repo->commits($branchName, $start, $end);
@@ -40,6 +40,7 @@ class Commits extends Resource {
                 }
             }
             
+            $response->contentType = 'contentacle/commits';
             return $response;
 
         } catch (\Git\Exception $e) {

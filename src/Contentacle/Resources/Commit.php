@@ -8,8 +8,8 @@ namespace Contentacle\Resources;
 class Commit extends Resource {
 
     /**
-     * @provides application/hal+yaml
-     * @provides application/hal+json
+     * @provides contentacle/commit+yaml
+     * @provides contentacle/commit+json
      */
     function get($username, $repoName, $branchName, $sha)
     {
@@ -23,6 +23,7 @@ class Commit extends Resource {
 
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits/'.$sha.$this->formatExtension());
 
+            $response->contentType = 'contentacle/commit';
             return $response;
 
         } catch (\Git\Exception $e) {

@@ -8,9 +8,9 @@ Feature:
 
     Scenario: Provide an add user form
         Given I send a GET request on "/users.yaml"
-        Then response property "_links->add->method" should be "post"
-        And response property "_links->add->content-type" should contain "contentacle/user+yaml"
-        And response property "_links->add->content-type" should contain "contentacle/user+json"
+        Then response property "_links->cont:add-user->method" should be "post"
+        And response property "_links->cont:add-user->content-type" should contain "contentacle/user+yaml"
+        And response property "_links->cont:add-user->content-type" should contain "contentacle/user+json"
 
     Scenario: View a list of users
         Given I send a GET request on "/users.yaml"

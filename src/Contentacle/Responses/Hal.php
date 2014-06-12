@@ -54,13 +54,15 @@ class Hal extends \Tonic\Response
     {
         $this->links[$rel] = array();
         if ($href) $this->links[$rel]['href'] = $href;
-        if ($templated) $this->links[$rel]['templated'] = 'true';
+        if ($templated) $this->links[$rel]['templated'] = true;
         if ($method != 'get') $this->links[$rel]['method'] = $method;
-        if ($contentType) {
-            if (!is_array($contentType)) {
-                $contentType = array($contentType);
-            }
+        if ($contentType == '*/*') {
             $this->links[$rel]['content-type'] = $contentType;
+        } elseif ($contentType) {
+            $this->links[$rel]['content-type'] = array(
+                $contentType.'+yaml',
+                $contentType.'+json'
+            );
         }
         if ($title) $this->links[$rel]['title'] = $title;
         $this->hasContent();
@@ -72,25 +74,12 @@ class Hal extends \Tonic\Response
         $this->addLinkOrForm($rel, $href, $templated, 'get', null, $title);
     }
 
-    public function addForm($rel, $method, $href = null, $title = null, $contentType = null)
+    public function addForm($rel, $method, $href = null, $contentType = null, $title = null, $templated = false)
     {
         if ($href == null) {
             $href = isset($this->links['self']['href']) ? $this->links['self']['href'] : null;
         }
-        
-        if ($contentType == null) {
-            switch ($method) {
-            case 'post':
-            case 'put':
-                $contentType = array('application/hal+yaml', 'application/hal+json');
-                break;
-            case 'patch':
-                $contentType = array('application/json-patch+yaml', 'application/json-patch+json');
-                break;
-            }
-        }
-
-        $this->addLinkOrForm($rel, $href, false, $method, $contentType, $title);
+        $this->addLinkOrForm($rel, $href, $templated, $method, $contentType, $title);
     }
 
     public function embed($rel, $document)

@@ -9,8 +9,8 @@ class Repo extends Resource
 {
 
     /**
-     * @provides application/hal+yaml
-     * @provides application/hal+json
+     * @provides contentacle/repo+yaml
+     * @provides contentacle/repo+json
      */
     function get($username, $repoName)
     {
@@ -22,8 +22,8 @@ class Repo extends Resource
 
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.$this->formatExtension());
             $response->addLink('cont:branches', '/users/'.$username.'/repos/'.$repoName.'/branches'.$this->formatExtension());
-            $response->addForm('cont:edit-repo', 'patch', 'Edit the repo');
-            $response->addForm('cont:delete-repo', 'delete', 'Remove the repo');
+            $response->addForm('cont:edit-repo', 'patch', null, 'application/json-patch', 'Edit the repo');
+            $response->addForm('cont:delete-repo', 'delete', null, 'Remove the repo');
 
             if ($this->embed) {
                 foreach ($repo->branches() as $branchName) {
