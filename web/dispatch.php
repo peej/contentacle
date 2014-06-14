@@ -44,6 +44,8 @@ $container['repo'] = function ($c) {
     };
 };
 
+$_SERVER['HTTP_ACCEPT'] .= ',text/yaml';
+
 $request = new Tonic\Request(array(
     'uri' => $_SERVER['REQUEST_URI'],
     'mimetypes' => array(
@@ -52,11 +54,6 @@ $request = new Tonic\Request(array(
         'json' => 'application/json'
     )
 ));
-
-// add YAML if not in accept array
-if (array_search('text/yaml', $request->accept) === false) {
-    $request->accept[] = 'text/yaml';
-}
 
 if (substr($request->contentType, -4) == 'yaml') {
     $request->data = $container['yaml']->decode($request->data);
