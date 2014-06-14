@@ -8,7 +8,7 @@ class Repo extends Model
 
     function __construct($data, $gitProvider, $yaml)
     {
-        $this->git = $gitProvider($data['username'], $data['name']);
+        $this->git = $gitProvider($data['username'], $data['path']);
 
         try {
             $repoMetadata = $yaml->decode($this->git->file('contentacle.yaml'));

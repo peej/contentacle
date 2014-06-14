@@ -21,6 +21,9 @@ class RepoRepository
         $repos = array();
         foreach (glob($userDir.'/*', GLOB_ONLYDIR) as $repoDir) {
             $repoName = basename($repoDir);
+            if (substr($repoName, -4) == '.git') {
+                $repoName = substr($repoName, 0, -4);
+            }
             $repos[$repoName] = $this->getRepo($username, $repoName);
         }
         return $repos;
@@ -30,7 +33,8 @@ class RepoRepository
     {
         $data = array();
         $data['username'] = $username;
-        $data['name'] = $repoName;;
+        $data['name'] = $repoName;
+        $data['path'] = $repoName.'.git';
         return $this->repoProvider->__invoke($data);
     }
 }
