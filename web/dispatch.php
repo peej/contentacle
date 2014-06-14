@@ -61,7 +61,7 @@ if (array_search('text/yaml', $request->accept) === false) {
 if (substr($request->contentType, -4) == 'yaml') {
     $request->data = $container['yaml']->decode($request->data);
 } elseif (substr($request->contentType, -4) == 'json') {
-    $request->data = json_decode($request->data);
+    $request->data = json_decode($request->data, true);
 }
 
 try {
