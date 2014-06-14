@@ -41,7 +41,7 @@ class Users extends Resource
         $userRepo = $this->container['user_repository'];
 
         try {
-            $user = $userRepo->createUser($this->request->data);
+            $user = $userRepo->createUser($this->request->getData());
             $response = new \Contentacle\Responses\Hal(201);
             $response->location = '/users/'.$user->username;
 

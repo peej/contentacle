@@ -19,9 +19,26 @@ class UsersSpec extends ObjectBehavior
             'name' => 'Arthur'
         );
 
+        $user3 = (object)array(
+            'username' => 'eames',
+            'name' => 'Eames'
+        );
+
         $userRepo->getUsers()->willReturn(array($user1, $user2));
         $userRepo->getUser('cobb')->willReturn($user1);
         $userRepo->getUser('arthur')->willReturn($user2);
+
+        $userRepo->createUser(array(
+            'username' => 'eames',
+            'name' => 'Eames'
+        ))->willReturn($user3);
+
+        $exception = new \Contentacle\Exceptions\ValidationException;
+        $exception->errors = array('username', 'password');
+        $userRepo->createUser(array(
+            'username' => '***'
+        ))->willThrow($exception);
+        
         $pimple->offsetGet('user_repository')->willReturn($userRepo);
 
         $pimple->offsetGet('repo_repository')->willReturn();
@@ -53,5 +70,32 @@ class UsersSpec extends ObjectBehavior
         $this->get()->body['_embedded']['users'][0]['username']->shouldBe('cobb');
         $this->get()->body['_embedded']['users'][0]['name']->shouldBe('Dominick Cobb');
         $this->get()->body['_embedded']['users'][1]['_links']['self']['href']->shouldBe('/users/arthur');
+    }
+
+    function it_should_create_a_user($request)
+    {
+        $request->getData()->willReturn(array(
+            'username' => 'eames',
+            'name' => 'Eames'
+        ));
+
+        $response = $this->createUser();
+
+        $response->code->shouldBe(201);
+        $response->location->shouldBe('/users/eames');
+    }
+
+    function it_should_fail_to_create_a_bad_user($request)
+    {
+        $request->getData()->willReturn(array(
+            'username' => '***'
+        ));
+
+        $response = $this->createUser();
+
+        $response->code->shouldBe(400);
+        $response->contentType->shouldBe('application/hal');
+        $response->body['_embedded']['errors'][0]['logref']->shouldBe('username');
+        $response->body['_embedded']['errors'][1]['logref']->shouldBe('password');
     }
 }
