@@ -25,7 +25,7 @@ class UserSpec extends ObjectBehavior
     {
         $this->username->shouldBe('cobb');
         $this->name->shouldBe('Dominick Cobb');
-        $this->password->shouldBe('test');
+        $this->password->shouldBe(sha1('test'));
         $this->email->shouldBe('cobb@localhost');
     }
 }

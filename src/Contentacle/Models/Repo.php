@@ -19,9 +19,9 @@ class Repo extends Model
         $data = array_merge($data, $repoMetadata);
 
         parent::__construct(array(
-            'username' => true,
-            'name' => true,
-            'title' => 'Un-named repo',
+            'username' => '/^[a-z]{2,40}$/',
+            'name' => '/^[a-z]{2,40}$/',
+            'title' => '/^[A-Za-z0-9 ]{2,100}$/',
             'description' => true
         ), $data);
     }

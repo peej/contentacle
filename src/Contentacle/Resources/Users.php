@@ -28,5 +28,35 @@ class Users extends Resource
 
         return $response;
     }
+    
+    /**
+     * @method post
+     * @accepts contentacle/user+yaml
+     * @accepts contentacle/user+json
+     * @provides application/hal+yaml
+     * @provides application/hal+json
+     */
+    function createUser()
+    {
+        $userRepo = $this->container['user_repository'];
+
+        try {
+            $user = $userRepo->createUser($this->request->data);
+            $response = new \Contentacle\Responses\Hal(201);
+            $response->location = '/users/'.$user->username;
+
+        } catch (\Contentacle\Exceptions\ValidationException $e) {
+            $response = new \Contentacle\Responses\Hal(400);
+            $response->contentType = 'application/hal';
+            foreach ($e->errors as $field) {
+                $response->embed('errors', array(
+                    'logref' => $field,
+                    'message' => '"'.$field.'" field failed validation'
+                ));
+            }
+        }
+
+        return $response;
+    }
 
 }

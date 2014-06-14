@@ -4,22 +4,36 @@ namespace Contentacle\Models;
 
 class Model
 {
+    private $schema;
+    private $data;
+
     function __construct($schema, $data)
     {
-        foreach ($schema as $name => $value) {
-            if (isset($data[$name])) {
-                $this->$name = $data[$name];
-            } elseif (is_callable($value)) {
-                $this->$name = $value($data);
-            } else {
-                $this->$name = $value;
+        $this->schema = $schema;
+
+        $errors = array();
+        foreach ($schema as $name => $scheme) {
+            try {
+                $this->setProp($name, isset($data[$name]) ? $data[$name] : null);
+            } catch (\Contentacle\Exceptions\ValidationException $e) {
+                $errors[] = $name;
             }
+        }
+        if ($errors) {
+            $e = new \Contentacle\Exceptions\ValidationException;
+            $e->errors = $errors;
+            throw $e;
         }
     }
 
     function __get($name)
     {
         return $this->prop($name);
+    }
+
+    function __set($name, $value)
+    {
+        $this->setProp($name, $value);
     }
 
     /**
@@ -29,10 +43,42 @@ class Model
      */
     public function prop($name)
     {
-        return isset($this->$name) ? $this->$name : null;
+        return isset($this->data[$name]) ? $this->data[$name] : null;
     }
 
     public function props() {
-        return get_object_vars($this);
+        return $this->data;
+    }
+
+    public function setProp($name, $value)
+    {
+        if (isset($this->schema[$name])) {
+            if (is_bool($this->schema[$name])) {
+                return $this->data[$name] = $value;
+            } elseif (is_string($this->schema[$name]) && preg_match($this->schema[$name], $value)) {
+                return $this->data[$name] = $value;
+            } elseif (is_callable($this->schema[$name])) {
+                return $this->data[$name] = $this->schema[$name]($value);
+            }
+            throw new \Contentacle\Exceptions\ValidationException();
+        }
+        return false;
+    }
+
+    public function setProps($data)
+    {
+        $errors = array();
+        foreach ($data as $name => $value) {
+            try {
+                $this->setProp($name, $value);
+            } catch (\Contentacle\Exceptions\ValidationException $e) {
+                $errors[] = $name;
+            }
+        }
+        if ($errors) {
+            $e = new \Contentacle\Exceptions\ValidationException;
+            $e->errors = $errors;
+            throw $e;
+        }
     }
 }

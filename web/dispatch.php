@@ -34,8 +34,8 @@ $container['repo_repository'] = function ($c) {
     return new Contentacle\Services\RepoRepository($c['repo_dir'], $c['repo']);
 };
 $container['user'] = function ($c) {
-    return function ($username) use ($c) {
-        return new Contentacle\Models\User($username, $c['repo_dir']);
+    return function ($data) use ($c) {
+        return new Contentacle\Models\User($data);
     };
 };
 $container['repo'] = function ($c) {
