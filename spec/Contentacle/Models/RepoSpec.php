@@ -51,7 +51,8 @@ class RepoSpec extends ObjectBehavior
 
         $data = array(
             'username' => 'cobb',
-            'name' => 'extraction'
+            'name' => 'extraction',
+            'path' => 'extraction'
         );
         $gitProvider = function ($username, $repoName) use ($repo) {
             return $repo->getWrappedObject();
