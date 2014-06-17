@@ -41,4 +41,54 @@ class User extends Resource
         }
     }
 
+    /**
+     * @method patch
+     * @accepts application/json-patch+yaml
+     * @accepts application/json-patch+json
+     * @provides application/hal+yaml
+     * @provides application/hal+json
+     * @secure
+     */
+    public function updateUser($username)
+    {
+        $userRepo = $this->container['user_repository'];
+        $repoRepo = $this->container['repo_repository'];
+
+        try {
+            $user = $userRepo->getUser($username);
+
+            $userRepo->updateUser($user, $this->request->getData(), true);
+
+            $response = new \Contentacle\Responses\Hal(200, $user);
+
+            return $response;
+
+        } catch (\Contentacle\Exceptions\UserException $e) {
+            throw new \Tonic\NotFoundException;
+        } catch (\Contentacle\Exceptions\RepoException $e) {
+            throw new \Tonic\NotFoundException;
+        }
+    }
+
+    /**
+     * @method delete
+     * @secure
+     */
+    public function deleteUser($username)
+    {
+        $userRepo = $this->container['user_repository'];
+        
+        try {
+            $user = $userRepo->getUser($username);
+
+            $userRepo->deleteUser($user);
+
+            $response = new \Contentacle\Responses\Hal(204);
+
+            return $response;
+
+        } catch (\Contentacle\Exceptions\UserException $e) {
+            throw new \Tonic\NotFoundException;
+        }
+    }
 }

@@ -42,6 +42,7 @@ Feature:
         And the header "Location" should be equal to "/users/test1"
         When I send a GET request to "/users/test1"
         Then response property "username" should be "test1"
+        And response property "password" should be "118b32994e63fd4a3ff1dd091d2e859d9fa66811"
 
     Scenario: Try to create an invalid user
         Given I add "Content-Type" header equal to "contentacle/user+json"
@@ -56,3 +57,33 @@ Feature:
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "_embedded->errors->0->logref" should be "username"
         And response property "_embedded->errors->1->logref" should be "name"
+
+    Scenario: Patch a user
+        Given I add "Content-Type" header equal to "application/json-patch+json"
+        And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        When I send a PATCH request to "/users/peej" with body:
+            """
+            [{
+                "op": "replace",
+                "path": "name",
+                "value": "PJ"
+            }]
+            """
+        Then the response status code should be 200
+        And response property "username" should be "peej"
+        And response property "name" should be "PJ"
+        When I send a GET request to "/users/peej"
+        And response property "username" should be "peej"
+        And response property "name" should be "PJ"
+
+    Scenario: Delete a user
+        Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        When I send a DELETE request to "/users/peej"
+        Then the response status code should be 204
+        When I send a GET request to "/users/peej"
+        Then the response status code should be 404
+
+    Scenario: Fail to provide correct auth credentials
+        Given I add "Authorization" header equal to "Basic wrong"
+        When I send a DELETE request to "/users/peej"
+        Then the response status code should be 401

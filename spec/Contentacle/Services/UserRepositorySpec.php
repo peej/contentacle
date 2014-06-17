@@ -27,7 +27,7 @@ class UserRepositorySpec extends ObjectBehavior
         file_put_contents($this->repoDir.'/cobb/profile.json', json_encode(array(
             'name' => 'Dominick Cobb',
             'username' => 'cobb',
-            'password' => sha1('test')
+            'password' => sha1('cobb:test')
         )));
     }
 
@@ -70,7 +70,7 @@ class UserRepositorySpec extends ObjectBehavior
             'email' => 'eames@forger.com'
         ));
         $user->username->shouldBe('eames');
-        $user->password->shouldBe(sha1('test'));
+        $user->password->shouldBe(sha1('eames:test'));
         $user->email->shouldBe('eames@forger.com');
     }
 

@@ -81,4 +81,12 @@ class Model
             throw $e;
         }
     }
+
+    public function patch($patch)
+    {
+        foreach ($patch as $item) {
+            $this->setProp($item['path'], $item['value']);
+        }
+    }
+
 }

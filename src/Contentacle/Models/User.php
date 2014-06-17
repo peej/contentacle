@@ -9,9 +9,7 @@ class User extends Model
         parent::__construct(array(
             'username' => '/^[a-z0-9]{2,40}$/',
             'name' => '/^[A-Za-z0-9 ]{2,40}$/',
-            'password' => function ($value) {
-                return sha1($value);
-            },
+            'password' => true,
             'email' => function ($value) use ($data) {
                 if ($value) {
                     if (preg_match('/^.+@.+$/', $value)) {
@@ -23,5 +21,20 @@ class User extends Model
                 return $data['username'].'@localhost';
             }
         ), $data);
+    }
+
+    private function hashPassword($username, $password)
+    {
+        return sha1($username.':'.$password);
+    }
+
+    public function setPassword($password)
+    {
+        $this->setProp('password', $this->hashPassword($this->prop('username'), $password));
+    }
+
+    public function verifyPassword($password)
+    {
+        return $this->hashPassword($this->prop('username'), $password) == $this->prop('password');
     }
 }

@@ -7,7 +7,7 @@ use Prophecy\Argument;
 
 class UserSpec extends ObjectBehavior
 {
-    function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\UserRepository $userRepo, \Contentacle\Services\RepoRepository $repoRepo)
+    function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\UserRepository $userRepo, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\User $user)
     {
         $repo = (object)array(
             'name' => 'extraction',
@@ -21,13 +21,37 @@ class UserSpec extends ObjectBehavior
         ));
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
 
-        $user = (object)array(
+        $user->prop('username')->willReturn('cobb');
+        $user->prop('name')->willReturn('Dominick Cobb');
+        $user->props()->willReturn(array(
             'username' => 'cobb',
             'name' => 'Dominick Cobb'
-        );
+        ));
+        $user->patch(array(
+            'op' => 'replace',
+            'path' => 'name',
+            'value' => 'Cobb'
+        ))->will(function () use ($user) {
+            $user->prop('name')->willReturn('Cobb');
+            $user->props()->willReturn(array(
+                'username' => 'cobb',
+                'name' => 'Cobb'
+            ));
+        });
         
         $userRepo->getUser('cobb')->willReturn($user);
         $userRepo->getUser(Argument::cetera())->willThrow(new \Contentacle\Exceptions\UserException);
+        $userRepo->updateUser($user, Argument::any(), true)->will(function () use ($user) {
+            $user->prop('name')->willReturn('Cobb');
+            $user->props()->willReturn(array(
+                'username' => 'cobb',
+                'name' => 'Cobb'
+            ));
+            return $user;
+        });
+        $userRepo->deleteUser($user)->will(function () {
+            $this->getUser('cobb')->willThrow('\Tonic\NotFoundException');
+        });
         
         $pimple->offsetGet('repo_repository')->willReturn($repoRepo);
         $pimple->offsetGet('user_repository')->willReturn($userRepo);
@@ -70,4 +94,28 @@ class UserSpec extends ObjectBehavior
     {
         $this->shouldThrow('\Tonic\NotFoundException')->duringGet('ariadne');
     }
+
+    function it_should_update_a_user($request)
+    {
+        $request->getData()->willReturn(array(
+            'op' => 'replace',
+            'path' => 'name',
+            'value' => 'Cobb'
+        ));
+
+        $response = $this->updateUser('cobb');
+
+        $response->code->shouldBe(200);
+        $response->body['username']->shouldBe('cobb');
+        $response->body['name']->shouldBe('Cobb');
+    }
+
+    function it_should_delete_a_user()
+    {
+        $response = $this->deleteUser('cobb');
+        $response->code->shouldBe(204);
+
+        $this->shouldThrow('\Tonic\NotFoundException')->duringGet('cobb');
+    }
+
 }

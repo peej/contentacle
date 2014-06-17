@@ -88,7 +88,21 @@ class Resource extends \Tonic\Resource
     
     function secure()
     {
-        
+        if (
+            isset($_SERVER['PHP_AUTH_USER']) && $_SERVER['PHP_AUTH_USER'] != '' &&
+            isset($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_PW'] != '' &&
+            isset($this->request->getParams()['username'])
+        ) {
+            $username = $this->request->getParams()['username'];
+            if ($_SERVER['PHP_AUTH_USER'] == $username) {
+                $userRepo = $this->container['user_repository'];
+                $user = $userRepo->getUser($username);
+                if ($user->verifyPassword($_SERVER['PHP_AUTH_PW'])) {
+                    return;
+                }
+            }
+        }
+        throw new \Tonic\UnauthorizedException;
     }
 
 }

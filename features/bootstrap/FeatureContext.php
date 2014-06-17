@@ -23,6 +23,17 @@ class FeatureContext extends MinkContext
     /**
      * @BeforeScenario
      */
+    public function copyTestRepo()
+    {
+        $from = realpath(dirname(__FILE__).'/../repos/peej');
+        $to = realpath(dirname(__FILE__).'/../../repos').'/';
+        exec("rm -rf $to*");
+        exec("cp -r $from $to 2> /dev/null");
+    }
+
+    /**
+     * @BeforeScenario
+     */
     public function setHeaders()
     {
         $this->getSession()->setRequestHeader('Accept', '*/*');

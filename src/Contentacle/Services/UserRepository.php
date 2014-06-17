@@ -56,30 +56,46 @@ class UserRepository
         $userPath = $this->repoDir.'/'.$data['username'];
         $profilePath = $userPath.'/profile.json';
 
-        if (file_exists($profilePath)) {
-            $profile = $this->readProfile($data['username']);
-            if ($profile['password'] != $data['password']) {
-                throw new \Contentacle\Exceptions\UserException('Cannot update user profile "'.$data['username'].'" with the given password');
-            }
-        }
-
         if (!file_exists($userPath)) {
             mkdir($userPath);
         }
         file_put_contents($profilePath, json_encode($data));
     }
 
-    function createUser($data)
+    public function createUser($data)
     {
         $user = $this->userProvider->__invoke($data);
-        $this->writeProfile($data);
+        $user->setPassword($data['password']);
+        $this->writeProfile($user->props());
         return $user;
     }
 
-    function updateUser($user, $data)
+    public function updateUser($user, $data, $patch = false)
     {
-        $user->setProps($data);
+        if ($patch) {
+            $user->patch($data);
+        } else {
+            $user->setProps($data);
+        }
         $this->writeProfile($user->props());
         return $user;
+    }
+
+    private function removeDir($path)
+    {
+        foreach (scandir($path) as $item) {
+            if ($item == '.' || $item == '..') continue;
+            if (is_dir($path.DIRECTORY_SEPARATOR.$item)) {
+                $this->removeDir($path.DIRECTORY_SEPARATOR.$item);
+            } else {
+                unlink($path.DIRECTORY_SEPARATOR.$item);
+            }
+        }
+        rmdir($path);
+    }
+
+    public function deleteUser($user)
+    {
+        $this->removeDir($this->repoDir.'/'.$user->username);
     }
 }
