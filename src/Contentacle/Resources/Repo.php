@@ -38,6 +38,8 @@ class Repo extends Resource
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
             throw new \Tonic\NotFoundException;
+        } catch (\Git\Exception $e) {
+            throw new \Tonic\NotFoundException;
         }
     }
 
