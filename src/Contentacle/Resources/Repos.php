@@ -35,4 +35,36 @@ class Repos extends Resource {
         }
     }
 
+    /**
+     * @method post
+     * @accepts contentacle/user+yaml
+     * @accepts contentacle/user+json
+     * @provides application/hal+yaml
+     * @provides application/hal+json
+     * @secure
+     */
+    public function createRepo($username)
+    {
+        $userRepo = $this->container['user_repository'];
+        $repoRepo = $this->container['repo_repository'];
+
+        $user = $userRepo->getUser($username);
+        try {
+            $repo = $repoRepo->createRepo($user, $this->request->getData());
+            $response = new \Contentacle\Responses\Hal(201);
+            $response->location = '/users/'.$user->username.'/repos/'.$repo->name;
+
+        } catch (\Contentacle\Exceptions\ValidationException $e) {
+            $response = new \Contentacle\Responses\Hal(400);
+            $response->contentType = 'application/hal';
+            foreach ($e->errors as $field) {
+                $response->embed('errors', array(
+                    'logref' => $field,
+                    'message' => '"'.$field.'" field failed validation'
+                ));
+            }
+        }
+
+        return $response;
+    }
 }

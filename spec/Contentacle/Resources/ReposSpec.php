@@ -7,7 +7,7 @@ use Prophecy\Argument;
 
 class ReposSpec extends ObjectBehavior
 {
-    function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\RepoRepository $repoRepo)
+    function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Services\UserRepository $userRepo)
     {
         $repo1 = (object)array(
             'name' => 'extraction',
@@ -23,6 +23,18 @@ class ReposSpec extends ObjectBehavior
             'description' => 'Notes on the concept of inception for Eames'
         );
 
+        $repo3 = (object)array(
+            'name' => 'limbo',
+            'username' => 'cobb',
+            'title' => 'Limbo',
+            'description' => 'Just raw, infinite subconscious.'
+        );
+
+        $user = (object)array(
+            'username' => 'cobb',
+            'name' => 'Dominick Cobb'
+        );
+
         $repoRepo->getRepos('cobb')->willReturn(array(
             'extraction' => $repo1,
             'inception' => $repo2
@@ -32,8 +44,23 @@ class ReposSpec extends ObjectBehavior
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo1);
         $repoRepo->getRepo('cobb', 'inception')->willReturn($repo2);
         $repoRepo->getRepo(Argument::cetera())->willThrow(new \Git\Exception);
+        
+        $repoRepo->createRepo($user, array(
+            'name' => 'limbo',
+            'title' => 'Limbo',
+            'description' => 'Just raw, infinite subconscious.'
+        ))->willReturn($repo3);
+
+        $exception = new \Contentacle\Exceptions\ValidationException;
+        $exception->errors = array('name', 'title');
+        $repoRepo->createRepo($user, array(
+            'name' => '***'
+        ))->willThrow($exception);
+
+        $userRepo->getUser('cobb')->willReturn($user);
 
         $pimple->offsetGet('repo_repository')->willReturn($repoRepo);
+        $pimple->offsetGet('user_repository')->willReturn($userRepo);
 
         $this->beConstructedWith($app, $request);
         $this->setContainer($pimple);
@@ -73,5 +100,33 @@ class ReposSpec extends ObjectBehavior
     function it_should_error_for_unknown_user()
     {
         $this->shouldThrow('\Tonic\NotFoundException')->duringGet('ariadne');
+    }
+
+    function it_should_create_a_repo($request)
+    {
+        $request->getData()->willReturn(array(
+            'name' => 'limbo',
+            'title' => 'Limbo',
+            'description' => 'Just raw, infinite subconscious.'
+        ));
+
+        $response = $this->createRepo('cobb');
+
+        $response->code->shouldBe(201);
+        $response->location->shouldBe('/users/cobb/repos/limbo');
+    }
+
+    function it_should_fail_to_create_a_bad_repo($request)
+    {
+        $request->getData()->willReturn(array(
+            'name' => '***'
+        ));
+
+        $response = $this->createRepo('cobb');
+
+        $response->code->shouldBe(400);
+        $response->contentType->shouldBe('application/hal');
+        $response->body['_embedded']['errors'][0]['logref']->shouldBe('name');
+        $response->body['_embedded']['errors'][1]['logref']->shouldBe('title');
     }
 }

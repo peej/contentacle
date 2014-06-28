@@ -12,7 +12,7 @@ class RepoRepository
         $this->repoProvider = $repoProvider;
     }
 
-    function getRepos($username)
+    public function getRepos($username)
     {
         $userDir = $this->repoDir.'/'.$username;
         if (!is_dir($userDir)) {
@@ -29,12 +29,21 @@ class RepoRepository
         return $repos;
     }
 
-    function getRepo($username, $repoName)
+    public function getRepo($username, $repoName)
     {
         $data = array();
         $data['username'] = $username;
         $data['name'] = $repoName;
-        $data['path'] = $repoName.'.git';
         return $this->repoProvider->__invoke($data);
+    }
+
+    public function createRepo($user, $data)
+    {
+        $data['username'] = $user->username;
+
+        $repo = $this->repoProvider->__invoke($data);
+        $repo->writeMetadata('master');
+
+        return $repo;
     }
 }
