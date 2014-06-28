@@ -59,7 +59,7 @@ class RepoSpec extends ObjectBehavior
         $gitProvider = function ($username, $repoName) use ($repo) {
             return $repo->getWrappedObject();
         };
-        $this->beConstructedWith($data, $gitProvider, $yaml);
+        $this->beConstructedWith($data, $gitProvider, '', $yaml);
     }
 
     function it_is_initializable()

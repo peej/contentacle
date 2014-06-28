@@ -38,7 +38,7 @@ class RepoRepositorySpec extends ObjectBehavior
                     return new \Git\Repo(
                         $repoDir.'/'.$data['username'].'/'.$data['name']
                     );
-                }, $yaml);
+                }, $repoDir, $yaml);
             }
         );
 
