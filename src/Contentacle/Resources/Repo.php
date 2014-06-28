@@ -36,7 +36,7 @@ class Repo extends Resource
             $repo = $repoRepo->getRepo($username, $repoName);
             return $this->response($repo);
 
-        } catch (\Git\Exception $e) {
+        } catch (\Contentacle\Exceptions\ValidationException $e) {
             throw new \Tonic\NotFoundException;
         }
     }
