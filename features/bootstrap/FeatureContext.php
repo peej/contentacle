@@ -25,9 +25,11 @@ class FeatureContext extends MinkContext
      */
     public function copyTestRepo()
     {
-        $from = realpath(dirname(__FILE__).'/../repos/peej');
         $to = realpath(dirname(__FILE__).'/../../repos').'/';
         exec("rm -rf $to*");
+        $from = realpath(dirname(__FILE__).'/../repos/peej');
+        exec("cp -r $from $to 2> /dev/null");
+        $from = realpath(dirname(__FILE__).'/../repos/empty');
         exec("cp -r $from $to 2> /dev/null");
     }
 
@@ -105,6 +107,23 @@ class FeatureContext extends MinkContext
             $data = $data[$part];
         }
         if (!is_array($data) || !in_array($value, $data)) {
+            throw new Exception;
+        }
+    }
+
+    /**
+     * @Then /^response property "([^"]*)" should not exist$/
+     */
+    public function responsePropertyShouldNotExist($name)
+    {
+        $session = $this->getSession();
+        $response = $session->getPage()->getContent();
+        $data = json_decode($response, true);
+        if ($data == false) {
+            $yaml = new Yaml;
+            $data = $yaml->decode($response);
+        }
+        if (isset($data[$name])) {
             throw new Exception;
         }
     }

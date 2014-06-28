@@ -13,14 +13,14 @@ class Repos extends Resource {
      */
     function get($username)
     {
+        $response = new \Contentacle\Responses\Hal();
+
+        $response->addLink('self', '/users/'.$username.'/repos'.$this->formatExtension());
+        $response->addForm('cont:create-repo', 'post', null, 'contentacle/repo', 'Create a repo');
+
         try {
             $repoRepo = $this->container['repo_repository'];
             $repos = $repoRepo->getRepos($username);
-
-            $response = new \Contentacle\Responses\Hal();
-
-            $response->addLink('self', '/users/'.$username.'/repos'.$this->formatExtension());
-            $response->addForm('cont:create-repo', 'post', null, 'contentacle/repo', 'Create a repo');
 
             if ($this->embed) {
                 foreach ($repos as $repo) {
@@ -30,6 +30,9 @@ class Repos extends Resource {
             
             return $response;
 
+        } catch (\Contentacle\Exceptions\ValidationException $e) {
+            return $response;
+            
         } catch (\Contentacle\Exceptions\RepoException $e) {
             throw new \Tonic\NotFoundException;
         }

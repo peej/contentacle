@@ -10,6 +10,11 @@ Feature:
         And response property "_embedded->repos->0->title" should be "Test"
         And response property "_embedded->repos->0->description" should be "No description"
 
+    Scenario: View an empty list of repos
+        When I send a GET request on "/users/empty/repos"
+        Then response property "_embedded" should not exist
+        And response property "_links->self->href" should be "/users/empty/repos"
+
     Scenario: View a repos details
         When I send a GET request on "/users/peej/repos/test"
         Then response property "_links->self->href" should be "/users/peej/repos/test"
