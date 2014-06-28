@@ -73,4 +73,18 @@ class Repo extends Resource
 
         return $response;
     }
+
+    /**
+     * @method delete
+     * @secure
+     */
+    public function deleteRepo($username, $repoName)
+    {
+        $repoRepo = $this->container['repo_repository'];
+        
+        $repo = $repoRepo->getRepo($username, $repoName);
+        $repo->delete();
+        
+        return new \Tonic\Response(204);
+    }
 }

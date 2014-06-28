@@ -100,7 +100,6 @@ Feature:
                 "value": "not-a-test"
             }]
             """
-        Then print last response
         Then the response status code should be 200
         And response property "username" should be "peej"
         And response property "name" should be "not-a-test"
@@ -108,15 +107,14 @@ Feature:
         And response property "username" should be "peej"
         And response property "name" should be "not-a-test"
 
-    @wip
     Scenario: Delete a repo
         Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
-        When I send a DELETE request to "/users/peej/repos/branch"
+        When I send a DELETE request to "/users/peej/repos/test"
         Then the response status code should be 204
-        When I send a GET request to "/users/peej/repos/branch"
+        When I send a GET request to "/users/peej/repos/test"
         Then the response status code should be 404
 
     Scenario: Fail to provide correct auth credentials
         Given I add "Authorization" header equal to "Basic wrong"
-        When I send a DELETE request to "/users/peej/repos/branch"
+        When I send a DELETE request to "/users/peej/repos/test"
         Then the response status code should be 401

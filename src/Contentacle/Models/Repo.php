@@ -139,6 +139,12 @@ class Repo extends Model
         return $commits;
     }
 
+    /**
+     * Get a given commit
+     * @param str $branch
+     * @param str $sha
+     * @return str[]
+     */
     public function commit($branch, $sha)
     {
         $commit = $this->git->commit($sha);
@@ -168,6 +174,29 @@ class Repo extends Model
             $this->yaml->encode($this->props()),
             'Update repo metadata'
         );
+    }
+
+    /**
+     * Delete the repo
+     */
+    public function delete()
+    {
+        if ($this->username && $this->name) {
+            $path = $this->repoDir.'/'.$this->username.'/'.$this->name.'.git';
+            $this->removeDirectory($path);
+        }
+    }
+
+    private function removeDirectory($path)
+    {
+        foreach (glob($path.'/*') as $filename) {
+            if (is_dir($filename)) {
+                $this->removeDirectory($filename);
+            } else {
+                unlink($filename);
+            }
+        }
+        rmdir($path);
     }
 
     public function saveDocument($branch, $path, $content, $commitMessage)
