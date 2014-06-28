@@ -14,6 +14,7 @@ class Repo extends Resource
         $response->addLink('self', '/users/'.$repo->username.'/repos/'.$repo->name.$this->formatExtension());
         $response->addLink('cont:branches', '/users/'.$repo->username.'/repos/'.$repo->name.'/branches'.$this->formatExtension());
         $response->addForm('cont:edit-repo', 'patch', null, 'application/json-patch', 'Edit the repo');
+        $response->addForm('cont:update-repo', 'put', null, 'contentacle/repo', 'Update the repo');
         $response->addForm('cont:delete-repo', 'delete', null, 'Remove the repo');
 
         if ($this->embed) {
@@ -51,12 +52,43 @@ class Repo extends Resource
      * @provides application/hal+json
      * @secure
      */
-    public function updateRepo($username, $repoName)
+    public function patchRepo($username, $repoName)
     {
         $repoRepo = $this->container['repo_repository'];
         try {
             $repo = $repoRepo->getRepo($username, $repoName);
             $repo->patch($this->request->getData());
+            $repo->writeMetadata();
+            $response = $this->response($repo);
+
+        } catch (\Contentacle\Exceptions\ValidationException $e) {
+            $response = new \Contentacle\Responses\Hal(400);
+            $response->contentType = 'application/hal';
+            foreach ($e->errors as $field) {
+                $response->embed('errors', array(
+                    'logref' => $field,
+                    'message' => '"'.$field.'" field failed validation'
+                ));
+            }
+        }
+
+        return $response;
+    }
+
+    /**
+     * @method put
+     * @accepts contentacle/repo+json
+     * @accepts contentacle/repo+yaml
+     * @provides application/hal+yaml
+     * @provides application/hal+json
+     * @secure
+     */
+    public function updateRepo($username, $repoName)
+    {
+        $repoRepo = $this->container['repo_repository'];
+        try {
+            $repo = $repoRepo->getRepo($username, $repoName);
+            $repo->setProps($this->request->getData());
             $repo->writeMetadata();
             $response = $this->response($repo);
 

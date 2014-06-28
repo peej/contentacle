@@ -130,6 +130,24 @@ Feature:
         And response property "username" should be "empty"
         And response property "name" should be "test"
 
+    Scenario: Update a repo
+        Given I add "Content-Type" header equal to "contentacle/repo+json"
+        And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        When I send a PUT request to "/users/peej/repos/test" with body:
+            """
+            {
+                "username": "peej",
+                "name": "test",
+                "title": "A test repo",
+                "description": "This is an updated description"
+            }
+            """
+        Then the response status code should be 200
+        And response property "username" should be "peej"
+        And response property "name" should be "test"
+        And response property "title" should be "A test repo"
+        And response property "description" should be "This is an updated description"
+
     Scenario: Delete a repo
         Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         When I send a DELETE request to "/users/peej/repos/test"
