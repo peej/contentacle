@@ -149,13 +149,13 @@ class RepoSpec extends ObjectBehavior
     {
         $repo->add('test', 'test', 'Commit message')->willReturn('add');
         $repo->file('test')->willThrow('\Git\Exception');
-        $this->save('master', 'test', 'test', 'Commit message')->shouldReturn('add');
+        $this->saveDocument('master', 'test', 'test', 'Commit message')->shouldReturn('add');
     }
 
     function it_should_save_an_existing_file($repo)
     {
         $repo->update('test', 'test', 'Commit message')->willReturn('update');
         $repo->file('test')->willReturn();
-        $this->save('master', 'test', 'test', 'Commit message')->shouldReturn('update');
+        $this->saveDOcument('master', 'test', 'test', 'Commit message')->shouldReturn('update');
     }
 }

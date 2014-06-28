@@ -155,9 +155,14 @@ class Repo extends Model
         );
     }
 
+    /**
+     * Write the repos metadata into the contentacle.yaml file in the root of the repo and commit it
+     * @param str $branch
+     * @return bool
+     */
     public function writeMetadata($branch = 'master')
     {
-        return $this->save(
+        return $this->saveDocument(
             $branch,
             'contentacle.yaml',
             $this->yaml->encode($this->props()),
@@ -165,30 +170,30 @@ class Repo extends Model
         );
     }
 
-    public function save($branch, $path, $content, $commitMessage)
+    public function saveDocument($branch, $path, $content, $commitMessage)
     {
         $this->git->setBranch($branch);
         try {
             $this->git->file($path);
-            return $this->update($branch, $path, $content, $commitMessage);
+            return $this->updateDocument($branch, $path, $content, $commitMessage);
         } catch (\Git\Exception $e) {
-            return $this->create($branch, $path, $content, $commitMessage);
+            return $this->createDocument($branch, $path, $content, $commitMessage);
         }
     }
 
-    public function create($branch, $path, $content, $commitMessage)
+    public function createDocument($branch, $path, $content, $commitMessage)
     {
         $this->git->setBranch($branch);
         return $this->git->add($path, $content, $commitMessage);
     }
 
-    public function update($branch, $path, $content, $commitMessage)
+    public function updateDocument($branch, $path, $content, $commitMessage)
     {
         $this->git->setBranch($branch);
         return $this->git->update($path, $content, $commitMessage);
     }
 
-    public function delete($branch, $path, $commitMessage)
+    public function deleteDocument($branch, $path, $commitMessage)
     {
         $this->git->setBranch($branch);
         return $this->git->remove($path, $commitMessage);
