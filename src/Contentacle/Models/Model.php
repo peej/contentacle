@@ -10,7 +10,6 @@ class Model
     function __construct($schema, $data)
     {
         $this->schema = $schema;
-
         $errors = array();
         foreach ($schema as $name => $scheme) {
             try {

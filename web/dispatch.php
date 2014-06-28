@@ -21,9 +21,6 @@ $container['yaml'] = function () {
 $container['git'] = function ($c) {
     return function ($username, $repoName) use ($c) {
         $repoDir = $c['repo_dir'].'/'.$username.'/'.$repoName;
-        if (!is_dir($repoDir)) {
-            throw new Git\Exception;
-        }
         return new Git\Repo($repoDir);
     };
 };
@@ -40,7 +37,7 @@ $container['user'] = function ($c) {
 };
 $container['repo'] = function ($c) {
     return function ($data) use ($c) {
-        return new Contentacle\Models\Repo($data, $c['git'], $c['yaml']);
+        return new Contentacle\Models\Repo($data, $c['git'], $c['repo_dir'], $c['yaml']);
     };
 };
 

@@ -10,10 +10,12 @@ class RepoSpec extends ObjectBehavior
     function let(\Git\Repo $repo, \Contentacle\Services\Yaml $yaml, \Git\Tree $rootTree, \Git\Tree $subTree, \Git\Blob $totem, \Git\Commit $commit)
     {
         $repo->file('contentacle.yaml')->willReturn('Contentacle YAML');
+        
         $yaml->decode(Argument::any())->willReturn(array(
             'title' => 'Extraction 101',
             'description' => 'Extraction instructions for Ariadne'
         ));
+
         $repo->getBranches()->willReturn(array('master', 'arthur'));
         $repo->setBranch('master')->willReturn();
         
@@ -63,6 +65,14 @@ class RepoSpec extends ObjectBehavior
     function it_is_initializable()
     {
         $this->shouldHaveType('Contentacle\Models\Repo');
+    }
+
+    function it_should_have_properties()
+    {
+        $this->username->shouldBe('cobb');
+        $this->name->shouldBe('extraction');
+        $this->title->shouldBe('Extraction 101');
+        $this->description->shouldBe('Extraction instructions for Ariadne');
     }
 
     function it_should_load_branch_data_from_the_repo()
@@ -133,5 +143,19 @@ class RepoSpec extends ObjectBehavior
         $commit['files']->shouldBe(array(
             'totem.txt', 'new-york/the-hotel/mr-charles.txt'
         ));
+    }
+
+    function it_should_save_a_new_file($repo)
+    {
+        $repo->add('test', 'test', 'Commit message')->willReturn('add');
+        $repo->file('test')->willThrow('\Git\Exception');
+        $this->save('master', 'test', 'test', 'Commit message')->shouldReturn('add');
+    }
+
+    function it_should_save_an_existing_file($repo)
+    {
+        $repo->update('test', 'test', 'Commit message')->willReturn('update');
+        $repo->file('test')->willReturn();
+        $this->save('master', 'test', 'test', 'Commit message')->shouldReturn('update');
     }
 }

@@ -4,11 +4,21 @@ namespace Contentacle\Models;
 
 class Repo extends Model
 {
-    private $git;
+    private $git, $gitProvider, $repoDir, $yaml;
 
-    function __construct($data, $gitProvider, $yaml)
+    function __construct($data, $gitProvider, $repoDir, $yaml)
     {
-        $this->git = $gitProvider($data['username'], $data['path']);
+        if (!isset($data['username'])) {
+            throw new \Contentacle\Exceptions\RepoException("No username provided when creating repo");
+        }
+        if (!isset($data['name'])) {
+            throw new \Contentacle\Exceptions\RepoException("No repo name provided when creating repo");
+        }
+
+        $this->git = $gitProvider($data['username'], $data['name'].'.git');
+        $this->gitProvider = $gitProvider;
+        $this->repoDir = $repoDir;
+        $this->yaml = $yaml;
 
         try {
             $repoMetadata = $yaml->decode($this->git->file('contentacle.yaml'));
@@ -20,10 +30,29 @@ class Repo extends Model
 
         parent::__construct(array(
             'username' => '/^[a-z]{2,40}$/',
-            'name' => '/^[a-z]{2,40}$/',
+            'name' => '/^[a-z-]{2,40}$/',
             'title' => '/^[A-Za-z0-9 ]{2,100}$/',
             'description' => true
         ), $data);
+    }
+
+    public function setProp($name, $value)
+    {
+        if ($this->username && $this->name) {
+            $oldPath = $this->repoDir.'/'.$this->username.'/'.$this->name.'.git';
+        }
+
+        $set = parent::setProp($name, $value);
+
+        if ($set && isset($oldPath) && ($name == 'username' || $name == 'name')) {
+            $newPath = $this->repoDir.'/'.$this->username.'/'.$this->name.'.git';
+            if ($oldPath != $newPath) {
+                rename($oldPath, $newPath);
+                $this->git = $this->gitProvider->__invoke($this->username, $this->name.'.git');
+            }
+        }
+
+        return $set;
     }
 
     public function branches()
@@ -125,4 +154,44 @@ class Repo extends Model
             'diff' => $commit->diff
         );
     }
+
+    public function writeMetadata($branch = 'master')
+    {
+        return $this->save(
+            $branch,
+            'contentacle.yaml',
+            $this->yaml->encode($this->props()),
+            'Update repo metadata'
+        );
+    }
+
+    public function save($branch, $path, $content, $commitMessage)
+    {
+        $this->git->setBranch($branch);
+        try {
+            $this->git->file($path);
+            return $this->update($branch, $path, $content, $commitMessage);
+        } catch (\Git\Exception $e) {
+            return $this->create($branch, $path, $content, $commitMessage);
+        }
+    }
+
+    public function create($branch, $path, $content, $commitMessage)
+    {
+        $this->git->setBranch($branch);
+        return $this->git->add($path, $content, $commitMessage);
+    }
+
+    public function update($branch, $path, $content, $commitMessage)
+    {
+        $this->git->setBranch($branch);
+        return $this->git->update($path, $content, $commitMessage);
+    }
+
+    public function delete($branch, $path, $commitMessage)
+    {
+        $this->git->setBranch($branch);
+        return $this->git->remove($path, $commitMessage);
+    }
+
 }
