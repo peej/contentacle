@@ -94,7 +94,7 @@ Feature:
         And response property "name" should be "test"
         And response property "title" should be "Not a test"
 
-    Scenario: Rename/move a repo
+    Scenario: Rename a repo
         Given I add "Content-Type" header equal to "application/json-patch+json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         When I send a PATCH request to "/users/peej/repos/test" with body:
@@ -111,6 +111,24 @@ Feature:
         When I send a GET request to "/users/peej/repos/not-a-test"
         And response property "username" should be "peej"
         And response property "name" should be "not-a-test"
+
+    Scenario: Move a repo to a different user
+        Given I add "Content-Type" header equal to "application/json-patch+json"
+        And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        When I send a PATCH request to "/users/peej/repos/test" with body:
+            """
+            [{
+                "op": "replace",
+                "path": "username",
+                "value": "empty"
+            }]
+            """
+        Then the response status code should be 200
+        And response property "username" should be "empty"
+        And response property "name" should be "test"
+        When I send a GET request to "/users/empty/repos/test"
+        And response property "username" should be "empty"
+        And response property "name" should be "test"
 
     Scenario: Delete a repo
         Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
