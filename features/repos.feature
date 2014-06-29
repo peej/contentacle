@@ -31,7 +31,7 @@ Feature:
         Then the response status code should be 404
 
     Scenario: Create a repo
-        Given I add "Content-Type" header equal to "contentacle/user+json"
+        Given I add "Content-Type" header equal to "contentacle/repo+json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         When I send a POST request to "/users/peej/repos" with body:
             """
@@ -49,7 +49,7 @@ Feature:
         And response property "description" should be "This is a test repo"
 
     Scenario: Try to create an invalid repo
-        Given I add "Content-Type" header equal to "contentacle/user+json"
+        Given I add "Content-Type" header equal to "contentacle/repo+json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         When I send a POST request to "/users/peej/repos" with body:
             """
@@ -63,7 +63,7 @@ Feature:
         And response property "_embedded->errors->1->logref" should be "title"
 
     Scenario: Fail to provide correct auth credentials for user when creating a repo
-        Given I add "Content-Type" header equal to "contentacle/user+json"
+        Given I add "Content-Type" header equal to "contentacle/repo+json"
         And I add "Authorization" header equal to "Basic wrong"
         When I send a POST request to "/users/peej/repos" with body:
             """

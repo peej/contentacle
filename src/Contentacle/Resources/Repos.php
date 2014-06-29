@@ -32,7 +32,7 @@ class Repos extends Resource {
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
             return $response;
-            
+
         } catch (\Contentacle\Exceptions\RepoException $e) {
             throw new \Tonic\NotFoundException;
         }
@@ -40,8 +40,8 @@ class Repos extends Resource {
 
     /**
      * @method post
-     * @accepts contentacle/user+yaml
-     * @accepts contentacle/user+json
+     * @accepts contentacle/repo+yaml
+     * @accepts contentacle/repo+json
      * @provides application/hal+yaml
      * @provides application/hal+json
      * @secure
