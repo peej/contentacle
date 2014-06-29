@@ -41,6 +41,9 @@ $container['repo'] = function ($c) {
     };
 };
 
+if (strpos($_SERVER['HTTP_ACCEPT'], 'text/json') !== false) {
+    $_SERVER['HTTP_ACCEPT'] .= ',application/json';
+}
 $_SERVER['HTTP_ACCEPT'] .= ',text/yaml';
 
 $request = new Tonic\Request(array(
