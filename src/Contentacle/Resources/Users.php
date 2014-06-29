@@ -47,7 +47,6 @@ class Users extends Resource
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
             $response = new \Contentacle\Responses\Hal(400);
-            $response->contentType = 'application/hal';
             foreach ($e->errors as $field) {
                 $response->embed('errors', array(
                     'logref' => $field,

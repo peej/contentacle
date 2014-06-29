@@ -108,6 +108,8 @@ class Repo extends Resource
 
     /**
      * @method delete
+     * @provides application/hal+yaml
+     * @provides application/hal+json
      * @secure
      */
     public function deleteRepo($username, $repoName)
