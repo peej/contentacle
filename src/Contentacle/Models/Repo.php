@@ -65,6 +65,35 @@ class Repo extends Model
         return in_array($branchName, $this->git->getBranches());
     }
 
+    public function createBranch($branchName)
+    {
+        if (!preg_match('/^[a-zA-Z0-9][a-zA-Z0-9 .-]+$/', $branchName)) {
+            throw new \Contentacle\Exceptions\RepoException("Branch name '$branchName' is not valid");
+        }
+        $this->git->createBranch($branchName);
+    }
+
+    public function renameBranch($branchName, $newName)
+    {
+        if (!preg_match('/^[a-zA-Z0-9][a-zA-Z0-9 .-]+$/', $newName)) {
+            throw new \Contentacle\Exceptions\RepoException("Branch name '$newName' is not valid");
+        }
+        #$this->git->moveBranch($branchName, $newName);
+    }
+
+    public function deleteBranch($branchName)
+    {
+        $branches = $this->git->getBranches();
+        if (count($branches) == 1) {
+            throw new \Contentacle\Exceptions\RepoException("Can not delete only branch");
+        }
+        try {
+            $this->git->deleteBranch($branchName);
+        } catch (\Git\Exception $e) {
+            throw new \Contentacle\Exceptions\RepoException("Can not delete branch '$branchName'");
+        }
+    }
+
     public function documents($branch = 'master', $path = '')
     {
         $this->git->setBranch($branch);
