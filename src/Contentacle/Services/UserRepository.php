@@ -30,9 +30,20 @@ class UserRepository
         return $this->userProvider->__invoke($data);
     }
 
+    /**
+     * Given an email address, return the username of the Contentacle user who has that email address.
+     * Used for tieing Git users to Contentacle users.
+     *
+     * Totally in-efficient way of doing this, needs a better solution.
+     */
     function getUsernameFromEmail($emailAddress)
     {
-        
+        foreach ($this->getUsers() as $user) {
+            if ($user->email == $emailAddress) {
+                return $user->username;
+            }
+        }
+        return null;
     }
 
     private function readProfile($username)

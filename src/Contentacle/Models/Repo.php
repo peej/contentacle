@@ -4,9 +4,9 @@ namespace Contentacle\Models;
 
 class Repo extends Model
 {
-    private $git, $gitProvider, $repoDir, $yaml;
+    private $git, $gitProvider, $repoDir, $yaml, $userRepo;
 
-    function __construct($data, $gitProvider, $repoDir, $yaml)
+    function __construct($data, $gitProvider, $repoDir, $yaml, $userRepo)
     {
         if (!isset($data['username'])) {
             throw new \Contentacle\Exceptions\RepoException("No username provided when creating repo");
@@ -19,6 +19,7 @@ class Repo extends Model
         $this->gitProvider = $gitProvider;
         $this->repoDir = $repoDir;
         $this->yaml = $yaml;
+        $this->userRepo = $userRepo;
 
         try {
             $repoMetadata = $yaml->decode($this->git->file('contentacle.yaml'));
@@ -119,7 +120,7 @@ class Repo extends Model
                     'path' => $document->filename,
                     'type' => 'file',
                     'sha' => $document->sha,
-                    'username' => 'tbd',
+                    'username' => $this->userRepo->getUsernameFromEmail($document->email),
                     'email' => $document->email,
                     'author' => $document->user,
                     'branch' => $branch,
@@ -142,7 +143,8 @@ class Repo extends Model
                         'sha' => $commit->sha,
                         'message' => $commit->message,
                         'date' => $commit->date,
-                        'username' => $commit->user,
+                        'username' => $this->userRepo->getUsernameFromEmail($commit->email),
+                        'author' => $commit->user,
                         'email' => $commit->email
                     );
                 }
@@ -161,7 +163,8 @@ class Repo extends Model
                 'sha' => $commit->sha,
                 'message' => $commit->message,
                 'date' => $commit->date,
-                'username' => $commit->user,
+                'username' => $this->userRepo->getUsernameFromEmail($commit->email),
+                'author' => $commit->user,
                 'email' => $commit->email
             );
         }
@@ -183,7 +186,8 @@ class Repo extends Model
             'parents' => $commit->parents,
             'message' => $commit->message,
             'date' => $commit->date,
-            'username' => $commit->user,
+            'username' => $this->userRepo->getUsernameFromEmail($commit->email),
+            'author' => $commit->user,
             'email' => $commit->email,
             'files' => $commit->getFiles(),
             'diff' => $commit->diff

@@ -37,7 +37,7 @@ $container['user'] = function ($c) {
 };
 $container['repo'] = function ($c) {
     return function ($data) use ($c) {
-        return new Contentacle\Models\Repo($data, $c['git'], $c['repo_dir'], $c['yaml']);
+        return new Contentacle\Models\Repo($data, $c['git'], $c['repo_dir'], $c['yaml'], $c['user_repository']);
     };
 };
 
