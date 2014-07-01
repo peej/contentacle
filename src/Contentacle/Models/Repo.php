@@ -233,7 +233,7 @@ class Repo extends Model
         rmdir($path);
     }
 
-    public function saveDocument($branch, $path, $content, $commitMessage)
+    public function saveDocument($branch, $path, $content, $commitMessage = null)
     {
         $this->git->setBranch($branch);
         try {
@@ -244,14 +244,20 @@ class Repo extends Model
         }
     }
 
-    public function createDocument($branch, $path, $content, $commitMessage)
+    public function createDocument($branch, $path, $content, $commitMessage = null)
     {
+        if (!$commitMessage) {
+            $commitMessage = 'Create '.$path;
+        }
         $this->git->setBranch($branch);
         return $this->git->add($path, $content, $commitMessage);
     }
 
-    public function updateDocument($branch, $path, $content, $commitMessage)
+    public function updateDocument($branch, $path, $content, $commitMessage = null)
     {
+        if (!$commitMessage) {
+            $commitMessage = 'Update '.$path;
+        }
         $this->git->setBranch($branch);
         return $this->git->update($path, $content, $commitMessage);
     }
