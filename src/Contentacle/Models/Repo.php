@@ -123,6 +123,7 @@ class Repo extends Model
                     'username' => $this->userRepo->getUsernameFromEmail($document->email),
                     'email' => $document->email,
                     'author' => $document->user,
+                    'date' => $document->date,
                     'branch' => $branch,
                     'content' => $document->getContent()
                 );
