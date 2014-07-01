@@ -68,4 +68,43 @@ class Documents extends Resource {
         }
         throw new \Tonic\NotFoundException;
     }
+
+    /**
+     * @method put
+     * @provides application/hal+yaml
+     * @provides application/hal+json
+     * @secure
+     */
+    public function createDocument($username, $repoName, $branchName, $path = null, $fixPath = true)
+    {
+        $repoRepo = $this->container['repo_repository'];
+
+        if ($fixPath) {
+            $path = $this->fixPath($path, $username, $repoName, $branchName, 'documents');
+        }
+
+        $repo = $repoRepo->getRepo($username, $repoName);
+        $data = $this->request->getData();
+
+        $commitMessage = null;
+
+        if (is_string($data)) {
+            $content = $data;
+        } elseif (isset($data['content'])) {
+            $content = $data['content'];
+            if (isset($data['message'])) {
+                $commitMessage = $data['message'];
+            }
+        } else {
+            $e = new \Contentacle\Exceptions\ValidationException;
+            $e->errors = array('content');
+            throw $e;
+        }
+
+        $repo->saveDocument($branchName, $path, $content, $commitMessage);
+
+        $document = $repo->document($branchName, $path);
+
+        return new \Contentacle\Responses\Hal(201, $document);
+    }
 }

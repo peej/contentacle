@@ -35,5 +35,47 @@ Feature:
         Then response property "_embedded->commits->0->_links->self->href" should be "/users/peej/repos/test/branches/master/commits/2c22b023d0979bcc768bc088063eb4a9a376db80"
         And response property "_embedded->commits->0->message" should be "Commit message"
         And response property "_embedded->commits->0->date" should be "1392493822"
-        And response property "_embedded->commits->0->username" should be "Paul James"
+        And response property "_embedded->commits->0->username" should be "peej"
+        And response property "_embedded->commits->0->author" should be "Paul James"
         And response property "_embedded->commits->0->sha" should be "2c22b023d0979bcc768bc088063eb4a9a376db80"
+
+    Scenario: Create a new document from raw content
+        Given I add "Content-Type" header equal to "text/plain"
+        And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        When I send a PUT request to "/users/peej/repos/test/branches/master/documents/new.txt" with body:
+            """
+            New document
+            """
+        Then the response status code should be 201
+        And response property "filename" should be "new.txt"
+        When I send a GET request to "/users/peej/repos/test/branches/master/documents/new.txt"
+        Then the response status code should be 200
+        And response property "filename" should be "new.txt"
+        And response property "type" should be "file"
+        And response property "content" should be "New document"
+        And response property "username" should be "peej"
+        When I send a GET request to "/users/peej/repos/test/branches/master/commits"
+        Then response property "_embedded->commits->0->message" should be "Create new.txt"
+        And response property "_embedded->commits->0->username" should be "peej"
+    
+    Scenario: Create a new document from JSON document
+        Given I add "Content-Type" header equal to "contentacle/document+json"
+        And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        When I send a PUT request to "/users/peej/repos/test/branches/master/documents/new.txt" with body:
+            """
+            {
+                "content": "New document",
+                "message": "My commit message"
+            }
+            """
+        Then the response status code should be 201
+        And response property "filename" should be "new.txt"
+        When I send a GET request to "/users/peej/repos/test/branches/master/documents/new.txt"
+        Then the response status code should be 200
+        And response property "filename" should be "new.txt"
+        And response property "type" should be "file"
+        And response property "content" should be "New document"
+        And response property "username" should be "peej"
+        When I send a GET request to "/users/peej/repos/test/branches/master/commits"
+        Then response property "_embedded->commits->0->message" should be "My commit message"
+        And response property "_embedded->commits->0->username" should be "peej"
