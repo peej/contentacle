@@ -53,6 +53,7 @@ class Documents extends Resource {
 
                 $response = new \Contentacle\Responses\Hal(200, $document);
                 $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$document['path'].$this->formatExtension());
+                $response->addLink('cont:user', '/users/'.$document['username'].$this->formatExtension());
                 $response->addLink('cont:history', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/history/'.$document['path'].$this->formatExtension());
                 $response->addLink('cont:raw', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$document['path'].$this->formatExtension());
                 $response->addForm('cont:update-document', 'patch', null, 'application/json-patch', 'Update the document');

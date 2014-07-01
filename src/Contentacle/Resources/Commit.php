@@ -22,6 +22,7 @@ class Commit extends Resource {
             $response = new \Contentacle\Responses\Hal(200, $commit);
 
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits/'.$sha.$this->formatExtension());
+            $response->addLink('cont:user', '/users/'.$commit['username'].$this->formatExtension());
 
             $response->contentType = 'contentacle/commit';
             return $response;
