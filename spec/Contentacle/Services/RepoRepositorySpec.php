@@ -14,7 +14,7 @@ class RepoRepositorySpec extends ObjectBehavior
         $this->repoDir = sys_get_temp_dir().'/contentacle';
     }
     
-    function let()
+    function let(\Contentacle\Services\UserRepository $userRepo)
     {
         @mkdir($this->repoDir);
         @mkdir($this->repoDir.'/cobb');
@@ -33,12 +33,12 @@ class RepoRepositorySpec extends ObjectBehavior
 
         $this->beConstructedWith(
             $this->repoDir,
-            function ($data) use ($yaml, $repoDir) {
+            function ($data) use ($yaml, $repoDir, $userRepo) {
                 return new \Contentacle\Models\Repo($data, function () use ($data, $repoDir) {
                     return new \Git\Repo(
                         $repoDir.'/'.$data['username'].'/'.$data['name']
                     );
-                }, $repoDir, $yaml);
+                }, $repoDir, $yaml, $userRepo);
             }
         );
 
