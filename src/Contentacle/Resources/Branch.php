@@ -37,9 +37,12 @@ class Branch extends Resource
             $repoRepo = $this->container['repo_repository'];
             $repo = $repoRepo->getRepo($username, $repoName);
             if (!$repo->hasBranch($branchName)) {
-                throw new \Git\Exception;
+                throw new \Tonic\NotFoundException;
             }
             return $this->response($repo, $branchName);
+
+        } catch (\Contentacle\Exceptions\RepoException $e) {
+            throw new \Tonic\NotFoundException;
 
         } catch (\Git\Exception $e) {
             throw new \Tonic\NotFoundException;
@@ -68,17 +71,18 @@ class Branch extends Resource
                 }
             }
 
-            $response = $this->response($repo, $branchName);
+            $response = $this->response($repo, $item['value']);
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
             $response = new \Contentacle\Responses\Hal(400);
-            $response->contentType = 'application/hal';
             foreach ($e->errors as $field) {
                 $response->embed('errors', array(
                     'logref' => $field,
                     'message' => '"'.$field.'" field failed validation'
                 ));
             }
+        } catch (\Git\Exception $e) {
+            throw new \Tonic\NotFoundException;
         }
 
         return $response;
@@ -100,7 +104,7 @@ class Branch extends Resource
                 $repo->deleteBranch($branchName);
                 $response = new \Contentacle\Responses\Hal(204);
             } else {
-                $response = new \Contentacle\Responses\Hal(404);
+                throw new \Tonic\NotFoundException;
             }
         
         } catch (\Contentacle\Exceptions\ValidationException $e) {
@@ -120,6 +124,9 @@ class Branch extends Resource
                 'logref' => 'name',
                 'message' => 'Can not delete "'.$branchName.'" branch'
             ));
+
+        } catch (\Git\Exception $e) {
+            throw new \Tonic\NotFoundException;
         }
 
         return $response;

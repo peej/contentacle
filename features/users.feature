@@ -22,10 +22,15 @@ Feature:
         When I send a GET request to "/users/peej.yaml"
         Then response property "username" should be "peej"
         And response property "name" should be "Paul James"
-        And response property "email" should be "peej@localhost"
+        And response property "email" should be "paul@peej.co.uk"
         And response property "_links->self->href" should be "/users/peej.yaml"
         And response property "_embedded->repos->0->name" should be "test"
         And response property "_embedded->repos->0->_links->self->href" should be "/users/peej/repos/test.yaml"
+
+    Scenario: Recieve a 404 for a non-existant user
+        When I send a GET request to "/users/missing"
+        Then the response status code should be 404
+        And the directory "missing" should not exist
 
     Scenario: Create a user
         Given I add "Content-Type" header equal to "contentacle/user+json"
@@ -34,7 +39,6 @@ Feature:
             {
                 "username": "test1",
                 "name": "Behat Tester",
-                "email": "tester@localhost",
                 "password": "test1"
             }
             """
@@ -43,6 +47,7 @@ Feature:
         When I send a GET request to "/users/test1"
         Then response property "username" should be "test1"
         And response property "password" should be "118b32994e63fd4a3ff1dd091d2e859d9fa66811"
+        And response property "email" should be "test1@localhost"
 
     Scenario: Try to create an invalid user
         Given I add "Content-Type" header equal to "contentacle/user+json"

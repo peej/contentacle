@@ -25,10 +25,28 @@ Feature:
         And response property "_embedded->branches->0->_links->self->href" should be "/users/peej/repos/test/branches/branch"
         And response property "_embedded->branches->1->name" should be "master"
         And response property "_embedded->branches->1->_links->self->href" should be "/users/peej/repos/test/branches/master"
+        And the directory "peej/test.git" should exist
 
     Scenario: Recieve a 404 for a non-existant repo
         When I send a GET request to "/users/peej/repos/missing"
         Then the response status code should be 404
+        And the directory "peej/missing.git" should not exist
+        Given I add "Content-Type" header equal to "application/json-patch+json"
+        And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        When I send a PATCH request to "/users/peej/repos/missing" with body:
+            """
+            [{
+                "op": "replace",
+                "path": "title",
+                "value": "Not a test"
+            }]
+            """
+        Then the response status code should be 404
+        And the directory "peej/missing.git" should not exist
+        Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        When I send a DELETE request to "/users/peej/repos/missing"
+        Then the response status code should be 404
+        And the directory "peej/missing.git" should not exist
 
     Scenario: Create a repo
         Given I add "Content-Type" header equal to "contentacle/repo+json"

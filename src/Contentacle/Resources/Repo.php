@@ -37,7 +37,7 @@ class Repo extends Resource
             $repo = $repoRepo->getRepo($username, $repoName);
             return $this->response($repo);
 
-        } catch (\Contentacle\Exceptions\ValidationException $e) {
+        } catch (\Contentacle\Exceptions\RepoException $e) {
             throw new \Tonic\NotFoundException;
         } catch (\Git\Exception $e) {
             throw new \Tonic\NotFoundException;
@@ -70,6 +70,8 @@ class Repo extends Resource
                     'message' => '"'.$field.'" field failed validation'
                 ));
             }
+        } catch (\Contentacle\Exceptions\RepoException $e) {
+            throw new \Tonic\NotFoundException;
         }
 
         return $response;
@@ -101,6 +103,8 @@ class Repo extends Resource
                     'message' => '"'.$field.'" field failed validation'
                 ));
             }
+        } catch (\Contentacle\Exceptions\RepoException $e) {
+            throw new \Tonic\NotFoundException;
         }
 
         return $response;
@@ -116,8 +120,12 @@ class Repo extends Resource
     {
         $repoRepo = $this->container['repo_repository'];
         
-        $repo = $repoRepo->getRepo($username, $repoName);
-        $repo->delete();
+        try {
+            $repo = $repoRepo->getRepo($username, $repoName);
+            $repo->delete();
+        } catch (\Contentacle\Exceptions\RepoException $e) {
+            throw new \Tonic\NotFoundException;
+        }
         
         return new \Tonic\Response(204);
     }

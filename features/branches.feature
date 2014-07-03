@@ -24,6 +24,20 @@ Feature:
     Scenario: Recieve a 404 for a non-existant branch
         When I send a GET request to "/users/peej/repos/test/branches/missing"
         Then the response status code should be 404
+        Given I add "Content-Type" header equal to "application/json-patch+json"
+        And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        When I send a PATCH request to "/users/peej/repos/test/branches/missing" with body:
+            """
+            [{
+                "op": "replace",
+                "path": "name",
+                "value": "renamed-branch"
+            }]
+            """
+        Then the response status code should be 404
+        Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        When I send a DELETE request to "/users/peej/repos/test/branches/missing"
+        Then the response status code should be 404
 
     Scenario: Create a branch
         Given I add "Content-Type" header equal to "contentacle/branch+json"
@@ -57,6 +71,23 @@ Feature:
     Scenario: Rename a branch
         Given I add "Content-Type" header equal to "application/json-patch+json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        When I send a PATCH request to "/users/peej/repos/test/branches/branch" with body:
+            """
+            [{
+                "op": "replace",
+                "path": "name",
+                "value": "renamed-branch"
+            }]
+            """
+        Then the response status code should be 200
+        And response property "name" should be "renamed-branch"
+        When I send a GET request to "/users/peej/repos/test/branches/renamed-branch"
+        And response property "name" should be "renamed-branch"
+
+    @wip
+    Scenario: Rename master branch
+        Given I add "Content-Type" header equal to "application/json-patch+json"
+        And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         When I send a PATCH request to "/users/peej/repos/test/branches/master" with body:
             """
             [{
@@ -67,9 +98,25 @@ Feature:
             """
         Then the response status code should be 200
         And response property "name" should be "not-master"
-        When I send a GET request to "/users/peej/repos/not-master"
+        When I send a GET request to "/users/peej/repos/test/branches/not-master"
         And response property "name" should be "not-master"
 
+    @wip
+    Scenario: Can not rename another branch to same name as another branch
+        Given I add "Content-Type" header equal to "application/json-patch+json"
+        And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        When I send a PATCH request to "/users/peej/repos/test/branches/branch" with body:
+            """
+            [{
+                "op": "replace",
+                "path": "name",
+                "value": "master"
+            }]
+            """
+        Then the response status code should be 400
+        And response property "_embedded->errors->0->logref" should be "name"
+        And response property "_embedded->errors->0->message" should be "Branch with name master already exists"
+    
     Scenario: Delete a branch
         Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         When I send a DELETE request to "/users/peej/repos/test/branches/branch"

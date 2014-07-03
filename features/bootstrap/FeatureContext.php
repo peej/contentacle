@@ -128,4 +128,24 @@ class FeatureContext extends MinkContext
         }
     }
 
+    /**
+     * @Given /^the directory "([^"]*)" should exist$/
+     */
+    public function theDirectoryShouldExist($filename)
+    {
+        if (!is_dir(realpath(dirname(__FILE__).'/../../repos/'.$filename))) {
+            throw new Exception;
+        }
+    }
+
+    /**
+     * @Given /^the directory "([^"]*)" should not exist$/
+     */
+    public function theDirectoryShouldNotExist($filename)
+    {
+        if (is_dir(realpath(dirname(__FILE__).'/../../repos/'.$filename))) {
+            throw new Exception;
+        }
+    }
+
 }

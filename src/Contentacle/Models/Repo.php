@@ -79,7 +79,7 @@ class Repo extends Model
         if (!preg_match('/^[a-zA-Z0-9][a-zA-Z0-9 .-]+$/', $newName)) {
             throw new \Contentacle\Exceptions\RepoException("Branch name '$newName' is not valid");
         }
-        #$this->git->moveBranch($branchName, $newName);
+        $this->git->renameBranch($branchName, $newName);
     }
 
     public function deleteBranch($branchName)
