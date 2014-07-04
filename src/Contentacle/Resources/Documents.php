@@ -75,13 +75,11 @@ class Documents extends Resource {
      * @provides application/hal+json
      * @secure
      */
-    public function createDocument($username, $repoName, $branchName, $path = null, $fixPath = true)
+    public function createDocument($username, $repoName, $branchName, $path = null)
     {
         $repoRepo = $this->container['repo_repository'];
 
-        if ($fixPath) {
-            $path = $this->fixPath($path, $username, $repoName, $branchName, 'documents');
-        }
+        $path = $this->fixPath($path, $username, $repoName, $branchName, 'documents');
 
         $repo = $repoRepo->getRepo($username, $repoName);
         $data = $this->request->getData();
@@ -101,10 +99,39 @@ class Documents extends Resource {
             throw $e;
         }
 
-        $repo->saveDocument($branchName, $path, $content, $commitMessage);
+        $code = $repo->saveDocument($branchName, $path, $content, $commitMessage);
 
         $document = $repo->document($branchName, $path);
 
-        return new \Contentacle\Responses\Hal(201, $document);
+        return new \Contentacle\Responses\Hal($code, $document);
+    }
+
+
+    /**
+     * @method delete
+     * @provides application/hal+yaml
+     * @provides application/hal+json
+     * @secure
+     */
+    public function deleteDocument($username, $repoName, $branchName, $path = null)
+    {
+        $repoRepo = $this->container['repo_repository'];
+
+        $path = $this->fixPath($path, $username, $repoName, $branchName, 'documents');
+
+        $repo = $repoRepo->getRepo($username, $repoName);
+        $data = $this->request->getData();
+
+        $commitMessage = null;
+
+        if (isset($data['message'])) {
+            $commitMessage = $data['message'];
+        } elseif (is_string($data)) {
+            $commitMessage = $data;
+        }
+
+        $repo->deleteDocument($branchName, $path, $commitMessage);
+
+        return new \Contentacle\Responses\Hal(204);
     }
 }

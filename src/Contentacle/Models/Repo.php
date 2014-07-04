@@ -238,9 +238,11 @@ class Repo extends Model
         $this->git->setBranch($branch);
         try {
             $this->git->file($path);
-            return $this->updateDocument($branch, $path, $content, $commitMessage);
+            $this->updateDocument($branch, $path, $content, $commitMessage);
+            return 200;
         } catch (\Git\Exception $e) {
-            return $this->createDocument($branch, $path, $content, $commitMessage);
+            $this->createDocument($branch, $path, $content, $commitMessage);
+            return 201;
         }
     }
 
@@ -250,7 +252,9 @@ class Repo extends Model
             $commitMessage = 'Create '.$path;
         }
         $this->git->setBranch($branch);
-        return $this->git->add($path, $content, $commitMessage);
+        if (!$this->git->add($path, $content, $commitMessage)) {
+            throw new \Contentacle\Exceptions\RepoException;
+        }
     }
 
     public function updateDocument($branch, $path, $content, $commitMessage = null)
@@ -259,13 +263,20 @@ class Repo extends Model
             $commitMessage = 'Update '.$path;
         }
         $this->git->setBranch($branch);
-        return $this->git->update($path, $content, $commitMessage);
+        if (!$this->git->update($path, $content, $commitMessage)) {
+            throw new \Contentacle\Exceptions\RepoException;
+        }
     }
 
     public function deleteDocument($branch, $path, $commitMessage)
     {
+        if (!$commitMessage) {
+            $commitMessage = 'Delete '.$path;
+        }
         $this->git->setBranch($branch);
-        return $this->git->remove($path, $commitMessage);
+        if (!$this->git->remove($path, $commitMessage)) {
+            throw new \Contentacle\Exceptions\RepoException;
+        }
     }
 
 }

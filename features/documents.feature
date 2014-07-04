@@ -79,3 +79,29 @@ Feature:
         When I send a GET request to "/users/peej/repos/test/branches/master/commits"
         Then response property "_embedded->commits->0->message" should be "My commit message"
         And response property "_embedded->commits->0->username" should be "peej"
+    
+    Scenario: Update a document raw
+        Given I add "Content-Type" header equal to "text/plain"
+        And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        When I send a PUT request to "/users/peej/repos/test/branches/master/documents/afile.txt" with body:
+            """
+            Updated document
+            """
+        Then the response status code should be 200
+        And response property "filename" should be "afile.txt"
+        And response property "type" should be "file"
+        And response property "content" should be "Updated document"
+        And response property "username" should be "peej"
+        When I send a GET request to "/users/peej/repos/test/branches/master/commits"
+        Then response property "_embedded->commits->0->message" should be "Update afile.txt"
+        And response property "_embedded->commits->0->username" should be "peej"
+    
+    @wip
+    Scenario: Delete a document
+        Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        When I send a DELETE request to "/users/peej/repos/test/branches/master/documents/afile.txt"
+        Then the response status code should be 204
+        When I send a GET request to "/users/peej/repos/test/branches/master/documents/afile.txt"
+        Then the response status code should be 404
+        When I send a GET request to "/users/peej/repos/test/branches/master/commits"
+        Then response property "_embedded->commits->0->message" should be "Delete afile.txt"
