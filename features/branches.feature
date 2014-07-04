@@ -67,7 +67,6 @@ Feature:
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "_embedded->errors->0->logref" should be "name"
 
-    @wip
     Scenario: Rename a branch
         Given I add "Content-Type" header equal to "application/json-patch+json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
@@ -101,7 +100,6 @@ Feature:
         When I send a GET request to "/users/peej/repos/test/branches/not-master"
         And response property "name" should be "not-master"
 
-    @wip
     Scenario: Can not rename another branch to same name as another branch
         Given I add "Content-Type" header equal to "application/json-patch+json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
@@ -115,7 +113,7 @@ Feature:
             """
         Then the response status code should be 400
         And response property "_embedded->errors->0->logref" should be "name"
-        And response property "_embedded->errors->0->message" should be "Branch with name master already exists"
+        And response property "_embedded->errors->0->message" should be "A branch named 'master' already exists"
     
     Scenario: Delete a branch
         Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"

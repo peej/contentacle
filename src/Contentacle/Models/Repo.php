@@ -32,7 +32,7 @@ class Repo extends Model
         parent::__construct(array(
             'username' => '/^[a-z]{2,40}$/',
             'name' => '/^[a-z-]{2,40}$/',
-            'title' => '/^[A-Za-z0-9 ]{2,100}$/',
+            'title' => '/^[A-Za-z0-9 ]{0,100}$/',
             'description' => true
         ), $data);
     }

@@ -82,7 +82,15 @@ class Branch extends Resource
                 ));
             }
         } catch (\Git\Exception $e) {
-            throw new \Tonic\NotFoundException;
+            if (preg_match('/fatal: (A branch named \''.$item['value'].'\' already exists)/', $e->getMessage(), $match)) {
+                $response = new \Contentacle\Responses\Hal(400);
+                $response->embed('errors', array(
+                    'logref' => 'name',
+                    'message' => $match[1]
+                ));
+            } else {
+                throw new \Tonic\NotFoundException;
+            }
         }
 
         return $response;
