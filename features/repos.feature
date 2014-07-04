@@ -78,7 +78,6 @@ Feature:
         Then the response status code should be 400
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "_embedded->errors->0->logref" should be "name"
-        And response property "_embedded->errors->1->logref" should be "title"
 
     Scenario: Fail to provide correct auth credentials for user when creating a repo
         Given I add "Content-Type" header equal to "contentacle/repo+json"
