@@ -29,11 +29,12 @@ class Yaml extends \Spyc
             } else {
                 $elem = null;
             }
-        }
-        if (is_array($elem)) {
+        } elseif (is_array($elem)) {
             foreach ($elem as $key => $value) {
                 $elem[$key] = $this->toArray($value);
             }
+        } elseif (is_string($elem)) {
+            $elem = trim($elem);
         }
         return $elem;
     }

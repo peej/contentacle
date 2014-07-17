@@ -82,6 +82,9 @@ class FeatureContext extends MinkContext
             }
             $data = $data[$part];
         }
+        if ($data === false) {
+            $data = 'false';
+        }
         if ($data != $value) {
             throw new Exception($name.' is "'.$data.'" not "'.$value.'"');
         }

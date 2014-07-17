@@ -8,15 +8,15 @@ namespace Contentacle\Resources;
 class Merge extends Resource {
 
     /**
-     * @provides application/hal+yaml
-     * @provides application/hal+json
+     * @provides contentacle/merge+yaml
+     * @provides contentacle/merge+json
      */
     function get($username, $repoName, $branch1, $branch2)
     {
         try {
             $repoRepo = $this->container['repo_repository'];
             $repo = $repoRepo->getRepo($username, $repoName);
-            if (!$repo->hasBranch($branch1) || !$repo->hasBranch($branch2)) {
+            if ($branch1 == $branch2 || !$repo->hasBranch($branch1) || !$repo->hasBranch($branch2)) {
                 throw new \Tonic\NotFoundException;
             }
         } catch (\Git\Exception $e) {
@@ -30,10 +30,9 @@ class Merge extends Resource {
         $canMerge = $repo->canMerge($branch1, $branch2);
         $response->addData('canMerge', $canMerge);
         if (!$canMerge) {
-            $response->addData('conflicts', $repo->mergeConflicts($branch2));
+            $response->addData('conflicts', $repo->conflicts($branch1, $branch2));
         }
 
-        $response->contentType = 'contentacle/merge';
         return $response;
     }
 }
