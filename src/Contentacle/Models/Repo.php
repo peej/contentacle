@@ -155,6 +155,14 @@ class Repo extends Model
         throw new \Contentacle\Exceptions\RepoException("Path '$path' not found in branch '$branch'");
     }
 
+    public function blob($sha)
+    {
+        try {
+            return $this->git->catFile($sha);
+        } catch (\Git\Exception $e) {}
+        throw new \Contentacle\Exceptions\RepoException("Blob '$sha' does not exist");
+    }
+
     public function commits($branch = 'master', $sha = null, $number = 25)
     {
         $this->git->setBranch($branch);
