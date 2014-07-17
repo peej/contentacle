@@ -18,6 +18,10 @@ Feature:
         And response property "_embedded->users->1->name" should be "Paul James"
         And response property "_embedded->users->1->_links->self->href" should be "/users/peej.yaml"
 
+    Scenario: Search for users
+        When I send a GET request to "/users.yaml?q=peej"
+        Then response property "_embedded->users->0->username" should be "peej"
+
     Scenario: View a users details
         When I send a GET request to "/users/peej.yaml"
         Then response property "username" should be "peej"

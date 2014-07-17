@@ -21,7 +21,10 @@ class Users extends Resource
         $response->addForm('cont:add-user', 'post', null, 'contentacle/user', 'Create a user');
 
         if ($this->embed) {
-            foreach ($userRepo->getUsers() as $user) {
+
+            $search = isset($_GET['q']) ? $_GET['q'] : null;
+
+            foreach ($userRepo->getUsers($search) as $user) {
                 $response->embed('users', $this->getChildResource('\Contentacle\Resources\User', array($user->username)));
             }
         }

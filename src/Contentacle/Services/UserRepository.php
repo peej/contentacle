@@ -12,10 +12,10 @@ class UserRepository
         $this->userProvider = $userProvider;
     }
 
-    function getUsers()
+    function getUsers($search = null)
     {
         $users = array();
-        foreach (glob($this->repoDir.'/*', GLOB_ONLYDIR) as $userDir) {
+        foreach (glob($this->repoDir.'/'.$search.'*', GLOB_ONLYDIR) as $userDir) {
             try {
                 $user = $this->getUser(basename($userDir));
                 $users[$user->username] = $user;
