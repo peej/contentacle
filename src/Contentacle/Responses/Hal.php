@@ -38,7 +38,7 @@ class Hal extends \Tonic\Response
 
     public function addData($name, $value)
     {
-        $this->data[$name] = $value;
+        $this->body[$name] = $value;
         $this->hasContent();
     }
 
