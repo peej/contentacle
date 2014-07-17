@@ -12,14 +12,14 @@ class RepoRepository
         $this->repoProvider = $repoProvider;
     }
 
-    public function getRepos($username)
+    public function getRepos($username, $search = null)
     {
         $userDir = $this->repoDir.'/'.$username;
         if (!is_dir($userDir)) {
             throw new \Contentacle\Exceptions\RepoException('User "'.$username.'" does not exist');
         }
         $repos = array();
-        foreach (glob($userDir.'/*', GLOB_ONLYDIR) as $repoDir) {
+        foreach (glob($userDir.'/'.$search.'*', GLOB_ONLYDIR) as $repoDir) {
             $repoName = basename($repoDir);
             if (substr($repoName, -4) == '.git') {
                 $repoName = substr($repoName, 0, -4);

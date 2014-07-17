@@ -20,7 +20,8 @@ class Repos extends Resource {
 
         try {
             $repoRepo = $this->container['repo_repository'];
-            $repos = $repoRepo->getRepos($username);
+            $search = isset($_GET['q']) ? $_GET['q'] : null;
+            $repos = $repoRepo->getRepos($username, $search);
 
             if ($this->embed) {
                 foreach ($repos as $repo) {
