@@ -20,6 +20,7 @@ Feature:
         And response property "username" should be "peej"
         And response property "_links->cont:documents->href" should be "/users/peej/repos/test/branches/master/documents"
         And response property "_links->cont:commits->href" should be "/users/peej/repos/test/branches/master/commits"
+        And response property "_links->cont:merges->href" should be "/users/peej/repos/test/branches/master/merges"
 
     Scenario: Recieve a 404 for a non-existant branch
         When I send a GET request to "/users/peej/repos/test/branches/missing"

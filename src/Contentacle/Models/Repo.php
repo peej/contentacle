@@ -287,4 +287,10 @@ class Repo extends Model
         }
     }
 
+    public function canMerge($branch, $branch2)
+    {
+        $this->git->setBranch($branch);
+        return $this->git->canMerge($branch2);
+    }
+
 }

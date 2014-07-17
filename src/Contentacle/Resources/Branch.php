@@ -22,6 +22,7 @@ class Branch extends Resource
         $response->addForm('cont:delete-branch', 'delete', null, null, 'Remove the branch');
         $response->addLink('cont:commits', $branchUrl.'/commits'.$this->formatExtension());
         $response->addLink('cont:documents', $branchUrl.'/documents'.$this->formatExtension());
+        $response->addLink('cont:merges', $branchUrl.'/merges'.$this->formatExtension());
         
         $response->contentType = 'contentacle/branch';
         return $response;
