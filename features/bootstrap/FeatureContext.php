@@ -78,12 +78,12 @@ class FeatureContext extends MinkContext
         $parts = explode('->', $name);
         foreach ($parts as $part) {
             if (!isset($data[$part])) {
-                throw new Exception;
+                throw new Exception('Could not find '.$part);
             }
             $data = $data[$part];
         }
         if ($data != $value) {
-            throw new Exception;
+            throw new Exception($name.' is "'.$data.'" not "'.$value.'"');
         }
     }
 
