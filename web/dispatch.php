@@ -78,6 +78,14 @@ try {
     $response = new Tonic\Response($e->getCode(), $e->getMessage());
 }
 
+$response->setHeader('Access-Control-Allow-Origin', '*');
+if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
+    $response->setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+}
+if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
+    $response->setHeader('Access-Control-Allow-Headers', $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
+}
+
 if (substr($response->contentType, -4) == 'yaml') {
     $response->body = $container['yaml']->encode($response->body);
 } elseif (substr($response->contentType, -4) == 'json') {

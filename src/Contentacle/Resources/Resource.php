@@ -83,8 +83,11 @@ class Resource extends \Tonic\Resource
 
     /**
      * @method get
+     * @method options
      */
-    function get() {}
+    function get() {
+        return new Hal();
+    }
     
     function secure()
     {
