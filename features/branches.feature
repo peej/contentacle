@@ -84,7 +84,6 @@ Feature:
         When I send a GET request to "/users/peej/repos/test/branches/renamed-branch"
         And response property "name" should be "renamed-branch"
 
-    @wip
     Scenario: Rename master branch
         Given I add "Content-Type" header equal to "application/json-patch+json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
