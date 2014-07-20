@@ -70,6 +70,7 @@ class FeatureContext extends MinkContext
     {
         $session = $this->getSession();
         $response = $session->getPage()->getContent();
+        
         $data = json_decode($response, true);
         if ($data == false) {
             $yaml = new Yaml;
@@ -82,10 +83,14 @@ class FeatureContext extends MinkContext
             }
             $data = $data[$part];
         }
+
         if ($data === false) {
             $data = 'false';
+        } elseif ($data === true) {
+            $data = 'true';
         }
-        if ($data != $value) {
+
+        if ($data !== $value) {
             throw new Exception($name.' is "'.$data.'" not "'.$value.'"');
         }
     }
