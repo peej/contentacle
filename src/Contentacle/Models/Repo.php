@@ -290,13 +290,20 @@ class Repo extends Model
     public function canMerge($branch, $branch2)
     {
         $this->git->setBranch($branch);
-        return $this->git->canMerge($branch2);
+        $this->git->canMerge($branch2);
     }
 
     public function conflicts($branch, $branch2)
     {
         $this->git->setBranch($branch);
         return $this->git->mergeConflicts($branch2);
+    }
+
+    public function merge($branch, $branch2)
+    {
+        $this->git->setBranch($branch);
+        $this->git->resetIndex();
+        return $this->git->merge($branch2);
     }
 
 }
