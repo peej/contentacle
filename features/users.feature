@@ -28,10 +28,14 @@ Feature:
         And response property "name" should be "Paul James"
         And response property "email" should be "paul@peej.co.uk"
         And response property "_links->self->href" should be "/users/peej.yaml"
-        And response property "_embedded->repos->0->name" should be "test"
-        And response property "_embedded->repos->0->_links->self->href" should be "/users/peej/repos/test.yaml"
+        And response property "_embedded->repos->1->name" should be "test"
+        And response property "_embedded->repos->1->_links->self->href" should be "/users/peej/repos/test.yaml"
 
-    Scenario: Recieve a 404 for a non-existant user
+    Scenario: User has a default email address if not created with one
+        When I send a GET request to "/users/empty.yaml"
+        Then response property "email" should be "empty@localhost"
+
+    Scenario: Receive a 404 for a non-existant user
         When I send a GET request to "/users/missing"
         Then the response status code should be 404
         And the directory "missing" should not exist

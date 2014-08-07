@@ -32,12 +32,11 @@ Feature:
 
     Scenario: View a documents history
         Given I send a GET request on "/users/peej/repos/test/branches/master/history/afile.txt"
-        Then response property "_embedded->commits->0->_links->self->href" should be "/users/peej/repos/test/branches/master/commits/2c22b023d0979bcc768bc088063eb4a9a376db80"
+        Then response property "_embedded->commits->0->_links->self->href" should be "/users/peej/repos/test/branches/master/commits/{sha}" with sha 3
         And response property "_embedded->commits->0->message" should be "Commit message"
-        And response property "_embedded->commits->0->date" should be "1392493822"
         And response property "_embedded->commits->0->username" should be "peej"
         And response property "_embedded->commits->0->author" should be "Paul James"
-        And response property "_embedded->commits->0->sha" should be "2c22b023d0979bcc768bc088063eb4a9a376db80"
+        And response property "_embedded->commits->0->sha" should be sha 3
 
     Scenario: Create a new document from raw content
         Given I add "Content-Type" header equal to "text/plain"
