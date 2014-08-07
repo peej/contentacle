@@ -47,7 +47,7 @@ if (strpos($_SERVER['HTTP_ACCEPT'], 'text/json') !== false) {
 $_SERVER['HTTP_ACCEPT'] .= ',text/yaml';
 
 $request = new Tonic\Request(array(
-    'uri' => $_SERVER['PATH_INFO'],
+    'uri' => $_SERVER['PHP_SELF'],
     'mimetypes' => array(
         'yaml' => 'text/yaml',
         'yml' => 'text/yaml',
