@@ -21,6 +21,9 @@ class Repo extends Model
         $this->yaml = $yaml;
         $this->userRepo = $userRepo;
 
+        $user = $userRepo->getUser($data['username']);
+        $this->git->setUser($user->name, $user->email);
+
         try {
             $repoMetadata = $yaml->decode($this->git->file('contentacle.yaml'));
         } catch (\Git\Exception $e) {
