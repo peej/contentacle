@@ -74,6 +74,8 @@ TABLE
             | clash.txt | This will clash |
 TABLE
         ));
+        $this->iSwitchToBranch("master", "peej", "test");
+        $this->iResetTheIndex("peej", "test");
     }
 
     /**
@@ -81,7 +83,7 @@ TABLE
      */
     public function tearDownRepo()
     {
-        return new Then('I have an empty data store');
+        $this->iHaveAnEmptyDataStore();
     }
 
     /**
@@ -221,6 +223,28 @@ TABLE
     }
 
     /**
+     * @Given /^I send a POST request on "([^"]*)" with sha (\d+)$/
+     */
+    public function iSendAPostRequestOnWithSha($url, $shaNumber)
+    {
+        if (!isset($this->shas[$shaNumber - 1])) {
+            throw new Exception('There is no generated sha #'.$shaNumber);
+        }
+        return new Given('I send a POST request on "'.str_replace('{sha}', $this->shas[$shaNumber - 1], $url).'"');
+    }
+
+    /**
+     * @Given /^I send a POST request on "([^"]*)" with sha (\d+) and body:$/
+     */
+    public function iSendAPostRequestOnWithShaAndBody($url, $shaNumber, PyStringNode $body)
+    {
+        if (!isset($this->shas[$shaNumber - 1])) {
+            throw new Exception('There is no generated sha #'.$shaNumber);
+        }
+        return new Given('I send a POST request on "'.str_replace('{sha}', $this->shas[$shaNumber - 1], $url).'" with body:', $body);
+    }
+
+    /**
      * @Given /^the directory "([^"]*)" should exist$/
      */
     public function theDirectoryShouldExist($filename)
@@ -314,6 +338,29 @@ TABLE
     public function iSwitchToBranch($branchName, $username, $repoName)
     {
         $this->branch[$username.'/'.$repoName] = $branchName;
+    }
+
+    /**
+     * @Given /^I reset the index of "([^"\/]*)\/([^"]*)"$/
+     */
+    public function iResetTheIndex($username, $repoName)
+    {
+        $repo = $this->getRepo($username, $repoName);
+        $repo->setBranch($this->branch[$username.'/'.$repoName]);
+        $repo->resetIndex();
+    }
+
+    /**
+     * @Given /^I remember the commit sha from the location header$/
+     */
+    public function iRememberTheCommitShaFromTheLocationHeader()
+    {
+        $session = $this->getSession();
+        $responseHeaders = $session->getResponseHeaders();
+        if (!isset($responseHeaders['Location'])) {
+            throw new Exception('No location header returned');
+        }
+        $this->shas[] = substr($responseHeaders['Location'][0], -40);
     }
 
 }

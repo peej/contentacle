@@ -18,3 +18,42 @@ Feature:
         And response property "username" should be "peej"
         And response property "author" should be "Paul James"
         And response property "files" should contain "contentacle.yaml"
+
+    Scenario: 404 for a non-existant commit
+        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/1234567890123546789012345678901234567890"
+        Then the response status code should be 404
+
+    Scenario: Revert a single commit
+        Given I add "Content-Type" header equal to "application/json"
+        And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 3
+        Then the response status code should be 201
+        And I remember the commit sha from the location header
+        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
+        Then response property "message" should be "Undo change {sha}" with sha 3
+
+    Scenario: Revert a single commit with a custom commit message
+        Given I add "Content-Type" header equal to "text/plain"
+        And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 3 and body:
+            """
+            Custom commit message
+            """
+        Then the response status code should be 201
+        And I remember the commit sha from the location header
+        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
+        Then response property "message" should be "Custom commit message"
+
+    Scenario: Revert a single commit with a custom commit message
+        Given I add "Content-Type" header equal to "application/json"
+        And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 3 and body:
+            """
+            {
+                'message': 'Custom commit message'
+            }
+            """
+        Then the response status code should be 201
+        And I remember the commit sha from the location header
+        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
+        Then response property "message" should be "Custom commit message"
