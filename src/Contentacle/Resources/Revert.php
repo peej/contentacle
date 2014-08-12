@@ -29,15 +29,14 @@ class Revert extends Resource {
             $commitMessage = 'Undo change '.$commit['sha'];
         }
 
-        try {
-            $newSha = $repo->revert($commit['sha'], $commitMessage);
-        } catch (\Git\Exception $e) {
-            throw new \Tonic\Exception('Could not revert commit');
+        if ($revertSha = $repo->revert($commit['sha'], $commitMessage)) {
+            $response = new \Tonic\Response(201);
+            $response->location = '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits/'.$revertSha;
+            return $response;
+        } else {
+            return new \Tonic\Response(400);
         }
         
-        $response = new \Tonic\Response(201);
-        $response->location = '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits/'.$newSha;
-        return $response;
     }
 
 }
