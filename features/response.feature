@@ -14,7 +14,7 @@ Feature:
         And response property "_links->self->href" should be "/users.yaml"
 
     Scenario: Alternative YAML mimetype accept header
-        Given I set the "accept" header to "application/yaml"
+        Given I set the "Accept" header to "application/yaml"
         And I send a GET request on "/users"
         Then the "Content-Type" response header should be "application/hal+yaml"
 
@@ -27,16 +27,16 @@ Feature:
         And response property "_embedded->users->1->name" should be "Paul James"
 
     Scenario: JSON accept header
-        Given I set the "accept" header to "application/json"
+        Given I set the "Accept" header to "application/json"
         And I send a GET request on "/users"
         Then the "Content-Type" response header should be "application/hal+json"
         And response property "_links->self->href" should be "/users.json"
 
     Scenario: Alternative JSON mimetype accept header
-        Given I set the "accept" header to "text/json"
+        Given I set the "Accept" header to "text/json"
         And I send a GET request on "/users"
         Then the "Content-Type" response header should be "application/hal+json"
-        
+
     Scenario: JSON URL extension
         Given I send a GET request on "/users.json"
         Then the "Content-Type" response header should be "application/hal+json"
