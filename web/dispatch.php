@@ -95,7 +95,7 @@ if (is_array($response->body)) {
 }
 
 if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'Mozilla') !== false) {
-    $response->XContentType = $response->contentType;
+    $response->headers['X-Content-Type'] = $response->contentType;
     $response->contentType = 'text/plain';
 }
 
