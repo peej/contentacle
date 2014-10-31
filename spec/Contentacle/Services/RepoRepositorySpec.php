@@ -14,31 +14,37 @@ class RepoRepositorySpec extends ObjectBehavior
         $this->repoDir = sys_get_temp_dir().'/contentacle';
     }
     
-    function let(\Contentacle\Services\UserRepository $userRepo)
+    function let(
+        \Contentacle\Models\Repo $extraction,
+        \Contentacle\Models\Repo $limbo
+    )
     {
         @mkdir($this->repoDir);
         @mkdir($this->repoDir.'/cobb');
-
-        $yaml = new \Contentacle\Services\Yaml;
-        $git = new \Git\Repo(
-            $this->repoDir.'/cobb/extraction'
-        );
-
-        $git->add('contentacle.yaml', $yaml->encode(array(
-            'title' => 'Extraction 101',
-            'description' => 'Extraction information for Ariadne'
-        )), 'Initial commit');
+        @mkdir($this->repoDir.'/cobb/extraction');
+        @mkdir($this->repoDir.'/cobb/extraction/.git');
 
         $repoDir = $this->repoDir;
 
+        $extraction->prop('name')->willReturn('extraction');
+        $extraction->prop('username')->willReturn('cobb');
+        $extraction->prop('title')->willReturn('Extraction 101');
+        $extraction->prop('description')->willReturn('Extraction information for Ariadne');
+
         $this->beConstructedWith(
             $this->repoDir,
-            function ($data) use ($yaml, $repoDir, $userRepo) {
-                return new \Contentacle\Models\Repo($data, function () use ($data, $repoDir) {
-                    return new \Git\Repo(
-                        $repoDir.'/'.$data['username'].'/'.$data['name']
-                    );
-                }, $repoDir, $yaml, $userRepo);
+            function ($data) use ($extraction, $limbo) {
+                if ($data['name'] == 'extraction') {
+                    return $extraction;
+                }
+
+                @mkdir($this->repoDir.'/cobb/'.$data['name']);
+                @mkdir($this->repoDir.'/cobb/'.$data['name'].'/.git');
+                foreach ($data as $name => $value) {
+                    $limbo->prop($name)->willReturn($value);
+                }
+                $limbo->prop(Argument::cetera())->willReturn(null);
+                return $limbo;
             }
         );
 
@@ -58,7 +64,6 @@ class RepoRepositorySpec extends ObjectBehavior
     {
         $this->getRepos('cobb')->shouldHaveCount(1);
         $repo = $this->getRepos('cobb')['extraction'];
-        $repo->shouldHaveType('Contentacle\Models\Repo');
         $repo->name->shouldBe('extraction');
         $repo->title->shouldBe('Extraction 101');
         $repo->username->shouldBe('cobb');
@@ -68,7 +73,6 @@ class RepoRepositorySpec extends ObjectBehavior
     function it_should_retrieve_a_given_repo_for_a_given_user()
     {
         $repo = $this->getRepo('cobb', 'extraction');
-        $repo->shouldHaveType('Contentacle\Models\Repo');
         $repo->name->shouldBe('extraction');
         $repo->title->shouldBe('Extraction 101');
         $repo->username->shouldBe('cobb');
@@ -86,15 +90,10 @@ class RepoRepositorySpec extends ObjectBehavior
             'title' => 'Limbo'
         ));
         
-        $repo->shouldHaveType('Contentacle\Models\Repo');
         $repo->name->shouldBe('limbo');
         $repo->title->shouldBe('Limbo');
         $repo->username->shouldBe('cobb');
         $repo->description->shouldBe(null);
-        $repo->branches()[0]->shouldBe('master');
-
-        $document = $repo->document('master', 'contentacle.yaml');
-        $document['filename']->shouldBe('contentacle.yaml');
 
         $repo = $this->getRepo('cobb', 'limbo');
         $repo->name->shouldBe('limbo');
