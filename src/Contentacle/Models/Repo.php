@@ -213,12 +213,21 @@ class Repo extends Model
      */
     public function writeMetadata($branch = 'master')
     {
-        return $this->saveDocument(
-            $branch,
-            'contentacle.yaml',
-            $this->yaml->encode($this->props()),
-            'Update repo metadata'
-        );
+        try {
+            return $this->updateDocument(
+                $branch,
+                'contentacle.yaml',
+                $this->yaml->encode($this->props()),
+                'Update repo metadata'
+            );
+        } catch (\Contentacle\Exceptions\RepoException $e) {
+            return $this->createDocument(
+                $branch,
+                'contentacle.yaml',
+                $this->yaml->encode($this->props()),
+                'Created repo metadata'
+            );
+        }
     }
 
     /**
@@ -244,27 +253,16 @@ class Repo extends Model
         rmdir($path);
     }
 
-    public function saveDocument($branch, $path, $content, $commitMessage = null)
-    {
-        $this->git->setBranch($branch);
-        try {
-            $this->git->file($path);
-            $this->updateDocument($branch, $path, $content, $commitMessage);
-            return 200;
-        } catch (\Git\Exception $e) {
-            $this->createDocument($branch, $path, $content, $commitMessage);
-            return 201;
-        }
-    }
-
     public function createDocument($branch, $path, $content, $commitMessage = null)
     {
         if (!$commitMessage) {
             $commitMessage = 'Create '.$path;
         }
         $this->git->setBranch($branch);
-        if (!$this->git->add($path, $content, $commitMessage)) {
-            throw new \Contentacle\Exceptions\RepoException;
+        try {
+            $this->git->add($path, $content, $commitMessage);
+        } catch (\Git\Exception $e) {
+            throw new \Contentacle\Exceptions\RepoException('Could not create document "'.$path.'"');
         }
     }
 
@@ -274,8 +272,10 @@ class Repo extends Model
             $commitMessage = 'Update '.$path;
         }
         $this->git->setBranch($branch);
-        if (!$this->git->update($path, $content, $commitMessage)) {
-            throw new \Contentacle\Exceptions\RepoException;
+        try {
+            $this->git->update($path, $content, $commitMessage);
+        } catch (\Git\Exception $e) {
+            throw new \Contentacle\Exceptions\RepoException('Could not update document "'.$path.'"');
         }
     }
 
@@ -286,7 +286,7 @@ class Repo extends Model
         }
         $this->git->setBranch($branch);
         if (!$this->git->remove($path, $commitMessage)) {
-            throw new \Contentacle\Exceptions\RepoException;
+            throw new \Contentacle\Exceptions\RepoException('Could not delete document "'.$path.'"');
         }
     }
 

@@ -99,7 +99,13 @@ class Documents extends Resource {
             throw $e;
         }
 
-        $code = $repo->saveDocument($branchName, $path, $content, $commitMessage);
+        try {
+            $repo->updateDocument($branchName, $path, $content, $commitMessage);
+            $code = 200;
+        } catch (\Contentacle\Exceptions\RepoException $e) {
+            $repo->createDocument($branchName, $path, $content, $commitMessage);
+            $code = 201;
+        }
 
         $document = $repo->document($branchName, $path);
 
