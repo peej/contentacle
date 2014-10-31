@@ -86,10 +86,12 @@ if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
     $response->setHeader('Access-Control-Allow-Headers', $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
 }
 
-if (substr($response->contentType, -4) == 'yaml') {
-    $response->body = $container['yaml']->encode($response->body);
-} elseif (substr($response->contentType, -4) == 'json') {
-    $response->body = json_encode($response->body, JSON_PRETTY_PRINT);
+if (is_array($response->body)) {
+    if (substr($response->contentType, -4) == 'json') {
+        $response->body = json_encode($response->body, JSON_PRETTY_PRINT);
+    } else {
+        $response->body = $container['yaml']->encode($response->body);
+    }
 }
 
 if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'Mozilla') !== false) {
