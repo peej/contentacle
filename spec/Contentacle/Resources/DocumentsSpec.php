@@ -15,7 +15,8 @@ class DocumentsSpec extends ObjectBehavior
         $repo->documents(Argument::cetera())->willThrow(new \Contentacle\Exceptions\RepoException);
         $repo->document('master', 'new-york/the-hotel/totem.txt')->willReturn(array(
             'path' => 'new-york/the-hotel/totem.txt',
-            'filename' => 'totem.txt'
+            'filename' => 'totem.txt',
+            'username' => 'cobb'
         ));
         $repo->document(Argument::cetera())->willThrow(new \Contentacle\Exceptions\RepoException);
         

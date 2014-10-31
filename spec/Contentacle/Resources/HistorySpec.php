@@ -13,7 +13,8 @@ class HistorySpec extends ObjectBehavior
             array('sha' => '123456')
         ));
         $repo->commit('master', '123456')->willReturn(array(
-            'sha' => '123456'
+            'sha' => '123456',
+            'username' => 'cobb'
         ));
         
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);

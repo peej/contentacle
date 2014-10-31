@@ -24,7 +24,7 @@ class UsersSpec extends ObjectBehavior
             'name' => 'Eames'
         );
 
-        $userRepo->getUsers()->willReturn(array($user1, $user2));
+        $userRepo->getUsers(null)->willReturn(array($user1, $user2));
         $userRepo->getUser('cobb')->willReturn($user1);
         $userRepo->getUser('arthur')->willReturn($user2);
 

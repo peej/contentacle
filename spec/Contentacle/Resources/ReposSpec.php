@@ -35,7 +35,7 @@ class ReposSpec extends ObjectBehavior
             'name' => 'Dominick Cobb'
         );
 
-        $repoRepo->getRepos('cobb')->willReturn(array(
+        $repoRepo->getRepos('cobb', null)->willReturn(array(
             'extraction' => $repo1,
             'inception' => $repo2
         ));

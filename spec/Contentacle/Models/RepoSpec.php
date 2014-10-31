@@ -7,7 +7,16 @@ use Prophecy\Argument;
 
 class RepoSpec extends ObjectBehavior
 {
-    function let(\Git\Repo $repo, \Contentacle\Services\Yaml $yaml, \Git\Tree $rootTree, \Git\Tree $subTree, \Git\Blob $totem, \Git\Commit $commit)
+    function let(
+        \Contentacle\Services\Yaml $yaml,
+        \Contentacle\Services\UserRepository $userRepo,
+        \Contentacle\Models\User $user,
+        \Git\Repo $repo,
+        \Git\Tree $rootTree,
+        \Git\Tree $subTree,
+        \Git\Blob $totem,
+        \Git\Commit $commit
+    )
     {
         $repo->file('contentacle.yaml')->willReturn('Contentacle YAML');
         
@@ -16,6 +25,7 @@ class RepoSpec extends ObjectBehavior
             'description' => 'Extraction instructions for Ariadne'
         ));
 
+        $repo->setUser(Argument::any(), Argument::any())->willReturn(true);
         $repo->getBranches()->willReturn(array('master', 'arthur'));
         $repo->setBranch('master')->willReturn();
         
@@ -51,6 +61,9 @@ class RepoSpec extends ObjectBehavior
         
         $totem->getHistory()->willReturn(array($commit));
 
+        $userRepo->getUser('cobb')->willReturn($user);
+        $userRepo->getUsernameFromEmail('cobb@localhost')->willReturn('cobb');
+
         $data = array(
             'username' => 'cobb',
             'name' => 'extraction',
@@ -59,7 +72,7 @@ class RepoSpec extends ObjectBehavior
         $gitProvider = function ($username, $repoName) use ($repo) {
             return $repo->getWrappedObject();
         };
-        $this->beConstructedWith($data, $gitProvider, '', $yaml);
+        $this->beConstructedWith($data, $gitProvider, '', $yaml, $userRepo);
     }
 
     function it_is_initializable()

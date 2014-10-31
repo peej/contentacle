@@ -14,14 +14,16 @@ class CommitsSpec extends ObjectBehavior
         $repo->hasBranch(Argument::cetera())->willReturn(false);
         
         $repo->commit('master', '123456')->willReturn(array(
-            'sha' => '123456'
+            'sha' => '123456',
+            'username' => 'cobb'
         ));
         $repo->commits('master', 0, 24)->willReturn(array(
             array('sha' => '123456')
         ));
 
         $repo->commit('master', '654321')->willReturn(array(
-            'sha' => '654321'
+            'sha' => '654321',
+            'username' => 'cobb'
         ));
         $repo->commits('master', 25, 49)->willReturn(array(
             array('sha' => '654321')

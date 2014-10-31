@@ -10,7 +10,8 @@ class CommitSpec extends ObjectBehavior
     function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
     {
         $repo->commit('master', '123456')->willReturn(array(
-            'sha' => '123456'
+            'sha' => '123456',
+            'username' => 'cobb'
         ));
         $repo->commit(Argument::cetera())->willThrow(new \Git\Exception);
 
