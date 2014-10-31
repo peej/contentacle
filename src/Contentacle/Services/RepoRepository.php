@@ -31,8 +31,9 @@ class RepoRepository
 
     public function getRepo($username, $repoName)
     {
-        $repoDir = $this->repoDir.'/'.$username.'/'.$repoName.'.git';
-        if (!is_dir($repoDir)) {
+        $normalRepoDir = $this->repoDir.'/'.$username.'/'.$repoName.'.git';
+        $bareRepoDir = $this->repoDir.'/'.$username.'/'.$repoName.'/.git';
+        if (!is_dir($normalRepoDir) && !is_dir($bareRepoDir)) {
             throw new \Contentacle\Exceptions\RepoException('Repo "'.$username.'/'.$repoName.'" does not exist');
         }
         $data = array(
