@@ -86,6 +86,7 @@ Feature:
         Then the response status code should be 200
         And response property "name" should be "renamed-branch"
         When I send a GET request to "/users/peej/repos/test/branches/renamed-branch"
+        And the header "Content-Type" should be equal to "contentacle/branch+yaml"
         And response property "name" should be "renamed-branch"
 
     Scenario: Rename master branch
