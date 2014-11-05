@@ -35,6 +35,8 @@ class Merge extends Resource {
             $response->addData('conflicts', $repo->conflicts($branch1, $branch2));
         }
 
+        $response->contentType = 'contentacle/merge+yaml';
+
         return $response;
     }
 

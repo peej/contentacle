@@ -44,7 +44,7 @@ class Documents extends Resource {
                 }
             }
 
-            $response->contentType = 'contentacle/documents'.$this->formatExtension('+');
+            $response->contentType = 'contentacle/documents+yaml';
             return $response;
 
         } catch (\Contentacle\Exceptions\RepoException $e) {
@@ -61,7 +61,7 @@ class Documents extends Resource {
                 $response->addForm('cont:edit-document', 'put', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$document['path'].$this->formatExtension(), '*/*', 'Add a document');
                 $response->addForm('cont:delete-document', 'delete', null, null, 'Delete the document');
 
-                $response->contentType = 'contentacle/documents'.$this->formatExtension('+');
+                $response->contentType = 'contentacle/document+yaml';
                 return $response;
 
             } catch (\Contentacle\Exceptions\RepoException $e) {}
@@ -109,7 +109,9 @@ class Documents extends Resource {
 
         $document = $repo->document($branchName, $path);
 
-        return new \Contentacle\Responses\Hal($code, $document);
+        $response = new \Contentacle\Responses\Hal($code, $document);
+        $response->contentType = 'contentacle/document+yaml';
+        return $response;
     }
 
 

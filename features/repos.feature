@@ -4,7 +4,8 @@ Feature:
 
     Scenario: View a list of repos
         When I send a GET request on "/users/peej/repos"
-        Then response property "_embedded->repos->1->_links->self->href" should be "/users/peej/repos/test"
+        Then the header "Content-Type" should be equal to "application/hal+yaml"
+        And response property "_embedded->repos->1->_links->self->href" should be "/users/peej/repos/test"
         And response property "_embedded->repos->1->username" should be "peej"
         And response property "_embedded->repos->1->name" should be "test"
         And response property "_embedded->repos->1->title" should be "Test"
@@ -21,7 +22,8 @@ Feature:
 
     Scenario: View a repos details
         When I send a GET request on "/users/peej/repos/test"
-        Then response property "_links->self->href" should be "/users/peej/repos/test"
+        Then the header "Content-Type" should be equal to "contentacle/repo+yaml"
+        And response property "_links->self->href" should be "/users/peej/repos/test"
         And response property "username" should be "peej"
         And response property "title" should be "Test"
         And response property "description" should be "No description"
@@ -66,7 +68,8 @@ Feature:
         Then the response status code should be 201
         And the header "Location" should be equal to "/users/peej/repos/another"
         When I send a GET request to "/users/peej/repos/another"
-        Then response property "name" should be "another"
+        Then the header "Content-Type" should be equal to "contentacle/repo+yaml"
+        And response property "name" should be "another"
         And response property "title" should be "Test repo"
         And response property "description" should be "This is a test repo"
 
@@ -108,9 +111,11 @@ Feature:
             }]
             """
         Then the response status code should be 200
+        And the header "Content-Type" should be equal to "contentacle/repo+yaml"
         And response property "username" should be "peej"
         And response property "title" should be "Not a test"
         When I send a GET request to "/users/peej/repos/test"
+        And the header "Content-Type" should be equal to "contentacle/repo+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "test"
         And response property "title" should be "Not a test"
@@ -127,9 +132,11 @@ Feature:
             }]
             """
         Then the response status code should be 200
+        And the header "Content-Type" should be equal to "contentacle/repo+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "not-a-test"
         When I send a GET request to "/users/peej/repos/not-a-test"
+        And the header "Content-Type" should be equal to "contentacle/repo+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "not-a-test"
 
@@ -145,9 +152,13 @@ Feature:
             }]
             """
         Then the response status code should be 200
+        And the header "Content-Type" should be equal to "contentacle/repo+yaml"
         And response property "username" should be "empty"
         And response property "name" should be "test"
+        When I send a GET request to "/users/peej/repos/test"
+        Then the response status code should be 404
         When I send a GET request to "/users/empty/repos/test"
+        And the header "Content-Type" should be equal to "contentacle/repo+yaml"
         And response property "username" should be "empty"
         And response property "name" should be "test"
 
@@ -164,6 +175,7 @@ Feature:
             }
             """
         Then the response status code should be 200
+        And the header "Content-Type" should be equal to "contentacle/repo+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "test"
         And response property "title" should be "A test repo"

@@ -32,6 +32,7 @@ class User extends Resource
                 }
             }
 
+            $response->contentType = 'contentacle/user+yaml';
             return $response;
 
         } catch (\Contentacle\Exceptions\UserException $e) {
@@ -60,7 +61,7 @@ class User extends Resource
             $userRepo->updateUser($user, $this->request->getData(), true);
 
             $response = new \Contentacle\Responses\Hal(200, $user);
-
+            $response->contentType = 'contentacle/user+yaml';
             return $response;
 
         } catch (\Contentacle\Exceptions\UserException $e) {

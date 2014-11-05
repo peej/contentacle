@@ -22,7 +22,9 @@ class Repo extends Resource
                 $response->embed('branches', $this->getChildResource('\Contentacle\Resources\Branch', array($repo->username, $repo->name, $branchName)));
             }
         }
-        
+
+        $response->contentType = 'contentacle/repo+yaml';
+
         return $response;
     }
 

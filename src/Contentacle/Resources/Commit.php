@@ -24,7 +24,7 @@ class Commit extends Resource {
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits/'.$sha.$this->formatExtension());
             $response->addLink('cont:user', '/users/'.$commit['username'].$this->formatExtension());
 
-            $response->contentType = 'contentacle/commit';
+            $response->contentType = 'contentacle/commit+yaml';
             return $response;
 
         } catch (\Git\Exception $e) {

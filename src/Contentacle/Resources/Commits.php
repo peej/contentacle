@@ -40,7 +40,6 @@ class Commits extends Resource {
                 }
             }
             
-            $response->contentType = 'contentacle/commits';
             return $response;
 
         } catch (\Git\Exception $e) {

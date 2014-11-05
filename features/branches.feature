@@ -57,6 +57,7 @@ Feature:
         And the header "Location" should be equal to "/users/peej/repos/test/branches/another"
         When I send a GET request to "/users/peej/repos/test/branches/another"
         Then the response status code should be 200
+        And the header "Content-Type" should be equal to "contentacle/branch+yaml"
         And response property "name" should be "another"
 
     Scenario: Try to create an invalid branch
@@ -84,6 +85,7 @@ Feature:
             }]
             """
         Then the response status code should be 200
+        And the header "Content-Type" should be equal to "contentacle/branch+yaml"
         And response property "name" should be "renamed-branch"
         When I send a GET request to "/users/peej/repos/test/branches/renamed-branch"
         And the header "Content-Type" should be equal to "contentacle/branch+yaml"
@@ -101,8 +103,10 @@ Feature:
             }]
             """
         Then the response status code should be 200
+        And the header "Content-Type" should be equal to "contentacle/branch+yaml"
         And response property "name" should be "not-master"
         When I send a GET request to "/users/peej/repos/test/branches/not-master"
+        And the header "Content-Type" should be equal to "contentacle/branch+yaml"
         And response property "name" should be "not-master"
 
     Scenario: Can not rename another branch to same name as another branch
@@ -117,6 +121,7 @@ Feature:
             }]
             """
         Then the response status code should be 400
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "_embedded->errors->0->logref" should be "name"
         And response property "_embedded->errors->0->message" should be "A branch named 'master' already exists"
     

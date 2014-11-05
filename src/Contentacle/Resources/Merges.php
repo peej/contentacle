@@ -33,7 +33,6 @@ class Merges extends Resource {
             }
         }
 
-        $response->contentType = 'contentacle/merges';
         return $response;
 
     }

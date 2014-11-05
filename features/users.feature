@@ -4,7 +4,8 @@ Feature:
 
     Scenario: Link to itself
         When I send a GET request to "/users.yaml"
-        Then response property "_links->self->href" should be "/users.yaml"
+        Then the header "Content-Type" should be equal to "application/hal+yaml"
+        And response property "_links->self->href" should be "/users.yaml"
 
     Scenario: Provide an add user form
         When I send a GET request to "/users.yaml"
@@ -14,7 +15,8 @@ Feature:
 
     Scenario: View a list of users
         When I send a GET request to "/users.yaml"
-        Then response property "_embedded->users->1->username" should be "peej"
+        Then the header "Content-Type" should be equal to "application/hal+yaml"
+        And response property "_embedded->users->1->username" should be "peej"
         And response property "_embedded->users->1->name" should be "Paul James"
         And response property "_embedded->users->1->_links->self->href" should be "/users/peej.yaml"
 
@@ -24,7 +26,9 @@ Feature:
 
     Scenario: View a users details
         When I send a GET request to "/users/peej.yaml"
-        Then response property "username" should be "peej"
+        Then the response status code should be 200
+        And the header "Content-Type" should be equal to "contentacle/user+yaml"
+        And response property "username" should be "peej"
         And response property "name" should be "Paul James"
         And response property "email" should be "paul@peej.co.uk"
         And response property "_links->self->href" should be "/users/peej.yaml"
@@ -53,7 +57,8 @@ Feature:
         Then the response status code should be 201
         And the header "Location" should be equal to "/users/test1"
         When I send a GET request to "/users/test1"
-        Then response property "username" should be "test1"
+        Then the header "Content-Type" should be equal to "contentacle/user+yaml"
+        And response property "username" should be "test1"
         And response property "password" should be "118b32994e63fd4a3ff1dd091d2e859d9fa66811"
         And response property "email" should be "test1@localhost"
 
@@ -83,6 +88,7 @@ Feature:
             }]
             """
         Then the response status code should be 200
+        And the header "Content-Type" should be equal to "contentacle/user+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "PJ"
         When I send a GET request to "/users/peej"

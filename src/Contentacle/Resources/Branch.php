@@ -24,7 +24,7 @@ class Branch extends Resource
         $response->addLink('cont:documents', $branchUrl.'/documents'.$this->formatExtension());
         $response->addLink('cont:merges', $branchUrl.'/merges'.$this->formatExtension());
         
-        $response->contentType = 'contentacle/branch';
+        $response->contentType = 'contentacle/branch+yaml';
         return $response;
     }
 

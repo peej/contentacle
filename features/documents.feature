@@ -4,7 +4,8 @@ Feature:
 
     Scenario: View a list of documents
         Given I send a GET request on "/users/peej/repos/test/branches/master/documents"
-        Then response property "filename" should be ""
+        Then the header "Content-Type" should be equal to "contentacle/documents+yaml"
+        And response property "filename" should be ""
         And response property "_links->self->href" should be "/users/peej/repos/test/branches/master/documents"
         And response property "_embedded->documents->0->filename" should be "adir"
         And response property "_embedded->documents->0->_links->self->href" should be "/users/peej/repos/test/branches/master/documents/adir"
@@ -13,14 +14,16 @@ Feature:
 
     Scenario: View a list of documents within a directory
         Given I send a GET request on "/users/peej/repos/test/branches/master/documents/adir"
-        Then response property "filename" should be "adir"
+        Then the header "Content-Type" should be equal to "contentacle/documents+yaml"
+        And response property "filename" should be "adir"
         And response property "_links->self->href" should be "/users/peej/repos/test/branches/master/documents/adir"
         And response property "_embedded->documents->0->filename" should be "emptyFile.txt"
         And response property "_embedded->documents->0->_links->self->href" should be "/users/peej/repos/test/branches/master/documents/adir/emptyFile.txt"
 
     Scenario: View a documents details
         Given I send a GET request on "/users/peej/repos/test/branches/master/documents/afile.txt"
-        Then response property "_links->self->href" should be "/users/peej/repos/test/branches/master/documents/afile.txt"
+        Then the header "Content-Type" should be equal to "contentacle/document+yaml"
+        And response property "_links->self->href" should be "/users/peej/repos/test/branches/master/documents/afile.txt"
         And response property "filename" should be "afile.txt"
         And response property "content" should be "Some content"
         And response property "_links->cont:raw->href" should be "/users/peej/repos/test/branches/master/raw/afile.txt"
@@ -28,11 +31,13 @@ Feature:
 
     Scenario: View a documents raw content
         Given I send a GET request on "/users/peej/repos/test/branches/master/raw/afile.txt"
-        Then the response should contain "Some content"
+        Then the header "Content-Type" should be equal to "text/plain"
+        And the response should contain "Some content"
 
     Scenario: View a documents history
         Given I send a GET request on "/users/peej/repos/test/branches/master/history/afile.txt"
-        Then response property "_embedded->commits->0->_links->self->href" should be "/users/peej/repos/test/branches/master/commits/{sha}" with sha 3
+        Then the header "Content-Type" should be equal to "contentacle/history+yaml"
+        And response property "_embedded->commits->0->_links->self->href" should be "/users/peej/repos/test/branches/master/commits/{sha}" with sha 3
         And response property "_embedded->commits->0->message" should be "Commit message"
         And response property "_embedded->commits->0->username" should be "peej"
         And response property "_embedded->commits->0->author" should be "Paul James"
@@ -46,9 +51,11 @@ Feature:
             New document
             """
         Then the response status code should be 201
+        And the header "Content-Type" should be equal to "contentacle/document+yaml"
         And response property "filename" should be "new.txt"
         When I send a GET request to "/users/peej/repos/test/branches/master/documents/new.txt"
         Then the response status code should be 200
+        And the header "Content-Type" should be equal to "contentacle/document+yaml"
         And response property "filename" should be "new.txt"
         And response property "type" should be "file"
         And response property "content" should be "New document"
@@ -68,9 +75,11 @@ Feature:
             }
             """
         Then the response status code should be 201
+        And the header "Content-Type" should be equal to "contentacle/document+yaml"
         And response property "filename" should be "new.txt"
         When I send a GET request to "/users/peej/repos/test/branches/master/documents/new.txt"
         Then the response status code should be 200
+        And the header "Content-Type" should be equal to "contentacle/document+yaml"
         And response property "filename" should be "new.txt"
         And response property "type" should be "file"
         And response property "content" should be "New document"
@@ -87,6 +96,7 @@ Feature:
             Updated document
             """
         Then the response status code should be 200
+        And the header "Content-Type" should be equal to "contentacle/document+yaml"
         And response property "filename" should be "afile.txt"
         And response property "type" should be "file"
         And response property "content" should be "Updated document"
@@ -106,6 +116,7 @@ Feature:
             }
             """
         Then the response status code should be 200
+        And the header "Content-Type" should be equal to "contentacle/document+yaml"
         And response property "filename" should be "afile.txt"
         And response property "type" should be "file"
         And response property "content" should be "Updated document"

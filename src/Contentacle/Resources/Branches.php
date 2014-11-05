@@ -27,8 +27,7 @@ class Branches extends Resource {
                     $response->embed('branches', $this->getChildResource('\Contentacle\Resources\Branch', array($username, $repoName, $branchName)));
                 }
             }
-            
-            $response->contentType = 'contentacle/branches';
+
             return $response;
 
         } catch (\Git\Exception $e) {
@@ -71,7 +70,6 @@ class Branches extends Resource {
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
             $response = new \Contentacle\Responses\Hal(400);
-            $response->contentType = 'application/hal';
             foreach ($e->errors as $field) {
                 $response->embed('errors', array(
                     'logref' => $field,

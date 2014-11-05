@@ -22,4 +22,13 @@ class Home extends Resource {
         return $response;
     }
 
+    /**
+     * @method get
+     * @provides text/html
+     */
+    function getHtml()
+    {
+        return new \Contentacle\Responses\Html('home.html');
+    }
+
 }

@@ -4,7 +4,9 @@ Feature:
 
     Scenario: View a list of commits
         Given I send a GET request on "/users/peej/repos/test/branches/master/commits"
-        Then response property "_links->self->href" should be "/users/peej/repos/test/branches/master/commits"
+        Then the response status code should be 200
+        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And response property "_links->self->href" should be "/users/peej/repos/test/branches/master/commits"
         And response property "_links->cont:commit->method" should be "post"
         And response property "_links->cont:commit->content-type" should contain "contentacle/commit+yaml"
         And response property "_embedded->commits->0->sha" should be sha 4
@@ -13,7 +15,9 @@ Feature:
 
     Scenario: View a commit
         Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 1
-        Then response property "sha" should be sha 1
+        Then the response status code should be 200
+        And the header "Content-Type" should be equal to "contentacle/commit+yaml"
+        And response property "sha" should be sha 1
         And response property "email" should be "paul@peej.co.uk"
         And response property "username" should be "peej"
         And response property "author" should be "Paul James"
@@ -30,7 +34,8 @@ Feature:
         Then the response status code should be 201
         And I remember the commit sha from the location header
         Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
-        Then response property "message" should be "Undo change {sha}" with sha 3
+        Then the header "Content-Type" should be equal to "contentacle/commit+yaml"
+        And response property "message" should be "Undo change {sha}" with sha 3
 
     Scenario: Revert a single commit with a custom commit message
         Given I add "Content-Type" header equal to "text/plain"
@@ -42,7 +47,8 @@ Feature:
         Then the response status code should be 201
         And I remember the commit sha from the location header
         Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
-        Then response property "message" should be "Custom commit message"
+        Then the header "Content-Type" should be equal to "contentacle/commit+yaml"
+        And response property "message" should be "Custom commit message"
 
     Scenario: Revert a single commit with a custom commit message
         Given I add "Content-Type" header equal to "application/json"
@@ -56,7 +62,8 @@ Feature:
         Then the response status code should be 201
         And I remember the commit sha from the location header
         Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
-        Then response property "message" should be "Custom commit message"
+        Then the header "Content-Type" should be equal to "contentacle/commit+yaml"
+        And response property "message" should be "Custom commit message"
 
     Scenario: Fail to revert a commit that can't be reverted since it conflicts with a newer commit
         Given I have a commit in "peej/test" with message "Conflict":
