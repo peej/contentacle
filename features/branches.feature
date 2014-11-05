@@ -25,6 +25,8 @@ Feature:
     Scenario: Recieve a 404 for a non-existant branch
         When I send a GET request to "/users/peej/repos/test/branches/missing"
         Then the response status code should be 404
+
+    Scenario: Recieve a 404 when trying to patch a non-existant branch
         Given I add "Content-Type" header equal to "application/json-patch+json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         When I send a PATCH request to "/users/peej/repos/test/branches/missing" with body:
@@ -36,6 +38,8 @@ Feature:
             }]
             """
         Then the response status code should be 404
+
+    Scenario: Recieve a 404 when trying to delete a non-existant branch
         Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         When I send a DELETE request to "/users/peej/repos/test/branches/missing"
         Then the response status code should be 404
