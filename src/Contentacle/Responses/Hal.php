@@ -11,6 +11,8 @@ class Hal extends \Tonic\Response
     {
         parent::__construct($code, null, $headers);
 
+        $this->contentType = 'application/hal+yaml';
+
         if (is_array($body)) {
             $this->body = $body;
         } elseif (is_object($body)) {
