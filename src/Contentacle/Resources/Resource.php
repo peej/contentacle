@@ -20,28 +20,29 @@ class Resource extends \Tonic\Resource
 
     protected function provides($mimetype)
     {
-        if (count($this->request->accept) == 0) return 0;
+        if (count($this->request->getAccept()) == 0) return 0;
 
-        $altMimetype = null;
-        if (substr($mimetype, -4) == 'yaml') {
-            $altMimetype = 'text/yaml';
-        } elseif (substr($mimetype, -4) == 'json') {
-            $altMimetype = 'application/json';
-        }
+        $match = null;
+        $pos = 0;
 
-        $pos = array_search($mimetype, $this->request->accept);
-        $altPos = array_search($altMimetype, $this->request->accept);
-        if ($pos === FALSE && $altPos === FALSE) {
-            if (in_array('*/*', $this->request->accept)) {
-                return 0;
+        foreach ($this->request->getAccept() as $acceptMimetype) {
+            if ($acceptMimetype == $mimetype) {
+                $match = $pos;
+                break;
             } else {
-                throw new \Tonic\NotAcceptableException('No matching method for response type "'.join(', ', $this->request->accept).'"');
+                $format = substr($acceptMimetype, strrpos($acceptMimetype, '/') + 1);
+                if (substr($mimetype, -strlen($format)) == $format) {
+                    $match = $pos;
+                }
             }
-        } else {
+            $pos++;
+        }
+        if ($match !== null) {
             $this->after(function ($response) use ($mimetype) {
                 $response->contentType = $mimetype;
             });
-            return count($this->request->accept) - $pos;
+
+            return count($this->request->getAccept()) - $match;
         }
     }
 
