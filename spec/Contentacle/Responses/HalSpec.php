@@ -58,4 +58,16 @@ class HalSpec extends ObjectBehavior
         $this->embed('rel', 'document');
         $this->body['_embedded']['rel'][0]->shouldBe('document');
     }
+    
+    function it_should_have_a_default_output_format_of_hal_yaml()
+    {
+        $this->contentType->shouldBe('application/hal+yaml');
+    }
+
+    function it_should_have_the_contentacle_curie_defined()
+    {
+        $this->addLink('self', '/url', false, 'title');
+        $this->body['_links']['curies'][0]['name']->shouldBe('cont');
+        $this->body['_links']['curies'][0]['href']->shouldBe('http://contentacle.io/rels/{rel}');
+    }
 }

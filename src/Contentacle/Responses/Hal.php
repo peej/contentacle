@@ -28,7 +28,7 @@ class Hal extends \Tonic\Response
             $this->body = array();
         }
 
-        #$this->addCuries();
+        $this->addCuries();
     }
 
     private function hasContent()
@@ -86,6 +86,9 @@ class Hal extends \Tonic\Response
 
     public function embed($rel, $document)
     {
+        if (isset($document['_links']['curies'])) {
+            unset($document['_links']['curies']);
+        }
         $this->embedded[$rel][] = $document;
         $this->hasContent();
         $this->body['_embedded'] = $this->embedded;
