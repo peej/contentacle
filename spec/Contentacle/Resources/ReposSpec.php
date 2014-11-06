@@ -125,7 +125,7 @@ class ReposSpec extends ObjectBehavior
         $response = $this->createRepo('cobb');
 
         $response->code->shouldBe(400);
-        $response->contentType->shouldBe('application/hal');
+        $response->contentType->shouldBe('application/hal+yaml');
         $response->body['_embedded']['errors'][0]['logref']->shouldBe('name');
         $response->body['_embedded']['errors'][1]['logref']->shouldBe('title');
     }

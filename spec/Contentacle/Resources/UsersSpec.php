@@ -94,7 +94,7 @@ class UsersSpec extends ObjectBehavior
         $response = $this->createUser();
 
         $response->code->shouldBe(400);
-        $response->contentType->shouldBe('application/hal');
+        $response->contentType->shouldBe('application/hal+yaml');
         $response->body['_embedded']['errors'][0]['logref']->shouldBe('username');
         $response->body['_embedded']['errors'][1]['logref']->shouldBe('password');
     }
