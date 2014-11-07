@@ -16,7 +16,7 @@ class Repos extends Resource {
         $response = new \Contentacle\Responses\Hal();
 
         $response->addLink('self', '/users/'.$username.'/repos'.$this->formatExtension());
-        $response->addForm('cont:create-repo', 'post', null, 'contentacle/repo', 'Create a repo');
+        $response->addForm('cont:create-repo', 'post', null, array('contentacle/repo+yaml', 'contentacle/repo+json'), 'Create a repo');
 
         try {
             $repoRepo = $this->container['repo_repository'];

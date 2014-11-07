@@ -35,6 +35,12 @@ Feature:
         And response property "_embedded->repos->1->name" should be "test"
         And response property "_embedded->repos->1->_links->self->href" should be "/users/peej/repos/test.yaml"
 
+    Scenario: Provide an edit user form
+        When I send a GET request to "/users/peej"
+        Then response property "_links->cont:edit-user->method" should be "patch"
+        And response property "_links->cont:edit-user->content-type" should contain "application/json-patch+json"
+        And response property "_links->cont:edit-user->content-type" should contain "application/json-patch+yaml"
+
     Scenario: User has a default email address if not created with one
         When I send a GET request to "/users/empty.yaml"
         Then response property "email" should be "empty@localhost"

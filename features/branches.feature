@@ -11,6 +11,12 @@ Feature:
         And response property "_embedded->branches->1->_links->self->href" should be "/users/peej/repos/test/branches/master"
         And response property "_embedded->branches->1->name" should be "master"
 
+    Scenario: Provide a create branch form
+        When I send a GET request to "/users/peej/repos/test/branches"
+        Then response property "_links->cont:create-branch->method" should be "post"
+        And response property "_links->cont:create-branch->content-type" should contain "contentacle/branch+yaml"
+        And response property "_links->cont:create-branch->content-type" should contain "contentacle/branch+json"
+
     Scenario: View a branches details
         Given I send a GET request on "/users/peej/repos/test/branches/master"
         Then response property "_links->self->href" should be "/users/peej/repos/test/branches/master"
@@ -21,6 +27,16 @@ Feature:
         And response property "_links->cont:documents->href" should be "/users/peej/repos/test/branches/master/documents"
         And response property "_links->cont:commits->href" should be "/users/peej/repos/test/branches/master/commits"
         And response property "_links->cont:merges->href" should be "/users/peej/repos/test/branches/master/merges"
+
+    Scenario: Provide an edit branch form
+        When I send a GET request to "/users/peej/repos/test/branches/master"
+        Then response property "_links->cont:edit-branch->method" should be "patch"
+        And response property "_links->cont:edit-branch->content-type" should contain "application/json-patch+yaml"
+        And response property "_links->cont:edit-branch->content-type" should contain "application/json-patch+json"
+
+    Scenario: Provide a delete branch form
+        When I send a GET request to "/users/peej/repos/test/branches/master"
+        Then response property "_links->cont:delete-branch->method" should be "delete"
 
     Scenario: Recieve a 404 for a non-existant branch
         When I send a GET request to "/users/peej/repos/test/branches/missing"

@@ -20,7 +20,7 @@ class Branches extends Resource {
             $response = new \Contentacle\Responses\Hal();
 
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches'.$this->formatExtension());
-            $response->addForm('cont:create-branch', 'post', null, 'contentacle/branch', 'Create a branch');
+            $response->addForm('cont:create-branch', 'post', null, array('contentacle/branch+yaml', 'contentacle/branch+json'), 'Create a branch');
 
             if ($this->embed) {
                 foreach ($repo->branches() as $branchName) {

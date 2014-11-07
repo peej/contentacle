@@ -20,6 +20,15 @@ Feature:
         And response property "_embedded->documents->0->filename" should be "emptyFile.txt"
         And response property "_embedded->documents->0->_links->self->href" should be "/users/peej/repos/test/branches/master/documents/adir/emptyFile.txt"
 
+    Scenario: Provide a create document form
+        When I send a GET request to "/users/peej/repos/test/branches/master/documents"
+        Then response property "_links->cont:add-document->method" should be "put"
+        And response property "_links->cont:add-document->href" should be "/users/peej/repos/test/branches/master/documents/{path}"
+        And response property "_links->cont:add-document->templated" should be "true"
+        And response property "_links->cont:add-document->content-type" should contain "contentacle/document+json"
+        And response property "_links->cont:add-document->content-type" should contain "contentacle/document+yaml"
+        And response property "_links->cont:add-document->content-type" should contain "*/*"
+
     Scenario: View a documents details
         Given I send a GET request on "/users/peej/repos/test/branches/master/documents/afile.txt"
         Then the header "Content-Type" should be equal to "contentacle/document+yaml"
@@ -28,6 +37,22 @@ Feature:
         And response property "content" should be "Some content"
         And response property "_links->cont:raw->href" should be "/users/peej/repos/test/branches/master/raw/afile.txt"
         And response property "_links->cont:history->href" should be "/users/peej/repos/test/branches/master/history/afile.txt"
+
+    Scenario: Provide an update document form
+        When I send a GET request to "/users/peej/repos/test/branches/master/documents/afile.txt"
+        Then response property "_links->cont:update-document->method" should be "patch"
+        And response property "_links->cont:update-document->content-type" should contain "application/json-patch+yaml"
+        And response property "_links->cont:update-document->content-type" should contain "application/json-patch+json"
+
+    Scenario: Provide an edit document form
+        When I send a GET request to "/users/peej/repos/test/branches/master/documents/afile.txt"
+        Then response property "_links->cont:edit-document->method" should be "put"
+        And response property "_links->cont:edit-document->href" should be "/users/peej/repos/test/branches/master/raw/afile.txt"
+        And response property "_links->cont:edit-document->content-type" should be "*/*"
+
+    Scenario: Provide a delete document form
+        When I send a GET request to "/users/peej/repos/test/branches/master/documents/afile.txt"
+        Then response property "_links->cont:delete-document->method" should be "delete"
 
     Scenario: View a documents raw content
         Given I send a GET request on "/users/peej/repos/test/branches/master/raw/afile.txt"

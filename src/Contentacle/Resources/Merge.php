@@ -30,13 +30,14 @@ class Merge extends Resource {
         try {
             $repo->canMerge($branch1, $branch2);
             $response->addData('canMerge', true);
+            $response->addForm('cont:merge', 'post', null, null, 'Merge these branches');
+
         } catch (\Git\Exception $e) {
             $response->addData('canMerge', false);
             $response->addData('conflicts', $repo->conflicts($branch1, $branch2));
         }
 
         $response->contentType = 'contentacle/merge+yaml';
-
         return $response;
     }
 

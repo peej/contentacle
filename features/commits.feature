@@ -13,6 +13,12 @@ Feature:
         And response property "_embedded->commits->1->sha" should be sha 3
         And response property "_embedded->commits->2->sha" should be sha 1
 
+    Scenario: Provide a create commit form
+        When I send a GET request to "/users/peej/repos/test/branches/master/commits"
+        Then response property "_links->cont:commit->method" should be "post"
+        And response property "_links->cont:commit->content-type" should contain "contentacle/commit+yaml"
+        And response property "_links->cont:commit->content-type" should contain "contentacle/commit+json"
+
     Scenario: View a commit
         Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 1
         Then the response status code should be 200

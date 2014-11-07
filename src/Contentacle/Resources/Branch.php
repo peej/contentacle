@@ -18,7 +18,7 @@ class Branch extends Resource
         $branchUrl = '/users/'.$repo->username.'/repos/'.$repo->name.'/branches/'.$branchName;
 
         $response->addLink('self', $branchUrl.$this->formatExtension());
-        $response->addForm('cont:edit-branch', 'patch', null, 'application/json-patch', 'Rename the branch');
+        $response->addForm('cont:edit-branch', 'patch', null, array('application/json-patch+yaml', 'application/json-patch+json'), 'Rename the branch');
         $response->addForm('cont:delete-branch', 'delete', null, null, 'Remove the branch');
         $response->addLink('cont:commits', $branchUrl.'/commits'.$this->formatExtension());
         $response->addLink('cont:documents', $branchUrl.'/documents'.$this->formatExtension());
@@ -118,7 +118,6 @@ class Branch extends Resource
         
         } catch (\Contentacle\Exceptions\ValidationException $e) {
             $response = new \Contentacle\Responses\Hal(400);
-            $response->contentType = 'application/hal';
             foreach ($e->errors as $field) {
                 $response->embed('errors', array(
                     'logref' => $field,
@@ -128,7 +127,6 @@ class Branch extends Resource
 
         } catch (\Contentacle\Exceptions\RepoException $e) {
             $response = new \Contentacle\Responses\Hal(400);
-            $response->contentType = 'application/hal';
             $response->embed('errors', array(
                 'logref' => 'name',
                 'message' => 'Can not delete "'.$branchName.'" branch'

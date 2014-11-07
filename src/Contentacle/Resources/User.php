@@ -24,7 +24,7 @@ class User extends Resource
 
             $response->addLink('self', '/users/'.$username.$this->formatExtension());
             $response->addLink('cont:repos', '/users/'.$username.'/repos'.$this->formatExtension());
-            $response->addForm('cont:edit-user', 'patch', null, 'application/json-patch', 'Edit the user');
+            $response->addForm('cont:edit-user', 'patch', null, array('application/json-patch+yaml', 'application/json-patch+json'), 'Edit the user');
 
             if ($this->embed) {
                 foreach ($repoRepo->getRepos($user->username) as $repo) {

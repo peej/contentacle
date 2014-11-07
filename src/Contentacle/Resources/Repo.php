@@ -13,8 +13,8 @@ class Repo extends Resource
 
         $response->addLink('self', '/users/'.$repo->username.'/repos/'.$repo->name.$this->formatExtension());
         $response->addLink('cont:branches', '/users/'.$repo->username.'/repos/'.$repo->name.'/branches'.$this->formatExtension());
-        $response->addForm('cont:edit-repo', 'patch', null, 'application/json-patch', 'Edit the repo');
-        $response->addForm('cont:update-repo', 'put', null, 'contentacle/repo', 'Update the repo');
+        $response->addForm('cont:edit-repo', 'patch', null, array('application/json-patch+yaml', 'application/json-patch+json'), 'Edit the repo');
+        $response->addForm('cont:update-repo', 'put', null, array('contentacle/repo+yaml', 'contentacle/repo+json'), 'Update the repo');
         $response->addForm('cont:delete-repo', 'delete', null, 'Remove the repo');
 
         if ($this->embed) {

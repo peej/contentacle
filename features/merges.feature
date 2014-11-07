@@ -14,6 +14,7 @@ Feature:
         And the header "Content-Type" should be equal to "contentacle/merge+yaml"
         And response property "canMerge" should be "true"
         And response property "conflicts" should not exist
+        And response property "_links->cont:merge->method" should be "post"
 
     Scenario: View a merge that has nothing to merge
         Given I send a GET request on "/users/peej/repos/test/branches/master/merges/branch"
@@ -21,6 +22,7 @@ Feature:
         And the header "Content-Type" should be equal to "contentacle/merge+yaml"
         And response property "canMerge" should be "false"
         And response property "conflicts" should not exist
+        And response property "_links->cont:merge->method" should not exist
 
     Scenario: View a merge that conflicts
         Given I send a GET request on "/users/peej/repos/test/branches/master/merges/unmergable"
@@ -29,6 +31,7 @@ Feature:
         And response property "canMerge" should be "false"
         And response property "conflicts->clash.txt->0" should be "1-Clash all over the place"
         And response property "conflicts->clash.txt->1" should be "1+This will clash"
+        And response property "_links->cont:merge->method" should not exist
 
     Scenario: Branch can not be merged with itself
         Given I send a GET request on "/users/peej/repos/test/branches/master/merges/master"

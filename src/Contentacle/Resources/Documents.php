@@ -36,7 +36,7 @@ class Documents extends Resource {
                 $path = '/'.$path;
             }
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents'.$path.$this->formatExtension());
-            $response->addForm('cont:add-document', 'put', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/{path}', 'contentacle/document', 'Add a document', true);
+            $response->addForm('cont:add-document', 'put', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents'.$path.'/{path}', array('contentacle/document+yaml', 'contentacle/document+json', '*/*'), 'Add a document', true);
 
             if ($this->embed) {
                 foreach ($documents as $filename) {
@@ -56,8 +56,8 @@ class Documents extends Resource {
                 $response->addLink('cont:user', '/users/'.$document['username'].$this->formatExtension());
                 $response->addLink('cont:history', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/history/'.$document['path'].$this->formatExtension());
                 $response->addLink('cont:raw', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$document['path'].$this->formatExtension());
-                $response->addForm('cont:update-document', 'patch', null, 'application/json-patch', 'Update the document');
-                $response->addForm('cont:add-document', 'put', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$document['path'].$this->formatExtension(), 'contentacle/document', 'Add a document');
+                $response->addForm('cont:update-document', 'patch', null, array('application/json-patch+yaml', 'application/json-patch+json'), 'Update the document');
+                $response->addForm('cont:add-document', 'put', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$document['path'].$this->formatExtension(), array('contentacle/document+yaml', 'contentacle/document+json'), 'Add a document');
                 $response->addForm('cont:edit-document', 'put', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$document['path'].$this->formatExtension(), '*/*', 'Add a document');
                 $response->addForm('cont:delete-document', 'delete', null, null, 'Delete the document');
 

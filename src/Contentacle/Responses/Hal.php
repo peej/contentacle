@@ -58,14 +58,7 @@ class Hal extends \Tonic\Response
         if ($href) $this->links[$rel]['href'] = $href;
         if ($templated) $this->links[$rel]['templated'] = true;
         if ($method != 'get') $this->links[$rel]['method'] = $method;
-        if ($contentType == '*/*') {
-            $this->links[$rel]['content-type'] = $contentType;
-        } elseif ($contentType) {
-            $this->links[$rel]['content-type'] = array(
-                $contentType.'+yaml',
-                $contentType.'+json'
-            );
-        }
+        if ($contentType) $this->links[$rel]['content-type'] = $contentType;
         if ($title) $this->links[$rel]['title'] = $title;
         $this->hasContent();
         $this->body['_links'] = $this->links;
