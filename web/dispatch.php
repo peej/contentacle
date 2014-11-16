@@ -15,8 +15,12 @@ $app = new Tonic\Application(array(
 
 $container = new Pimple;
 $container['repo_dir'] = __DIR__.'/../repos';
+$container['temp_dir'] = sys_get_temp_dir();
 $container['yaml'] = function () {
     return new Contentacle\Services\Yaml;
+};
+$container['template'] = function ($c) {
+    return new Contentacle\Services\Template($c['temp_dir']);
 };
 $container['git'] = function ($c) {
     return function ($username, $repoName) use ($c) {
@@ -40,11 +44,16 @@ $container['repo'] = function ($c) {
         return new Contentacle\Models\Repo($data, $c['git'], $c['repo_dir'], $c['yaml'], $c['user_repository']);
     };
 };
-
-if (strpos($_SERVER['HTTP_ACCEPT'], 'text/json') !== false) {
-    $_SERVER['HTTP_ACCEPT'] .= ',application/json';
-}
-$_SERVER['HTTP_ACCEPT'] .= ',text/yaml';
+$container['hal_response'] = function ($c) {
+    return function ($code = null, $body = null, $headers = array()) use ($c) {
+        return new Contentacle\Responses\Hal($c['yaml'], $code, $body, $headers);
+    };
+};
+$container['html_response'] = function ($c) {
+    return function ($templateName, $vars = array(), $headers = array()) use ($c) {
+        return new Contentacle\Responses\Html($c['template'], $templateName, $vars, $headers);
+    };
+};
 
 $request = new Tonic\Request(array(
     'uri' => $_SERVER['PHP_SELF'],
@@ -64,7 +73,13 @@ if (substr($request->contentType, -4) == 'yaml') {
 try {
 
     $resource = $app->getResource($request);
-    $resource->setContainer($container);
+
+    $resource->setYaml($container['yaml']);
+    $resource->setUserRepository($container['user_repository']);
+    $resource->setRepoRepository($container['repo_repository']);
+    $resource->setHalResponse($container['hal_response']);
+    $resource->setHtmlResponse($container['html_response']);
+
     $response = $resource->exec();
 
 } catch (Tonic\NotFoundException $e) {
@@ -84,19 +99,6 @@ if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
 }
 if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
     $response->setHeader('Access-Control-Allow-Headers', $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
-}
-
-if (is_array($response->body)) {
-    if (substr($response->contentType, -4) == 'json') {
-        $response->body = json_encode($response->body, JSON_PRETTY_PRINT);
-    } else {
-        $response->body = $container['yaml']->encode($response->body);
-    }
-}
-
-if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'Mozilla') !== false) {
-    $response->headers['X-Content-Type'] = $response->contentType;
-    $response->contentType = 'text/plain';
 }
 
 $response->output();

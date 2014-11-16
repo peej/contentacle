@@ -13,16 +13,24 @@ class Commit extends Resource {
      */
     function get($username, $repoName, $branchName, $sha)
     {
-        $repoRepo = $this->container['repo_repository'];
+        $repoRepo = $this->getRepoRepository();
 
         try {
             $repo = $repoRepo->getRepo($username, $repoName);
             $commit = $repo->commit($branchName, $sha);
-            
-            $response = new \Contentacle\Responses\Hal(200, $commit);
+
+            $response = $this->createHalResponse(200);
+            $response->addData($commit);
 
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits/'.$sha.$this->formatExtension());
+            $response->addLink('cont:doc', '/rels/commit');
             $response->addLink('cont:user', '/users/'.$commit['username'].$this->formatExtension());
+
+            if (isset($commit['files'])) {
+                foreach ($commit['files'] as $filename) {
+                    $response->addLink('cont:document', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$filename);
+                }
+            }
 
             $response->contentType = 'contentacle/commit+yaml';
             return $response;

@@ -42,6 +42,7 @@ class RepoSpec extends ObjectBehavior
         $totem->getContent()->willReturn('A Totem is an object that is used to test if oneself is in one\'s own reality and not in another person\'s dream.');
         $repo->file('totem.txt')->willReturn($totem);
         $repo->tree('totem.txt')->willReturn(null);
+        $repo->log('totem.txt')->willReturn(array('123456'));
 
         $commit->sha = '123456';
         $commit->getMetadata('parents')->willReturn(array('654321'));

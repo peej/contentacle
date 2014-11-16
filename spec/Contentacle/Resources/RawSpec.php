@@ -7,16 +7,18 @@ use Prophecy\Argument;
 
 class RawSpec extends ObjectBehavior
 {
-    function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
+    function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo, \Contentacle\Services\Yaml $yaml)
     {
         $repo->document('master', 'new-york/the-hotel/totem.txt')->willReturn(array('content' => 'totem'));
         $repo->document(Argument::cetera())->willThrow(new \Contentacle\Exceptions\RepoException);
         
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
-        $pimple->offsetGet('repo_repository')->willReturn($repoRepo);
 
         $this->beConstructedWith($app, $request);
-        $this->setContainer($pimple);
+        $this->setRepoRepository($repoRepo);
+        $this->setHalResponse(function($code = null, $body = null, $headers = array()) use ($yaml) {
+            return new \Contentacle\Responses\Hal($yaml, $code, $body, $headers);
+        });
     }
 
     function it_is_initializable()

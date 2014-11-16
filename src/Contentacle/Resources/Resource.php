@@ -4,7 +4,7 @@ namespace Contentacle\Resources;
 
 class Resource extends \Tonic\Resource
 {
-    protected $container;
+    protected $deps = array();
     private $extension = '';
 
     function __construct($app, $request)
@@ -13,10 +13,44 @@ class Resource extends \Tonic\Resource
         $this->params['embed'] = true;
     }
 
-    function setContainer($container)
+    public function setDependancies($deps)
     {
-        $this->container = $container;
+        $this->deps = $deps;
     }
+
+    private function setDependancy($name, $dep)
+    {
+        $this->deps[$name] = $dep;
+    }
+
+    private function getDependancy($name)
+    {
+        if (!isset($this->deps[$name])) {
+            throw new \Exception('Dependancy '.$name.' not set.');
+        }
+        $dep = $this->deps[$name];
+        if (is_callable($dep)) {
+            $args = array_slice(func_get_args(), 1);
+            return call_user_func_array($dep, $args);
+        } else {
+            return $dep;
+        }
+    }
+
+    public function setYaml($dep) { $this->setDependancy('yaml', $dep); }
+    protected function getYaml() { return $this->getDependancy('yaml'); }
+
+    public function setUserRepository($dep) { $this->setDependancy('user_repository', $dep); }
+    protected function getUserRepository() { return $this->getDependancy('user_repository'); }
+
+    public function setRepoRepository($dep) { $this->setDependancy('repo_repository', $dep); }
+    protected function getRepoRepository() { return $this->getDependancy('repo_repository'); }
+
+    public function setHalResponse($dep) { $this->setDependancy('hal_response', $dep); }
+    protected function createHalResponse($code = null, $vars = array()) { return $this->getDependancy('hal_response', $code, $vars); }
+
+    public function setHtmlResponse($dep) { $this->setDependancy('html_response', $dep); }
+    protected function createHtmlResponse($templateName) { return $this->getDependancy('html_response', $templateName); }
 
     protected function provides($mimetype)
     {
@@ -59,7 +93,7 @@ class Resource extends \Tonic\Resource
     protected function getChildResource($resourceName, $parameters, $embedChildren = false)
     {
         $resource = new $resourceName($this->app, $this->request);
-        $resource->setContainer($this->container);
+        $resource->setDependancies($this->deps);
         $resource->embed = $embedChildren;
         $response = call_user_func_array(array($resource, 'get'), $parameters);
         return $response->body;
@@ -87,7 +121,7 @@ class Resource extends \Tonic\Resource
      * @method options
      */
     function get() {
-        return new Hal();
+        return $this->createHalResponse(404);
     }
     
     function secure()
@@ -99,7 +133,7 @@ class Resource extends \Tonic\Resource
         ) {
             $username = $this->request->getParams()['username'];
             if ($_SERVER['PHP_AUTH_USER'] == $username) {
-                $userRepo = $this->container['user_repository'];
+                $userRepo = $this->getUserRepository();
                 $user = $userRepo->getUser($username);
                 if ($user->verifyPassword($_SERVER['PHP_AUTH_PW'])) {
                     return;

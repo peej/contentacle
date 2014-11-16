@@ -8,6 +8,21 @@ namespace Contentacle\Resources;
  */
 class Documents extends Resource {
 
+    private function response($code, $username, $repoName, $branchName, $document)
+    {
+        $response = $this->createHalResponse($code, $document);
+
+        $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$document['path'].$this->formatExtension());
+        $response->addLink('cont:doc', '/rels/document');
+        $response->addLink('cont:user', '/users/'.$document['username'].$this->formatExtension());
+        $response->addLink('cont:history', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/history/'.$document['path'].$this->formatExtension());
+        $response->addLink('cont:raw', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$document['path'].$this->formatExtension());
+        $response->addLink('cont:commit', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits/'.$document['commit'].$this->formatExtension());
+
+        $response->contentType = 'contentacle/document+yaml';
+        return $response;
+    }
+
     /**
      * @provides application/hal+yaml
      * @provides contentacle/document+yaml
@@ -16,7 +31,7 @@ class Documents extends Resource {
      */
     function get($username, $repoName, $branchName, $path = null, $fixPath = true)
     {
-        $repoRepo = $this->container['repo_repository'];
+        $repoRepo = $this->getRepoRepository();
 
         if ($fixPath) {
             $path = $this->fixPath($path, $username, $repoName, $branchName, 'documents');
@@ -26,7 +41,7 @@ class Documents extends Resource {
         try {
             $documents = $repo->documents($branchName, $path);
 
-            $response = new \Contentacle\Responses\Hal(200, array(
+            $response = $this->createHalResponse(200, array(
                 'filename' => basename($path),
                 'path' => $path,
                 'type' => 'dir'
@@ -36,32 +51,20 @@ class Documents extends Resource {
                 $path = '/'.$path;
             }
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents'.$path.$this->formatExtension());
-            $response->addForm('cont:add-document', 'put', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents'.$path.'/{path}', array('contentacle/document+yaml', 'contentacle/document+json', '*/*'), 'Add a document', true);
+            $response->addLink('cont:doc', '/rels/documents');
 
             if ($this->embed) {
                 foreach ($documents as $filename) {
-                    $response->embed('documents', $this->getChildResource('\Contentacle\Resources\Documents', array($username, $repoName, $branchName, $filename, false)));
+                    $response->embed('cont:document', $this->getChildResource('\Contentacle\Resources\Documents', array($username, $repoName, $branchName, $filename, false)));
                 }
             }
 
-            $response->contentType = 'contentacle/documents+yaml';
             return $response;
 
         } catch (\Contentacle\Exceptions\RepoException $e) {
             try {
                 $document = $repo->document($branchName, $path);
-
-                $response = new \Contentacle\Responses\Hal(200, $document);
-                $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$document['path'].$this->formatExtension());
-                $response->addLink('cont:user', '/users/'.$document['username'].$this->formatExtension());
-                $response->addLink('cont:history', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/history/'.$document['path'].$this->formatExtension());
-                $response->addLink('cont:raw', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$document['path'].$this->formatExtension());
-                $response->addForm('cont:update-document', 'patch', null, array('application/json-patch+yaml', 'application/json-patch+json'), 'Update the document');
-                $response->addForm('cont:add-document', 'put', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$document['path'].$this->formatExtension(), array('contentacle/document+yaml', 'contentacle/document+json'), 'Add a document');
-                $response->addForm('cont:edit-document', 'put', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$document['path'].$this->formatExtension(), '*/*', 'Add a document');
-                $response->addForm('cont:delete-document', 'delete', null, null, 'Delete the document');
-
-                $response->contentType = 'contentacle/document+yaml';
+                $response = $this->response(200, $username, $repoName, $branchName, $document);
                 return $response;
 
             } catch (\Contentacle\Exceptions\RepoException $e) {}
@@ -77,7 +80,7 @@ class Documents extends Resource {
      */
     public function createDocument($username, $repoName, $branchName, $path = null)
     {
-        $repoRepo = $this->container['repo_repository'];
+        $repoRepo = $this->getRepoRepository();
 
         $path = $this->fixPath($path, $username, $repoName, $branchName, 'documents');
 
@@ -108,10 +111,7 @@ class Documents extends Resource {
         }
 
         $document = $repo->document($branchName, $path);
-
-        $response = new \Contentacle\Responses\Hal($code, $document);
-        $response->contentType = 'contentacle/document+yaml';
-        return $response;
+        return $this->response($code, $username, $repoName, $branchName, $document);
     }
 
 
@@ -123,7 +123,7 @@ class Documents extends Resource {
      */
     public function deleteDocument($username, $repoName, $branchName, $path = null)
     {
-        $repoRepo = $this->container['repo_repository'];
+        $repoRepo = $this->getRepoRepository();
 
         $path = $this->fixPath($path, $username, $repoName, $branchName, 'documents');
 
@@ -140,6 +140,6 @@ class Documents extends Resource {
 
         $repo->deleteDocument($branchName, $path, $commitMessage);
 
-        return new \Contentacle\Responses\Hal(204);
+        return $this->createHalResponse(204);
     }
 }

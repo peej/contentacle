@@ -14,17 +14,17 @@ class Branches extends Resource {
     function get($username, $repoName)
     {
         try {
-            $repoRepo = $this->container['repo_repository'];
+            $repoRepo = $this->getRepoRepository();
             $repo = $repoRepo->getRepo($username, $repoName);
             
-            $response = new \Contentacle\Responses\Hal();
+            $response = $this->createHalResponse();
 
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches'.$this->formatExtension());
-            $response->addForm('cont:create-branch', 'post', null, array('contentacle/branch+yaml', 'contentacle/branch+json'), 'Create a branch');
+            $response->addLink('cont:doc', '/rels/branches');
 
             if ($this->embed) {
                 foreach ($repo->branches() as $branchName) {
-                    $response->embed('branches', $this->getChildResource('\Contentacle\Resources\Branch', array($username, $repoName, $branchName)));
+                    $response->embed('cont:branch', $this->getChildResource('\Contentacle\Resources\Branch', array($username, $repoName, $branchName)));
                 }
             }
 
@@ -45,7 +45,7 @@ class Branches extends Resource {
      */
     public function createBranch($username, $repoName)
     {
-        $repoRepo = $this->container['repo_repository'];
+        $repoRepo = $this->getRepoRepository();
 
         try {
             $repo = $repoRepo->getRepo($username, $repoName);
@@ -65,11 +65,11 @@ class Branches extends Resource {
                 throw $e;
             }
 
-            $response = new \Contentacle\Responses\Hal(201);
+            $response = $this->createHalResponse(201);
             $response->location = '/users/'.$repo->username.'/repos/'.$repo->name.'/branches/'.$data['name'];
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = new \Contentacle\Responses\Hal(400);
+            $response = $this->createHalResponse(400);
             foreach ($e->errors as $field) {
                 $response->embed('errors', array(
                     'logref' => $field,

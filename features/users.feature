@@ -7,22 +7,20 @@ Feature:
         Then the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "_links->self->href" should be "/users.yaml"
 
-    Scenario: Provide an add user form
+    Scenario: Link to documentation
         When I send a GET request to "/users.yaml"
-        Then response property "_links->cont:add-user->method" should be "post"
-        And response property "_links->cont:add-user->content-type" should contain "contentacle/user+yaml"
-        And response property "_links->cont:add-user->content-type" should contain "contentacle/user+json"
+        Then response property "_links->cont:doc->href" should be "/rels/users"
 
     Scenario: View a list of users
         When I send a GET request to "/users.yaml"
         Then the header "Content-Type" should be equal to "application/hal+yaml"
-        And response property "_embedded->users->1->username" should be "peej"
-        And response property "_embedded->users->1->name" should be "Paul James"
-        And response property "_embedded->users->1->_links->self->href" should be "/users/peej.yaml"
+        And response property "_embedded->cont:user->1->username" should be "peej"
+        And response property "_embedded->cont:user->1->name" should be "Paul James"
+        And response property "_embedded->cont:user->1->_links->self->href" should be "/users/peej.yaml"
 
     Scenario: Search for users
         When I send a GET request to "/users.yaml?q=peej"
-        Then response property "_embedded->users->0->username" should be "peej"
+        Then response property "_embedded->cont:user->0->username" should be "peej"
 
     Scenario: View a users details
         When I send a GET request to "/users/peej.yaml"
@@ -32,14 +30,9 @@ Feature:
         And response property "name" should be "Paul James"
         And response property "email" should be "paul@peej.co.uk"
         And response property "_links->self->href" should be "/users/peej.yaml"
-        And response property "_embedded->repos->1->name" should be "test"
-        And response property "_embedded->repos->1->_links->self->href" should be "/users/peej/repos/test.yaml"
-
-    Scenario: Provide an edit user form
-        When I send a GET request to "/users/peej"
-        Then response property "_links->cont:edit-user->method" should be "patch"
-        And response property "_links->cont:edit-user->content-type" should contain "application/json-patch+json"
-        And response property "_links->cont:edit-user->content-type" should contain "application/json-patch+yaml"
+        And response property "_links->cont:doc->href" should be "/rels/user"
+        And response property "_embedded->cont:repo->1->name" should be "test"
+        And response property "_embedded->cont:repo->1->_links->self->href" should be "/users/peej/repos/test.yaml"
 
     Scenario: User has a default email address if not created with one
         When I send a GET request to "/users/empty.yaml"

@@ -7,7 +7,7 @@ use Prophecy\Argument;
 
 class ReposSpec extends ObjectBehavior
 {
-    function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Services\UserRepository $userRepo)
+    function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Services\UserRepository $userRepo, \Contentacle\Services\Yaml $yaml)
     {
         $repo1 = (object)array(
             'name' => 'extraction',
@@ -59,11 +59,12 @@ class ReposSpec extends ObjectBehavior
 
         $userRepo->getUser('cobb')->willReturn($user);
 
-        $pimple->offsetGet('repo_repository')->willReturn($repoRepo);
-        $pimple->offsetGet('user_repository')->willReturn($userRepo);
-
         $this->beConstructedWith($app, $request);
-        $this->setContainer($pimple);
+        $this->setUserRepository($userRepo);
+        $this->setRepoRepository($repoRepo);
+        $this->setHalResponse(function($code = null, $body = null, $headers = array()) use ($yaml) {
+            return new \Contentacle\Responses\Hal($yaml, $code, $body, $headers);
+        });
     }
 
     function it_is_initializable()
@@ -73,28 +74,28 @@ class ReposSpec extends ObjectBehavior
 
     function it_should_link_to_itself()
     {
-        $this->get('cobb')->body['_links']['self']['href']->shouldBe('/users/cobb/repos');
+        $response = $this->get('cobb');
+        $response->body['_links']['self']['href']->shouldBe('/users/cobb/repos');
     }
 
-    function it_should_link_to_add_method() {
-        $body = $this->get('cobb')->body;
-        $body['_links']['cont:create-repo']['method']->shouldBe('post');
-        $body['_links']['cont:create-repo']['content-type']->shouldContain('contentacle/repo+yaml');
-        $body['_links']['cont:create-repo']['content-type']->shouldContain('contentacle/repo+json');
+    function it_should_link_to_its_own_documentation()
+    {
+        $response = $this->get('cobb');
+        $response->body['_links']['cont:doc']['href']->shouldBe('/rels/repos');
     }
 
     function it_should_get_a_list_of_a_users_repos()
     {
-        $body = $this->get('cobb')->body;
-        $body['_links']['self']['href']->shouldBe('/users/cobb/repos');
-        $body['_embedded']['repos'][0]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction');
-        $body['_embedded']['repos'][0]['_links']['cont:branches']['href']->shouldBe('/users/cobb/repos/extraction/branches');
-        $body['_embedded']['repos'][0]['name']->shouldBe('extraction');
-        $body['_embedded']['repos'][0]['title']->shouldBe('Extraction 101');
-        $body['_embedded']['repos']->shouldHaveCount(2);
-        $body['_embedded']['repos'][1]['_links']['self']['href']->shouldBe('/users/cobb/repos/inception');
-        $body['_embedded']['repos'][1]['name']->shouldBe('inception');
-        $body['_embedded']['repos'][1]['title']->shouldBe('Inception');
+        $response = $this->get('cobb');
+        $response->body['_embedded']['cont:repo'][0]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction');
+        $response->body['_embedded']['cont:repo'][0]['_links']['cont:branches']['href']->shouldBe('/users/cobb/repos/extraction/branches');
+        $response->body['_embedded']['cont:repo'][0]['name']->shouldBe('extraction');
+        $response->body['_embedded']['cont:repo'][0]['title']->shouldBe('Extraction 101');
+        $response->body['_embedded']['cont:repo']->shouldHaveCount(2);
+        $response->body['_embedded']['cont:repo'][1]['_links']['self']['href']->shouldBe('/users/cobb/repos/inception');
+        $response->body['_embedded']['cont:repo'][1]['_links']['cont:branches']['href']->shouldBe('/users/cobb/repos/inception/branches');
+        $response->body['_embedded']['cont:repo'][1]['name']->shouldBe('inception');
+        $response->body['_embedded']['cont:repo'][1]['title']->shouldBe('Inception');
     }
 
     function it_should_error_for_unknown_user()

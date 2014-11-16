@@ -7,21 +7,26 @@ use Prophecy\Argument;
 
 class HalSpec extends ObjectBehavior
 {
+    function let(\Contentacle\Services\Yaml $yaml)
+    {
+        $this->beConstructedWith($yaml);
+    }
+
     function it_is_initializable()
     {
         $this->shouldHaveType('Contentacle\Responses\Hal');
     }
 
-    function it_should_contain_data()
+    function it_should_contain_data(\Contentacle\Services\Yaml $yaml)
     {
-        $this->beConstructedWith(200, array('one' => 'foo', 'two' => 'bar'));
+        $this->beConstructedWith($yaml, 200, array('one' => 'foo', 'two' => 'bar'));
         $this->body['one']->shouldBe('foo');
         $this->body['two']->shouldBe('bar');
     }
 
-    function it_should_cast_object_data_to_an_array()
+    function it_should_cast_object_data_to_an_array(\Contentacle\Services\Yaml $yaml)
     {
-        $this->beConstructedWith(200, (object)array('one' => 'foo', 'two' => 'bar'));
+        $this->beConstructedWith($yaml, 200, (object)array('one' => 'foo', 'two' => 'bar'));
         $this->body['one']->shouldBe('foo');
         $this->body['two']->shouldBe('bar');
     }
@@ -31,25 +36,6 @@ class HalSpec extends ObjectBehavior
         $this->addLink('rel', 'href', true, 'title');
         $this->body['_links']['rel']['href']->shouldBe('href');
         $this->body['_links']['rel']['templated']->shouldBe(true);
-        $this->body['_links']['rel']['title']->shouldBe('title');
-    }
-
-    function it_should_contain_forms()
-    {
-        $this->addForm('rel', 'post', null, 'mimetype', 'title');
-        $this->body['_links']['rel']['method']->shouldBe('post');
-        $this->body['_links']['rel']['content-type'][0]->shouldBe('mimetype+yaml');
-        $this->body['_links']['rel']['content-type'][1]->shouldBe('mimetype+json');
-        $this->body['_links']['rel']['title']->shouldBe('title');
-    }
-
-    function it_should_contain_forms_with_the_self_href()
-    {
-        $this->addLink('self', '/url', false, 'title');
-        $this->addForm('rel', 'post', null, 'mimetype', 'title');
-        $this->body['_links']['rel']['method']->shouldBe('post');
-        $this->body['_links']['rel']['href']->shouldBe('/url');
-        $this->body['_links']['rel']['content-type'][0]->shouldBe('mimetype+yaml');
         $this->body['_links']['rel']['title']->shouldBe('title');
     }
 
@@ -69,5 +55,11 @@ class HalSpec extends ObjectBehavior
         $this->addLink('self', '/url', false, 'title');
         $this->body['_links']['curies'][0]['name']->shouldBe('cont');
         $this->body['_links']['curies'][0]['href']->shouldBe('http://contentacle.io/rels/{rel}');
+    }
+
+    function it_should_encode_output_into_yaml(\Contentacle\Services\Yaml $yaml)
+    {
+        $this->beConstructedWith($yaml, 200, array('one' => 'foo', 'two' => 'bar'));
+        $this->output();
     }
 }

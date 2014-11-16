@@ -7,7 +7,7 @@ use Prophecy\Argument;
 
 class UserSpec extends ObjectBehavior
 {
-    function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\UserRepository $userRepo, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\User $user)
+    function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Models\User $user, \Contentacle\Services\UserRepository $userRepo, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Services\Yaml $yaml)
     {
         $repo = (object)array(
             'name' => 'extraction',
@@ -52,12 +52,13 @@ class UserSpec extends ObjectBehavior
         $userRepo->deleteUser($user)->will(function () {
             $this->getUser('cobb')->willThrow('\Tonic\NotFoundException');
         });
-        
-        $pimple->offsetGet('repo_repository')->willReturn($repoRepo);
-        $pimple->offsetGet('user_repository')->willReturn($userRepo);
 
         $this->beConstructedWith($app, $request);
-        $this->setContainer($pimple);
+        $this->setUserRepository($userRepo);
+        $this->setRepoRepository($repoRepo);
+        $this->setHalResponse(function($code = null, $body = null, $headers = array()) use ($yaml) {
+            return new \Contentacle\Responses\Hal($yaml, $code, $body, $headers);
+        });
     }
 
     function it_is_initializable()
@@ -67,27 +68,33 @@ class UserSpec extends ObjectBehavior
 
     function it_should_link_to_itself()
     {
-        $this->get('cobb')->body['_links']['self']['href']->shouldBe('/users/cobb');
+        $response = $this->get('cobb');
+        $response->body['_links']['self']['href']->shouldBe('/users/cobb');
     }
 
-    function it_should_link_to_edit_method() {
-        $body = $this->get('cobb')->body;
-        $body['_links']['cont:edit-user']['method']->shouldBe('patch');
-        $body['_links']['cont:edit-user']['content-type']->shouldContain('application/json-patch+yaml');
-        $body['_links']['cont:edit-user']['content-type']->shouldContain('application/json-patch+json');
+    function it_should_link_to_its_own_documentation()
+    {
+        $response = $this->get('cobb');
+        $response->body['_links']['cont:doc']['href']->shouldBe('/rels/user');
+    }
+
+    function it_should_link_to_repos()
+    {
+        $response = $this->get('cobb');
+        $response->body['_links']['cont:repos']['href']->shouldBe('/users/cobb/repos');
     }
 
     function it_should_show_user_details()
     {
-        $body = $this->get('cobb')->body;
-        $body['username']->shouldBe('cobb');
-        $body['name']->shouldBe('Dominick Cobb');
-        $body['_embedded']['repos']->shouldBeArray();
-        $body['_embedded']['repos'][0]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction');
-        $body['_embedded']['repos'][0]['name']->shouldBe('extraction');
-        $body['_embedded']['repos'][0]['username']->shouldBe('cobb');
-        $body['_embedded']['repos'][0]['title']->shouldBe('Extraction 101');
-        $body['_embedded']['repos'][0]['description']->shouldBe('Extraction instructions for Ariadne');
+        $response = $this->get('cobb');
+        $response->body['username']->shouldBe('cobb');
+        $response->body['name']->shouldBe('Dominick Cobb');
+        $response->body['_embedded']['cont:repo']->shouldBeArray();
+        $response->body['_embedded']['cont:repo'][0]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction');
+        $response->body['_embedded']['cont:repo'][0]['name']->shouldBe('extraction');
+        $response->body['_embedded']['cont:repo'][0]['username']->shouldBe('cobb');
+        $response->body['_embedded']['cont:repo'][0]['title']->shouldBe('Extraction 101');
+        $response->body['_embedded']['cont:repo'][0]['description']->shouldBe('Extraction instructions for Ariadne');
     }
 
     function it_should_error_for_unknown_user()

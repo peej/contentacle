@@ -14,7 +14,7 @@ class Home extends Resource {
      */
     function get()
     {
-        $response = new \Contentacle\Responses\Hal();
+        $response = $this->createHalResponse();
 
         $response->addLink('self', '/'.$this->formatExtension());
         $response->addLink('cont:users', '/users'.$this->formatExtension());
@@ -28,7 +28,7 @@ class Home extends Resource {
      */
     function getHtml()
     {
-        return new \Contentacle\Responses\Html('home.html');
+        return $this->createHtmlResponse('home.html');
     }
 
 }

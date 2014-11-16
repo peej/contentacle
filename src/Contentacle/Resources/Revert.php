@@ -12,7 +12,7 @@ class Revert extends Resource {
      */
     function post($username, $repoName, $branchName, $sha)
     {
-        $repoRepo = $this->container['repo_repository'];
+        $repoRepo = $this->getRepoRepository();
 
         try {
             $repo = $repoRepo->getRepo($username, $repoName);

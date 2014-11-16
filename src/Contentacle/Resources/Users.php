@@ -13,19 +13,19 @@ class Users extends Resource
      */
     function get()
     {
-        $userRepo = $this->container['user_repository'];
+        $userRepo = $this->getUserRepository();
         
-        $response = new \Contentacle\Responses\Hal();
+        $response = $this->createHalResponse();
 
         $response->addLink('self', '/users'.$this->formatExtension());
-        $response->addForm('cont:add-user', 'post', null, array('contentacle/user+yaml', 'contentacle/user+json'), 'Create a user');
+        $response->addLink('cont:doc', '/rels/users');
 
         if ($this->embed) {
 
             $search = isset($_GET['q']) ? $_GET['q'] : null;
 
             foreach ($userRepo->getUsers($search) as $user) {
-                $response->embed('users', $this->getChildResource('\Contentacle\Resources\User', array($user->username)));
+                $response->embed('cont:user', $this->getChildResource('\Contentacle\Resources\User', array($user->username)));
             }
         }
 
@@ -41,15 +41,15 @@ class Users extends Resource
      */
     function createUser()
     {
-        $userRepo = $this->container['user_repository'];
+        $userRepo = $this->getUserRepository();
 
         try {
             $user = $userRepo->createUser($this->request->getData());
-            $response = new \Contentacle\Responses\Hal(201);
+            $response = $this->createHalResponse(201);
             $response->location = '/users/'.$user->username;
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = new \Contentacle\Responses\Hal(400);
+            $response = $this->createHalResponse(400);
             foreach ($e->errors as $field) {
                 $response->embed('errors', array(
                     'logref' => $field,

@@ -14,21 +14,21 @@ class User extends Resource
      */
     function get($username)
     {   
-        $userRepo = $this->container['user_repository'];
-        $repoRepo = $this->container['repo_repository'];
+        $userRepo = $this->getUserRepository();
+        $repoRepo = $this->getRepoRepository();
 
         try {
             $user = $userRepo->getUser($username);
 
-            $response = new \Contentacle\Responses\Hal(200, $user);
+            $response = $this->createHalResponse(200, $user);
 
             $response->addLink('self', '/users/'.$username.$this->formatExtension());
+            $response->addLink('cont:doc', '/rels/user');
             $response->addLink('cont:repos', '/users/'.$username.'/repos'.$this->formatExtension());
-            $response->addForm('cont:edit-user', 'patch', null, array('application/json-patch+yaml', 'application/json-patch+json'), 'Edit the user');
 
             if ($this->embed) {
                 foreach ($repoRepo->getRepos($user->username) as $repo) {
-                    $response->embed('repos', $this->getChildResource('\Contentacle\Resources\Repo', array($user->username, $repo->name)));
+                    $response->embed('cont:repo', $this->getChildResource('\Contentacle\Resources\Repo', array($user->username, $repo->name)));
                 }
             }
 
@@ -52,15 +52,15 @@ class User extends Resource
      */
     public function updateUser($username)
     {
-        $userRepo = $this->container['user_repository'];
-        $repoRepo = $this->container['repo_repository'];
+        $userRepo = $this->getUserRepository();
+        $repoRepo = $this->getRepoRepository();
 
         try {
             $user = $userRepo->getUser($username);
 
             $userRepo->updateUser($user, $this->request->getData(), true);
 
-            $response = new \Contentacle\Responses\Hal(200, $user);
+            $response = $this->createHalResponse(200, $user);
             $response->contentType = 'contentacle/user+yaml';
             return $response;
 
@@ -77,14 +77,14 @@ class User extends Resource
      */
     public function deleteUser($username)
     {
-        $userRepo = $this->container['user_repository'];
+        $userRepo = $this->getUserRepository();
         
         try {
             $user = $userRepo->getUser($username);
 
             $userRepo->deleteUser($user);
 
-            $response = new \Contentacle\Responses\Hal(204);
+            $response = $this->createHalResponse(204);
 
             return $response;
 

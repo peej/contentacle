@@ -13,7 +13,7 @@ class History extends Resource {
      */
     function get($username, $repoName, $branchName, $path = null)
     {
-        $repoRepo = $this->container['repo_repository'];
+        $repoRepo = $this->getRepoRepository();
 
         $path = $this->fixPath($path, $username, $repoName, $branchName, 'history');
 
@@ -21,7 +21,7 @@ class History extends Resource {
         try {
             $history = $repo->history($branchName, $path);
 
-            $response = new \Contentacle\Responses\Hal(200, array(
+            $response = $this->createHalResponse(200, array(
                 'filename' => basename($path),
                 'path' => $path
             ));
@@ -31,7 +31,7 @@ class History extends Resource {
             $response->addLink('cont:raw', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$path.$this->formatExtension());
 
             foreach ($history as $item) {
-                $response->embed('commits', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $item['sha'])));
+                $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $item['sha'])));
             }
 
             $response->contentType = 'contentacle/history+yaml';

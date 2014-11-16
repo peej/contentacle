@@ -7,7 +7,7 @@ use Prophecy\Argument;
 
 class HistorySpec extends ObjectBehavior
 {
-    function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
+    function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo, \Contentacle\Services\Yaml $yaml)
     {
         $repo->history('master', 'new-york/the-hotel/totem.txt')->willReturn(array(
             array('sha' => '123456')
@@ -16,12 +16,14 @@ class HistorySpec extends ObjectBehavior
             'sha' => '123456',
             'username' => 'cobb'
         ));
-        
+
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
-        $pimple->offsetGet('repo_repository')->willReturn($repoRepo);
 
         $this->beConstructedWith($app, $request);
-        $this->setContainer($pimple);
+        $this->setRepoRepository($repoRepo);
+        $this->setHalResponse(function($code = null, $body = null, $headers = array()) use ($yaml) {
+            return new \Contentacle\Responses\Hal($yaml, $code, $body, $headers);
+        });
     }
 
     function it_is_initializable()
@@ -31,17 +33,20 @@ class HistorySpec extends ObjectBehavior
 
     function it_should_link_to_itself()
     {
-        $this->get('cobb', 'extraction', 'master', 'new-york/the-hotel/totem.txt')->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/history/new-york/the-hotel/totem.txt');
+        $response = $this->get('cobb', 'extraction', 'master', 'new-york/the-hotel/totem.txt');
+        $response->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/history/new-york/the-hotel/totem.txt');
     }
 
     function it_should_link_to_the_document()
     {
-        $this->get('cobb', 'extraction', 'master', 'new-york/the-hotel/totem.txt')->body['_links']['cont:document']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel/totem.txt');
+        $response = $this->get('cobb', 'extraction', 'master', 'new-york/the-hotel/totem.txt');
+        $response->body['_links']['cont:document']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel/totem.txt');
     }
 
     function it_should_link_to_the_raw_document()
     {
-        $this->get('cobb', 'extraction', 'master', 'new-york/the-hotel/totem.txt')->body['_links']['cont:raw']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/raw/new-york/the-hotel/totem.txt');
+        $response = $this->get('cobb', 'extraction', 'master', 'new-york/the-hotel/totem.txt');
+        $response->body['_links']['cont:raw']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/raw/new-york/the-hotel/totem.txt');
     }
 
     function it_should_show_history_listing($repo)
@@ -49,9 +54,7 @@ class HistorySpec extends ObjectBehavior
         $repo->history('master', 'new-york/the-hotel/totem.txt')->shouldBeCalled();
         $repo->commit('master', '123456')->shouldBeCalled();
         $response = $this->get('cobb', 'extraction', 'master', 'new-york/the-hotel/totem.txt');
-        $response->body['filename']->shouldBe('totem.txt');
-        $response->body['_embedded']['commits'][0]['sha']->shouldBe('123456');
-        $response->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/history/new-york/the-hotel/totem.txt');
+        $response->body['_embedded']['cont:commit'][0]['sha']->shouldBe('123456');
     }
 
 }

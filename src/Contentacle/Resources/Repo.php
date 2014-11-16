@@ -9,17 +9,16 @@ class Repo extends Resource
 {
     private function response($repo)
     {
-        $response = new \Contentacle\Responses\Hal(200, $repo);
+        $response = $this->createHalResponse(200);
+        $response->addData($repo);
 
         $response->addLink('self', '/users/'.$repo->username.'/repos/'.$repo->name.$this->formatExtension());
+        $response->addLink('cont:doc', '/rels/repo');
         $response->addLink('cont:branches', '/users/'.$repo->username.'/repos/'.$repo->name.'/branches'.$this->formatExtension());
-        $response->addForm('cont:edit-repo', 'patch', null, array('application/json-patch+yaml', 'application/json-patch+json'), 'Edit the repo');
-        $response->addForm('cont:update-repo', 'put', null, array('contentacle/repo+yaml', 'contentacle/repo+json'), 'Update the repo');
-        $response->addForm('cont:delete-repo', 'delete', null, 'Remove the repo');
 
         if ($this->embed) {
             foreach ($repo->branches() as $branchName) {
-                $response->embed('branches', $this->getChildResource('\Contentacle\Resources\Branch', array($repo->username, $repo->name, $branchName)));
+                $response->embed('cont:branch', $this->getChildResource('\Contentacle\Resources\Branch', array($repo->username, $repo->name, $branchName)));
             }
         }
 
@@ -35,7 +34,7 @@ class Repo extends Resource
     function get($username, $repoName)
     {
         try {
-            $repoRepo = $this->container['repo_repository'];
+            $repoRepo = $this->getRepoRepository();
             $repo = $repoRepo->getRepo($username, $repoName);
             return $this->response($repo);
 
@@ -56,7 +55,7 @@ class Repo extends Resource
      */
     public function patchRepo($username, $repoName)
     {
-        $repoRepo = $this->container['repo_repository'];
+        $repoRepo = $this->getRepoRepository();
         try {
             $repo = $repoRepo->getRepo($username, $repoName);
             $repo->patch($this->request->getData());
@@ -64,7 +63,7 @@ class Repo extends Resource
             $response = $this->response($repo);
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = new \Contentacle\Responses\Hal(400);
+            $response = $this->createHalResponse(400);
             $response->contentType = 'application/hal';
             foreach ($e->errors as $field) {
                 $response->embed('errors', array(
@@ -89,7 +88,7 @@ class Repo extends Resource
      */
     public function updateRepo($username, $repoName)
     {
-        $repoRepo = $this->container['repo_repository'];
+        $repoRepo = $this->getRepoRepository();
         try {
             $repo = $repoRepo->getRepo($username, $repoName);
             $repo->setProps($this->request->getData());
@@ -97,7 +96,7 @@ class Repo extends Resource
             $response = $this->response($repo);
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = new \Contentacle\Responses\Hal(400);
+            $response = $this->createHalResponse(400);
             $response->contentType = 'application/hal';
             foreach ($e->errors as $field) {
                 $response->embed('errors', array(
@@ -120,7 +119,7 @@ class Repo extends Resource
      */
     public function deleteRepo($username, $repoName)
     {
-        $repoRepo = $this->container['repo_repository'];
+        $repoRepo = $this->getRepoRepository();
         
         try {
             $repo = $repoRepo->getRepo($username, $repoName);

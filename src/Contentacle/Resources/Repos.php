@@ -13,19 +13,19 @@ class Repos extends Resource {
      */
     function get($username)
     {
-        $response = new \Contentacle\Responses\Hal();
+        $response = $this->createHalResponse();
 
         $response->addLink('self', '/users/'.$username.'/repos'.$this->formatExtension());
-        $response->addForm('cont:create-repo', 'post', null, array('contentacle/repo+yaml', 'contentacle/repo+json'), 'Create a repo');
+        $response->addLink('cont:doc', '/rels/repos');
 
         try {
-            $repoRepo = $this->container['repo_repository'];
+            $repoRepo = $this->getRepoRepository();
             $search = isset($_GET['q']) ? $_GET['q'] : null;
             $repos = $repoRepo->getRepos($username, $search);
 
             if ($this->embed) {
                 foreach ($repos as $repo) {
-                    $response->embed('repos', $this->getChildResource('\Contentacle\Resources\Repo', array($username, $repo->name)));
+                    $response->embed('cont:repo', $this->getChildResource('\Contentacle\Resources\Repo', array($username, $repo->name)));
                 }
             }
             
@@ -49,17 +49,17 @@ class Repos extends Resource {
      */
     public function createRepo($username)
     {
-        $userRepo = $this->container['user_repository'];
-        $repoRepo = $this->container['repo_repository'];
+        $userRepo = $this->getUserRepository();
+        $repoRepo = $this->getRepoRepository();
 
         $user = $userRepo->getUser($username);
         try {
             $repo = $repoRepo->createRepo($user, $this->request->getData());
-            $response = new \Contentacle\Responses\Hal(201);
+            $response = $this->createHalResponse(201);
             $response->location = '/users/'.$user->username.'/repos/'.$repo->name;
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = new \Contentacle\Responses\Hal(400);
+            $response = $this->createHalResponse(400);
             foreach ($e->errors as $field) {
                 $response->embed('errors', array(
                     'logref' => $field,

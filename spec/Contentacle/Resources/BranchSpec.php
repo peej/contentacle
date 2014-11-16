@@ -7,7 +7,7 @@ use Prophecy\Argument;
 
 class BranchSpec extends ObjectBehavior
 {
-    function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
+    function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo, \Contentacle\Services\Yaml $yaml)
     {
         $repo->prop('name')->willReturn('extraction');
         $repo->prop('username')->willReturn('cobb');
@@ -21,10 +21,11 @@ class BranchSpec extends ObjectBehavior
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
         $repoRepo->getRepo(Argument::cetera())->willThrow(new \Git\Exception);
 
-        $pimple->offsetGet('repo_repository')->willReturn($repoRepo);
-
         $this->beConstructedWith($app, $request);
-        $this->setContainer($pimple);
+        $this->setRepoRepository($repoRepo);
+        $this->setHalResponse(function($code = null, $body = null, $headers = array()) use ($yaml) {
+            return new \Contentacle\Responses\Hal($yaml, $code, $body, $headers);
+        });
     }
 
     function it_is_initializable()
@@ -34,41 +35,45 @@ class BranchSpec extends ObjectBehavior
 
     function it_should_link_to_itself()
     {
-        $this->get('cobb', 'extraction', 'master')->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master');
+        $response = $this->get('cobb', 'extraction', 'master');
+        $response->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master');
     }
 
-    function it_should_link_to_edit_method() {
-        $body = $this->get('cobb', 'extraction', 'master')->body;
-        $body['_links']['cont:edit-branch']['method']->shouldBe('patch');
-        $body['_links']['cont:edit-branch']['content-type']->shouldContain('application/json-patch+yaml');
-        $body['_links']['cont:edit-branch']['content-type']->shouldContain('application/json-patch+json');
+    function it_should_link_to_its_own_documentation()
+    {
+        $response = $this->get('cobb', 'extraction', 'master');
+        $response->body['_links']['cont:doc']['href']->shouldBe('/rels/branch');
     }
 
-    function it_should_link_to_delete_method() {
-        $body = $this->get('cobb', 'extraction', 'master')->body;
-        $body['_links']['cont:delete-branch']['method']->shouldBe('delete');
+    function it_should_link_to_documents()
+    {
+        $response = $this->get('cobb', 'extraction', 'master');
+        $response->body['_links']['cont:documents']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/documents');
+    }
+
+    function it_should_link_to_commits()
+    {
+        $response = $this->get('cobb', 'extraction', 'master');
+        $response->body['_links']['cont:commits']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/commits');
     }
 
     function it_should_show_master_branch_details()
     {
-        $body = $this->get('cobb', 'extraction', 'master')->body;
-        $body['name']->shouldBe('master');
-        $body['repo']->shouldBe('extraction');
-        $body['username']->shouldBe('cobb');
-        $body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master');
-        $body['_links']['cont:documents']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/documents');
-        $body['_links']['cont:commits']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/commits');
+        $response = $this->get('cobb', 'extraction', 'master');
+        $response->body['name']->shouldBe('master');
+        $response->body['repo']->shouldBe('extraction');
+        $response->body['username']->shouldBe('cobb');
     }
 
     function it_should_show_branch_details()
     {
-        $body = $this->get('cobb', 'extraction', 'branch')->body;
-        $body['name']->shouldBe('branch');
-        $body['repo']->shouldBe('extraction');
-        $body['username']->shouldBe('cobb');
-        $body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/branch');
-        $body['_links']['cont:documents']['href']->shouldBe('/users/cobb/repos/extraction/branches/branch/documents');
-        $body['_links']['cont:commits']['href']->shouldBe('/users/cobb/repos/extraction/branches/branch/commits');
+        $response = $this->get('cobb', 'extraction', 'branch');
+        $response->body['name']->shouldBe('branch');
+        $response->body['repo']->shouldBe('extraction');
+        $response->body['username']->shouldBe('cobb');
+        $response->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/branch');
+        $response->body['_links']['cont:documents']['href']->shouldBe('/users/cobb/repos/extraction/branches/branch/documents');
+        $response->body['_links']['cont:commits']['href']->shouldBe('/users/cobb/repos/extraction/branches/branch/commits');
     }
 
     function it_should_error_for_unknown_branch()

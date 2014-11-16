@@ -21,22 +21,22 @@ class Commits extends Resource {
         $end = $start + self::PAGESIZE - 1;
         
         try {
-            $repoRepo = $this->container['repo_repository'];
+            $repoRepo = $this->getRepoRepository();
             $repo = $repoRepo->getRepo($username, $repoName);
 
             if (!$repo->hasBranch($branchName)) {
                 throw new \Tonic\NotFoundException;
             }
 
-            $response = new \Contentacle\Responses\Hal();
+            $response = $this->createHalResponse();
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits'.$this->formatExtension());
-            $response->addForm('cont:commit', 'post', null, array('contentacle/commit+yaml', 'contentacle/commit+json'), 'Create a commit');
+            $response->addLink('cont:doc', '/rels/commits');
 
             if ($this->embed) {
                 $commits = $repo->commits($branchName, $start, $end);
                 
                 foreach ($commits as $commit) {
-                    $response->embed('commits', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $commit['sha'])));
+                    $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $commit['sha'])));
                 }
             }
             

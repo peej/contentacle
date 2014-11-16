@@ -54,22 +54,23 @@ TABLE
             | peej     | empty | Empty |             |
 TABLE
         ));
-        $this->iHaveACommitWithMessage("peej", "test", "Commit message", new TableNode(<<<TABLE
+        $this->iHaveACommitWithMessage("peej", "test", "1st commit", new TableNode(<<<TABLE
             | file               | content      |
             | adir/emptyFile.txt |              |
             | afile.txt          | Some content |
+            | anotherFile.txt    | More         |
 TABLE
         ));
         $this->iHaveABranch("branch", "peej", "test");
         $this->iHaveABranch("unmergable", "peej", "test");
         $this->iSwitchToBranch("master", "peej", "test");
-        $this->iHaveACommitWithMessage("peej", "test", "Commit message", new TableNode(<<<TABLE
+        $this->iHaveACommitWithMessage("peej", "test", "2nd commit", new TableNode(<<<TABLE
             | file      | content                  |
             | clash.txt | Clash all over the place |
 TABLE
         ));
         $this->iSwitchToBranch("unmergable", "peej", "test");
-        $this->iHaveACommitWithMessage("peej", "test", "Commit message", new TableNode(<<<TABLE
+        $this->iHaveACommitWithMessage("peej", "test", "3rd commit", new TableNode(<<<TABLE
             | file      | content         |
             | clash.txt | This will clash |
 TABLE

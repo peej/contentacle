@@ -9,7 +9,7 @@ class Raw extends Resource {
 
     function get($username, $repoName, $branch, $path)
     {
-        $repoRepo = $this->container['repo_repository'];
+        $repoRepo = $this->getRepoRepository();
 
         $path = $this->fixPath($path, $username, $repoName, $branch, 'raw');
 

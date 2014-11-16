@@ -9,7 +9,7 @@ class Blob extends Resource {
 
     function get($username, $repoName, $branch, $sha)
     {
-        $repoRepo = $this->container['repo_repository'];
+        $repoRepo = $this->createRepoRepository();
         $repo = $repoRepo->getRepo($username, $repoName);
 
         try {

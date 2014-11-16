@@ -14,7 +14,7 @@ class Merge extends Resource {
     function get($username, $repoName, $branch1, $branch2)
     {
         try {
-            $repoRepo = $this->container['repo_repository'];
+            $repoRepo = $this->getRepoRepository();
             $repo = $repoRepo->getRepo($username, $repoName);
             if ($branch1 == $branch2 || !$repo->hasBranch($branch1) || !$repo->hasBranch($branch2)) {
                 throw new \Tonic\NotFoundException;
@@ -23,14 +23,14 @@ class Merge extends Resource {
             throw new \Tonic\NotFoundException;
         }
         
-        $response = new \Contentacle\Responses\Hal();
+        $response = $this->createHalResponse();
 
         $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branch1.'/merges/'.$branch2.$this->formatExtension());
+        $response->addLink('cont:doc', '/rels/merge');
 
         try {
             $repo->canMerge($branch1, $branch2);
             $response->addData('canMerge', true);
-            $response->addForm('cont:merge', 'post', null, null, 'Merge these branches');
 
         } catch (\Git\Exception $e) {
             $response->addData('canMerge', false);
@@ -49,7 +49,7 @@ class Merge extends Resource {
     function post($username, $repoName, $branch1, $branch2)
     {
         try {
-            $repoRepo = $this->container['repo_repository'];
+            $repoRepo = $this->getRepoRepository();
             $repo = $repoRepo->getRepo($username, $repoName);
             if ($branch1 == $branch2 || !$repo->hasBranch($branch1) || !$repo->hasBranch($branch2)) {
                 throw new \Tonic\NotFoundException;

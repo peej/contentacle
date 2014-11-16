@@ -7,7 +7,7 @@ use Prophecy\Argument;
 
 class BranchesSpec extends ObjectBehavior
 {
-    function let(\Tonic\Application $app, \Tonic\Request $request, \Pimple $pimple, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
+    function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo, \Contentacle\Services\Yaml $yaml)
     {
         $repo->prop(Argument::any())->willReturn();
         $repo->branches()->willReturn(array('master', 'branch'));
@@ -17,10 +17,11 @@ class BranchesSpec extends ObjectBehavior
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
         $repoRepo->getRepo(Argument::cetera())->willThrow(new \Git\Exception);
 
-        $pimple->offsetGet('repo_repository')->willReturn($repoRepo);
-
         $this->beConstructedWith($app, $request);
-        $this->setContainer($pimple);
+        $this->setRepoRepository($repoRepo);
+        $this->setHalResponse(function($code = null, $body = null, $headers = array()) use ($yaml) {
+            return new \Contentacle\Responses\Hal($yaml, $code, $body, $headers);
+        });
     }
 
     function it_is_initializable()
@@ -30,22 +31,22 @@ class BranchesSpec extends ObjectBehavior
 
     function it_should_link_to_itself()
     {
-        $this->get('cobb', 'extraction')->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches');
+        $response = $this->get('cobb', 'extraction');
+        $response->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches');
     }
 
-    function it_should_link_to_create_method() {
-        $body = $this->get('cobb', 'extraction')->body;
-        $body['_links']['cont:create-branch']['method']->shouldBe('post');
-        $body['_links']['cont:create-branch']['content-type']->shouldContain('contentacle/branch+yaml');
-        $body['_links']['cont:create-branch']['content-type']->shouldContain('contentacle/branch+json');
-    }
-
-    function it_should_list_branches()
+    function it_should_link_to_its_own_documentation()
     {
-        $body = $this->get('cobb', 'extraction')->body;
-        $body['_embedded']['branches']->shouldHaveCount(2);
-        $body['_embedded']['branches'][0]['name']->shouldBe('master');
-        $body['_embedded']['branches'][1]['name']->shouldBe('branch');
+        $response = $this->get('cobb', 'extraction');
+        $response->body['_links']['cont:doc']['href']->shouldBe('/rels/branches');
+    }
+
+    function it_should_embed_branches()
+    {
+        $response = $this->get('cobb', 'extraction');
+        $response->body['_embedded']['cont:branch']->shouldHaveCount(2);
+        $response->body['_embedded']['cont:branch'][0]['name']->shouldBe('master');
+        $response->body['_embedded']['cont:branch'][1]['name']->shouldBe('branch');
     }
 
     function it_should_error_for_unknown_repo()

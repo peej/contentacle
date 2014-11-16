@@ -5,55 +5,38 @@ Feature:
     Scenario: View a list of repos
         When I send a GET request on "/users/peej/repos"
         Then the header "Content-Type" should be equal to "application/hal+yaml"
-        And response property "_embedded->repos->1->_links->self->href" should be "/users/peej/repos/test"
-        And response property "_embedded->repos->1->username" should be "peej"
-        And response property "_embedded->repos->1->name" should be "test"
-        And response property "_embedded->repos->1->title" should be "Test"
-        And response property "_embedded->repos->1->description" should be "No description"
+        And response property "_embedded->cont:repo->1->_links->self->href" should be "/users/peej/repos/test"
+        And response property "_embedded->cont:repo->1->username" should be "peej"
+        And response property "_embedded->cont:repo->1->name" should be "test"
+        And response property "_embedded->cont:repo->1->title" should be "Test"
+        And response property "_embedded->cont:repo->1->description" should be "No description"
 
     Scenario: Search for repos
         When I send a GET request to "/users/peej/repos?q=test"
-        Then response property "_embedded->repos->0->name" should be "test"
+        Then response property "_embedded->cont:repo->0->name" should be "test"
 
     Scenario: View an empty list of repos
         When I send a GET request on "/users/empty/repos"
         Then response property "_embedded" should not exist
         And response property "_links->self->href" should be "/users/empty/repos"
 
-    Scenario: Provide a create repo form
+    Scenario: Link to documentation
         When I send a GET request to "/users/peej/repos"
-        Then response property "_links->cont:create-repo->method" should be "post"
-        And response property "_links->cont:create-repo->content-type" should contain "contentacle/repo+yaml"
-        And response property "_links->cont:create-repo->content-type" should contain "contentacle/repo+json"
+        Then response property "_links->cont:doc->href" should be "/rels/repos"
 
     Scenario: View a repos details
         When I send a GET request on "/users/peej/repos/test"
         Then the header "Content-Type" should be equal to "contentacle/repo+yaml"
         And response property "_links->self->href" should be "/users/peej/repos/test"
+        And response property "_links->cont:doc->href" should be "/rels/repo"
         And response property "username" should be "peej"
         And response property "title" should be "Test"
         And response property "description" should be "No description"
-        And response property "_embedded->branches->0->name" should be "branch"
-        And response property "_embedded->branches->0->_links->self->href" should be "/users/peej/repos/test/branches/branch"
-        And response property "_embedded->branches->1->name" should be "master"
-        And response property "_embedded->branches->1->_links->self->href" should be "/users/peej/repos/test/branches/master"
+        And response property "_embedded->cont:branch->0->name" should be "branch"
+        And response property "_embedded->cont:branch->0->_links->self->href" should be "/users/peej/repos/test/branches/branch"
+        And response property "_embedded->cont:branch->1->name" should be "master"
+        And response property "_embedded->cont:branch->1->_links->self->href" should be "/users/peej/repos/test/branches/master"
         And the directory "peej/test.git" should exist
-
-    Scenario: Provide a edit repo form
-        When I send a GET request to "/users/peej/repos/test"
-        Then response property "_links->cont:edit-repo->method" should be "patch"
-        And response property "_links->cont:edit-repo->content-type" should contain "application/json-patch+yaml"
-        And response property "_links->cont:edit-repo->content-type" should contain "application/json-patch+json"
-
-    Scenario: Provide a update repo form
-        When I send a GET request to "/users/peej/repos/test"
-        Then response property "_links->cont:update-repo->method" should be "put"
-        And response property "_links->cont:update-repo->content-type" should contain "contentacle/repo+json"
-        And response property "_links->cont:update-repo->content-type" should contain "contentacle/repo+yaml"
-
-    Scenario: Provide a delete repo form
-        When I send a GET request to "/users/peej/repos/test"
-        Then response property "_links->cont:delete-repo->method" should be "delete"
 
     Scenario: Recieve a 404 for a non-existant repo
         When I send a GET request to "/users/peej/repos/missing"
