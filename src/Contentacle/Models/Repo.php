@@ -193,6 +193,7 @@ class Repo extends Model
     public function commit($branch, $sha)
     {
         $commit = $this->git->commit($sha);
+        $diff = (array)$commit->diff;
 
         return array(
             'sha' => $commit->sha,
@@ -203,7 +204,7 @@ class Repo extends Model
             'author' => $commit->user,
             'email' => $commit->email,
             'files' => $commit->getFiles(),
-            'diff' => $commit->diff
+            'diff' => $diff['diff']
         );
     }
 
