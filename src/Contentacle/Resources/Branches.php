@@ -37,8 +37,10 @@ class Branches extends Resource {
 
     /**
      * @method post
-     * @accepts contentacle/branch+yaml
-     * @accepts contentacle/branch+json
+     * @accepts application/hal+yaml
+     * @accepts application/hal+json
+     * @accepts application/yaml
+     * @accepts application/json
      * @provides application/hal+yaml
      * @provides application/hal+json
      * @secure

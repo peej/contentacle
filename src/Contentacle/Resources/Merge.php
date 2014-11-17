@@ -8,8 +8,8 @@ namespace Contentacle\Resources;
 class Merge extends Resource {
 
     /**
-     * @provides contentacle/merge+yaml
-     * @provides contentacle/merge+json
+     * @provides application/hal+yaml
+     * @provides application/hal+json
      */
     function get($username, $repoName, $branch1, $branch2)
     {
@@ -37,14 +37,13 @@ class Merge extends Resource {
             $response->addData('conflicts', $repo->conflicts($branch1, $branch2));
         }
 
-        $response->contentType = 'contentacle/merge+yaml';
         return $response;
     }
 
     /**
      * @method post
-     * @provides contentacle/merge+yaml
-     * @provides contentacle/merge+json
+     * @provides application/hal+yaml
+     * @provides application/hal+json
      */
     function post($username, $repoName, $branch1, $branch2)
     {

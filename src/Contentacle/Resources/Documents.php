@@ -19,7 +19,6 @@ class Documents extends Resource {
         $response->addLink('cont:raw', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$document['path'].$this->formatExtension());
         $response->addLink('cont:commit', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits/'.$document['commit'].$this->formatExtension());
 
-        $response->contentType = 'contentacle/document+yaml';
         return $response;
     }
 

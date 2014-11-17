@@ -22,14 +22,12 @@ class Repo extends Resource
             }
         }
 
-        $response->contentType = 'contentacle/repo+yaml';
-
         return $response;
     }
 
     /**
-     * @provides contentacle/repo+yaml
-     * @provides contentacle/repo+json
+     * @provides application/hal+yaml
+     * @provides application/hal+json
      */
     function get($username, $repoName)
     {
@@ -80,8 +78,10 @@ class Repo extends Resource
 
     /**
      * @method put
-     * @accepts contentacle/repo+json
-     * @accepts contentacle/repo+yaml
+     * @accepts application/hal+json
+     * @accepts application/hal+yaml
+     * @accepts application/yaml
+     * @accepts application/json
      * @provides application/hal+yaml
      * @provides application/hal+json
      * @secure
@@ -113,8 +113,6 @@ class Repo extends Resource
 
     /**
      * @method delete
-     * @provides application/hal+yaml
-     * @provides application/hal+json
      * @secure
      */
     public function deleteRepo($username, $repoName)

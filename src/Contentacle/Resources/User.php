@@ -9,8 +9,8 @@ class User extends Resource
 {
 
     /**
-     * @provides contentacle/user+yaml
-     * @provides contentacle/user+json
+     * @provides application/hal+yaml
+     * @provides application/hal+json
      */
     function get($username)
     {   
@@ -32,7 +32,6 @@ class User extends Resource
                 }
             }
 
-            $response->contentType = 'contentacle/user+yaml';
             return $response;
 
         } catch (\Contentacle\Exceptions\UserException $e) {
@@ -60,9 +59,7 @@ class User extends Resource
 
             $userRepo->updateUser($user, $this->request->getData(), true);
 
-            $response = $this->createHalResponse(200, $user);
-            $response->contentType = 'contentacle/user+yaml';
-            return $response;
+            return $this->createHalResponse(200, $user);
 
         } catch (\Contentacle\Exceptions\UserException $e) {
             throw new \Tonic\NotFoundException;
@@ -84,9 +81,7 @@ class User extends Resource
 
             $userRepo->deleteUser($user);
 
-            $response = $this->createHalResponse(204);
-
-            return $response;
+            return $this->createHalResponse(204);
 
         } catch (\Contentacle\Exceptions\UserException $e) {
             throw new \Tonic\NotFoundException;

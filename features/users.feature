@@ -25,7 +25,7 @@ Feature:
     Scenario: View a users details
         When I send a GET request to "/users/peej.yaml"
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "contentacle/user+yaml"
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "Paul James"
         And response property "email" should be "paul@peej.co.uk"
@@ -44,7 +44,7 @@ Feature:
         And the directory "missing" should not exist
 
     Scenario: Create a user
-        Given I add "Content-Type" header equal to "contentacle/user+json"
+        Given I add "Content-Type" header equal to "application/json"
         When I send a POST request to "/users" with body:
             """
             {
@@ -56,13 +56,14 @@ Feature:
         Then the response status code should be 201
         And the header "Location" should be equal to "/users/test1"
         When I send a GET request to "/users/test1"
-        Then the header "Content-Type" should be equal to "contentacle/user+yaml"
+        Then the response status code should be 200
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "username" should be "test1"
         And response property "password" should be "118b32994e63fd4a3ff1dd091d2e859d9fa66811"
         And response property "email" should be "test1@localhost"
 
     Scenario: Try to create an invalid user
-        Given I add "Content-Type" header equal to "contentacle/user+json"
+        Given I add "Content-Type" header equal to "application/json"
         When I send a POST request to "/users" with body:
             """
             {
@@ -87,7 +88,7 @@ Feature:
             }]
             """
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "contentacle/user+yaml"
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "PJ"
         When I send a GET request to "/users/peej"

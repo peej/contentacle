@@ -15,7 +15,7 @@ Feature:
     Scenario: View a branches details
         Given I send a GET request on "/users/peej/repos/test/branches/master"
         Then response property "_links->self->href" should be "/users/peej/repos/test/branches/master"
-        And the header "Content-Type" should be equal to "contentacle/branch+yaml"
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "name" should be "master"
         And response property "repo" should be "test"
         And response property "username" should be "peej"
@@ -47,7 +47,7 @@ Feature:
         Then the response status code should be 404
 
     Scenario: Create a branch
-        Given I add "Content-Type" header equal to "contentacle/branch+json"
+        Given I add "Content-Type" header equal to "application/json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         When I send a POST request to "/users/peej/repos/test/branches" with body:
             """
@@ -59,11 +59,11 @@ Feature:
         And the header "Location" should be equal to "/users/peej/repos/test/branches/another"
         When I send a GET request to "/users/peej/repos/test/branches/another"
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "contentacle/branch+yaml"
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "name" should be "another"
 
     Scenario: Try to create an invalid branch
-        Given I add "Content-Type" header equal to "contentacle/branch+json"
+        Given I add "Content-Type" header equal to "application/json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         When I send a POST request to "/users/peej/repos/test/branches" with body:
             """
@@ -87,10 +87,10 @@ Feature:
             }]
             """
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "contentacle/branch+yaml"
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "name" should be "renamed-branch"
         When I send a GET request to "/users/peej/repos/test/branches/renamed-branch"
-        And the header "Content-Type" should be equal to "contentacle/branch+yaml"
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "name" should be "renamed-branch"
 
     Scenario: Rename master branch
@@ -105,10 +105,10 @@ Feature:
             }]
             """
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "contentacle/branch+yaml"
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "name" should be "not-master"
         When I send a GET request to "/users/peej/repos/test/branches/not-master"
-        And the header "Content-Type" should be equal to "contentacle/branch+yaml"
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "name" should be "not-master"
 
     Scenario: Can not rename another branch to same name as another branch

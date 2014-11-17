@@ -9,6 +9,13 @@ class Revert extends Resource {
 
     /**
      * @method POST
+     * @accepts application/hal+yaml
+     * @accepts application/hal+json
+     * @accepts application/yaml
+     * @accepts application/json
+     * @accepts text/plain
+     * @accepts
+     * @secure
      */
     function post($username, $repoName, $branchName, $sha)
     {

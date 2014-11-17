@@ -34,8 +34,10 @@ class Users extends Resource
     
     /**
      * @method post
-     * @accepts contentacle/user+yaml
-     * @accepts contentacle/user+json
+     * @accepts application/hal+yaml
+     * @accepts application/hal+json
+     * @accepts application/yaml
+     * @accepts application/json
      * @provides application/hal+yaml
      * @provides application/hal+json
      */

@@ -34,7 +34,6 @@ class History extends Resource {
                 $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $item['sha'])));
             }
 
-            $response->contentType = 'contentacle/history+yaml';
             return $response;
 
         } catch (\Contentacle\Exceptions\RepoException $e) {

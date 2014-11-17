@@ -11,21 +11,21 @@ Feature:
     Scenario: View a merge that can be merged
         Given I send a GET request on "/users/peej/repos/test/branches/branch/merges/master"
         Then response property "_links->self->href" should be "/users/peej/repos/test/branches/branch/merges/master"
-        And the header "Content-Type" should be equal to "contentacle/merge+yaml"
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "canMerge" should be "true"
         And response property "conflicts" should not exist
 
     Scenario: View a merge that has nothing to merge
         Given I send a GET request on "/users/peej/repos/test/branches/master/merges/branch"
         Then response property "_links->self->href" should be "/users/peej/repos/test/branches/master/merges/branch"
-        And the header "Content-Type" should be equal to "contentacle/merge+yaml"
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "canMerge" should be "false"
         And response property "conflicts" should not exist
 
     Scenario: View a merge that conflicts
         Given I send a GET request on "/users/peej/repos/test/branches/master/merges/unmergable"
         Then response property "_links->self->href" should be "/users/peej/repos/test/branches/master/merges/unmergable"
-        And the header "Content-Type" should be equal to "contentacle/merge+yaml"
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "canMerge" should be "false"
         And response property "conflicts->clash.txt->0" should be "1-Clash all over the place"
         And response property "conflicts->clash.txt->1" should be "1+This will clash"

@@ -32,7 +32,6 @@ class Commit extends Resource {
                 }
             }
 
-            $response->contentType = 'contentacle/commit+yaml';
             return $response;
 
         } catch (\Git\Exception $e) {

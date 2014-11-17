@@ -22,14 +22,13 @@ class Branch extends Resource
         $response->addLink('cont:commits', $branchUrl.'/commits'.$this->formatExtension());
         $response->addLink('cont:documents', $branchUrl.'/documents'.$this->formatExtension());
         $response->addLink('cont:merges', $branchUrl.'/merges'.$this->formatExtension());
-        
-        $response->contentType = 'contentacle/branch+yaml';
+
         return $response;
     }
 
     /**
-     * @provides contentacle/branch+yaml
-     * @provides contentacle/branch+json
+     * @provides application/hal+yaml
+     * @provides application/hal+json
      */
     function get($username, $repoName, $branchName)
     {

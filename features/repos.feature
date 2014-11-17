@@ -26,7 +26,8 @@ Feature:
 
     Scenario: View a repos details
         When I send a GET request on "/users/peej/repos/test"
-        Then the header "Content-Type" should be equal to "contentacle/repo+yaml"
+        Then the response status code should be 200
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "_links->self->href" should be "/users/peej/repos/test"
         And response property "_links->cont:doc->href" should be "/rels/repo"
         And response property "username" should be "peej"
@@ -60,7 +61,7 @@ Feature:
         And the directory "peej/missing.git" should not exist
 
     Scenario: Create a repo
-        Given I add "Content-Type" header equal to "contentacle/repo+json"
+        Given I add "Content-Type" header equal to "application/json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         When I send a POST request to "/users/peej/repos" with body:
             """
@@ -73,13 +74,14 @@ Feature:
         Then the response status code should be 201
         And the header "Location" should be equal to "/users/peej/repos/another"
         When I send a GET request to "/users/peej/repos/another"
-        Then the header "Content-Type" should be equal to "contentacle/repo+yaml"
+        Then the response status code should be 200
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "name" should be "another"
         And response property "title" should be "Test repo"
         And response property "description" should be "This is a test repo"
 
     Scenario: Try to create an invalid repo
-        Given I add "Content-Type" header equal to "contentacle/repo+json"
+        Given I add "Content-Type" header equal to "application/json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         When I send a POST request to "/users/peej/repos" with body:
             """
@@ -92,7 +94,7 @@ Feature:
         And response property "_embedded->errors->0->logref" should be "name"
 
     Scenario: Fail to provide correct auth credentials for user when creating a repo
-        Given I add "Content-Type" header equal to "contentacle/repo+json"
+        Given I add "Content-Type" header equal to "application/json"
         And I add "Authorization" header equal to "Basic wrong"
         When I send a POST request to "/users/peej/repos" with body:
             """
@@ -116,11 +118,12 @@ Feature:
             }]
             """
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "contentacle/repo+yaml"
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "username" should be "peej"
         And response property "title" should be "Not a test"
         When I send a GET request to "/users/peej/repos/test"
-        And the header "Content-Type" should be equal to "contentacle/repo+yaml"
+        Then the response status code should be 200
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "test"
         And response property "title" should be "Not a test"
@@ -137,11 +140,12 @@ Feature:
             }]
             """
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "contentacle/repo+yaml"
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "not-a-test"
         When I send a GET request to "/users/peej/repos/not-a-test"
-        And the header "Content-Type" should be equal to "contentacle/repo+yaml"
+        Then the response status code should be 200
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "not-a-test"
 
@@ -157,18 +161,19 @@ Feature:
             }]
             """
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "contentacle/repo+yaml"
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "username" should be "empty"
         And response property "name" should be "test"
         When I send a GET request to "/users/peej/repos/test"
         Then the response status code should be 404
         When I send a GET request to "/users/empty/repos/test"
-        And the header "Content-Type" should be equal to "contentacle/repo+yaml"
+        Then the response status code should be 200
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "username" should be "empty"
         And response property "name" should be "test"
 
     Scenario: Update a repo
-        Given I add "Content-Type" header equal to "contentacle/repo+json"
+        Given I add "Content-Type" header equal to "application/json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         When I send a PUT request to "/users/peej/repos/test" with body:
             """
@@ -180,7 +185,7 @@ Feature:
             }
             """
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "contentacle/repo+yaml"
+        And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "test"
         And response property "title" should be "A test repo"

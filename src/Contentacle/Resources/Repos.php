@@ -41,8 +41,10 @@ class Repos extends Resource {
 
     /**
      * @method post
-     * @accepts contentacle/repo+yaml
-     * @accepts contentacle/repo+json
+     * @accepts application/hal+yaml
+     * @accepts application/hal+json
+     * @accepts application/yaml
+     * @accepts application/json
      * @provides application/hal+yaml
      * @provides application/hal+json
      * @secure
