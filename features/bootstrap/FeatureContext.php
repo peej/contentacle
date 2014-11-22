@@ -95,6 +95,20 @@ TABLE
         $this->getSession()->setRequestHeader('Accept', '*/*');
     }
 
+    private function getResponseBody()
+    {
+        $session = $this->getSession();
+        $response = $session->getPage()->getContent();
+        
+        $data = json_decode($response, true);
+        if ($data == false) {
+            $yaml = new Yaml;
+            $data = $yaml->decode($response);
+        }
+
+        return $data;
+    }
+
     /**
      * Set HTTP header for next request
      *
@@ -122,14 +136,7 @@ TABLE
      */
     public function theResponseShouldHavePropertyWithValue($name, $value)
     {
-        $session = $this->getSession();
-        $response = $session->getPage()->getContent();
-        
-        $data = json_decode($response, true);
-        if ($data == false) {
-            $yaml = new Yaml;
-            $data = $yaml->decode($response);
-        }
+        $data = $this->getResponseBody();
         $parts = explode('->', $name);
         foreach ($parts as $part) {
             if (!isset($data[$part])) {
@@ -176,13 +183,7 @@ TABLE
      */
     public function responsePropertyShouldContain($name, $value)
     {
-        $session = $this->getSession();
-        $response = $session->getPage()->getContent();
-        $data = json_decode($response, true);
-        if ($data == false) {
-            $yaml = new Yaml;
-            $data = $yaml->decode($response);
-        }
+        $data = $this->getResponseBody();
         $parts = explode('->', $name);
         foreach ($parts as $part) {
             if (!isset($data[$part])) {
@@ -200,13 +201,7 @@ TABLE
      */
     public function responsePropertyShouldNotExist($name)
     {
-        $session = $this->getSession();
-        $response = $session->getPage()->getContent();
-        $data = json_decode($response, true);
-        if ($data == false) {
-            $yaml = new Yaml;
-            $data = $yaml->decode($response);
-        }
+        $data = $this->getResponseBody();
         if (isset($data[$name])) {
             throw new Exception;
         }
