@@ -8,6 +8,7 @@ namespace Contentacle\Resources;
 class Commit extends Resource {
 
     /**
+     * @method get
      * @provides contentacle/commit+yaml
      * @provides contentacle/commit+json
      */

@@ -7,6 +7,9 @@ namespace Contentacle\Resources;
  */
 class Blob extends Resource {
 
+    /**
+     * @method get
+     */
     function get($username, $repoName, $branch, $sha)
     {
         $repoRepo = $this->createRepoRepository();

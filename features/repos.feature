@@ -11,6 +11,12 @@ Feature:
         And response property "_embedded->cont:repo->1->title" should be "Test"
         And response property "_embedded->cont:repo->1->description" should be "No description"
 
+    Scenario: Have the correct HTTP methods
+        Given I send an OPTIONS request to "/users/peej/repos"
+        Then the "Allow" response header should be "OPTIONS,GET,POST"
+        Given I send an OPTIONS request to "/users/peej/repos/test"
+        Then the "Allow" response header should be "OPTIONS,GET,PATCH,PUT,DELETE"
+
     Scenario: Search for repos
         When I send a GET request to "/users/peej/repos?q=test"
         Then response property "_embedded->cont:repo->0->name" should be "test"

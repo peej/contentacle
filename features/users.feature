@@ -11,6 +11,12 @@ Feature:
         When I send a GET request to "/users.yaml"
         Then response property "_links->cont:doc->href" should be "/rels/users"
 
+    Scenario: Have the correct HTTP methods
+        Given I send an OPTIONS request to "/users"
+        Then the "Allow" response header should be "OPTIONS,GET,POST"
+        Given I send an OPTIONS request to "/users/peej"
+        Then the "Allow" response header should be "OPTIONS,GET,PATCH,DELETE"
+
     Scenario: View a list of users
         When I send a GET request to "/users.yaml"
         Then the header "Content-Type" should be equal to "application/hal+yaml"

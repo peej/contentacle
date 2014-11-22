@@ -23,6 +23,7 @@ class Documents extends Resource {
     }
 
     /**
+     * @method get
      * @provides application/hal+yaml
      * @provides contentacle/document+yaml
      * @provides application/hal+json

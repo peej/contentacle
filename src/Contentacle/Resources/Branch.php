@@ -27,6 +27,7 @@ class Branch extends Resource
     }
 
     /**
+     * @method get
      * @provides application/hal+yaml
      * @provides application/hal+json
      */

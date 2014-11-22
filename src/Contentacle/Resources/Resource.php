@@ -117,13 +117,29 @@ class Resource extends \Tonic\Resource
     }
 
     /**
-     * @method get
      * @method options
      */
-    function get() {
-        return $this->createHalResponse(404);
+    function options() {
+        $className = get_class($this);
+
+        if (isset($this->app->resources[$className])) {
+            $metadata = $this->app->resources[$className];
+            $allow = array();
+
+            foreach ($metadata->getMethods() as $methodData) {
+                $allow = array_merge($allow, $methodData->getMethod());
+            }
+
+            $allow = array_unique($allow);
+
+            $response = new \Tonic\Response(200);
+            $response->allow = strtoupper(join(',', $allow));
+        } else {
+            $response = new \Tonic\Response(404);
+        }
+        return $response;
     }
-    
+
     function secure()
     {
         if (

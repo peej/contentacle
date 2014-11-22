@@ -8,6 +8,12 @@ Feature:
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "_links->cont:merge->0->href" should be "/users/peej/repos/test/branches/master/merges/branch"
 
+    Scenario: Have the correct HTTP methods
+        Given I send an OPTIONS request to "/users/peej/repos/test/branches/master/merges"
+        Then the "Allow" response header should be "OPTIONS,GET"
+        Given I send an OPTIONS request to "/users/peej/repos/test/branches/master/merges/branch"
+        Then the "Allow" response header should be "OPTIONS,GET,POST"
+
     Scenario: View a merge that can be merged
         Given I send a GET request on "/users/peej/repos/test/branches/branch/merges/master"
         Then response property "_links->self->href" should be "/users/peej/repos/test/branches/branch/merges/master"

@@ -24,6 +24,12 @@ Feature:
         And response property "_links->cont:commits->href" should be "/users/peej/repos/test/branches/master/commits"
         And response property "_links->cont:merges->href" should be "/users/peej/repos/test/branches/master/merges"
 
+    Scenario: Have the correct HTTP methods
+        Given I send an OPTIONS request to "/users/peej/repos/test/branches"
+        Then the "Allow" response header should be "OPTIONS,GET,POST"
+        Given I send an OPTIONS request to "/users/peej/repos/test/branches/master"
+        Then the "Allow" response header should be "OPTIONS,GET,PATCH,DELETE"
+
     Scenario: Recieve a 404 for a non-existant branch
         When I send a GET request to "/users/peej/repos/test/branches/missing"
         Then the response status code should be 404

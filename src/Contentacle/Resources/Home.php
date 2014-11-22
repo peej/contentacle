@@ -9,6 +9,7 @@ namespace Contentacle\Resources;
 class Home extends Resource {
 
     /**
+     * @method get
      * @provides application/hal+yaml
      * @provides application/hal+json
      */

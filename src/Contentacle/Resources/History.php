@@ -8,6 +8,7 @@ namespace Contentacle\Resources;
 class History extends Resource {
 
     /**
+     * @method get
      * @provides application/hal+yaml
      * @provides application/hal+json
      */

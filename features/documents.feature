@@ -22,6 +22,12 @@ Feature:
         And response property "_embedded->cont:document->0->filename" should be "emptyFile.txt"
         And response property "_embedded->cont:document->0->_links->self->href" should be "/users/peej/repos/test/branches/master/documents/adir/emptyFile.txt"
 
+    Scenario: Have the correct HTTP methods
+        Given I send an OPTIONS request to "/users/peej/repos/test/branches/master/documents"
+        Then the "Allow" response header should be "OPTIONS,GET,PUT,DELETE"
+        Given I send an OPTIONS request to "/users/peej/repos/test/branches/master/documents/afile.txt"
+        Then the "Allow" response header should be "OPTIONS,GET,PUT,DELETE"
+
     Scenario: View a documents details
         Given I send a GET request on "/users/peej/repos/test/branches/master/documents/afile.txt"
         Then the response status code should be 200

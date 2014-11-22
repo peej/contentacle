@@ -10,6 +10,7 @@ class Commits extends Resource {
     const PAGESIZE = 25;
 
     /**
+     * @method get
      * @provides application/hal+yaml
      * @provides application/hal+json
      */

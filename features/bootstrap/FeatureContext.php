@@ -213,36 +213,33 @@ TABLE
     }
 
     /**
-     * @Given /^I send a GET request on "([^"]*)" with sha (\d+)$/
+     * @Given /^I send an OPTIONS request (?:on|to) "([^"]*)"$/
      */
-    public function iSendAGetRequestOnWithSha($url, $shaNumber)
+    public function iSendAnOptionsRequestTo($url)
     {
-        if (!isset($this->shas[$shaNumber - 1])) {
-            throw new Exception('There is no generated sha #'.$shaNumber);
-        }
-        return new Given('I send a GET request on "'.str_replace('{sha}', $this->shas[$shaNumber - 1], $url).'"');
+        return new Given('I send a OPTIONS request to "'.$url.'"');
     }
 
     /**
-     * @Given /^I send a POST request on "([^"]*)" with sha (\d+)$/
+     * @Given /^I send an? ([A-Z]+) request (?:on|to) "([^"]*)" with sha (\d+)$/
      */
-    public function iSendAPostRequestOnWithSha($url, $shaNumber)
+    public function iSendAGetRequestOnWithSha($method, $url, $shaNumber)
     {
         if (!isset($this->shas[$shaNumber - 1])) {
             throw new Exception('There is no generated sha #'.$shaNumber);
         }
-        return new Given('I send a POST request on "'.str_replace('{sha}', $this->shas[$shaNumber - 1], $url).'"');
+        return new Given('I send a '.$method.' request on "'.str_replace('{sha}', $this->shas[$shaNumber - 1], $url).'"');
     }
 
     /**
-     * @Given /^I send a POST request on "([^"]*)" with sha (\d+) and body:$/
+     * @Given /^I send an? ([A-Z]+) request (?:on|to) "([^"]*)" with sha (\d+) and body:$/
      */
-    public function iSendAPostRequestOnWithShaAndBody($url, $shaNumber, PyStringNode $body)
+    public function iSendAPostRequestOnWithShaAndBody($method, $url, $shaNumber, PyStringNode $body)
     {
         if (!isset($this->shas[$shaNumber - 1])) {
             throw new Exception('There is no generated sha #'.$shaNumber);
         }
-        return new Given('I send a POST request on "'.str_replace('{sha}', $this->shas[$shaNumber - 1], $url).'" with body:', $body);
+        return new Given('I send a '.$method.' request on "'.str_replace('{sha}', $this->shas[$shaNumber - 1], $url).'" with body:', $body);
     }
 
     /**

@@ -7,6 +7,9 @@ namespace Contentacle\Resources;
  */
 class Raw extends Resource {
 
+    /**
+     * @method get
+     */
     function get($username, $repoName, $branch, $path)
     {
         $repoRepo = $this->getRepoRepository();

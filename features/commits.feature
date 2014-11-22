@@ -25,6 +25,12 @@ Feature:
         And response property "files" should contain "contentacle.yaml"
         And response property "_links->cont:document->href" should be "/users/peej/repos/test/branches/master/documents/contentacle.yaml"
 
+    Scenario: Have the correct HTTP methods
+        Given I send an OPTIONS request to "/users/peej/repos/test/branches/master/commits"
+        Then the "Allow" response header should be "OPTIONS,GET"
+        Given I send an OPTIONS request to "/users/peej/repos/test/branches/master/commits/{sha}" with sha 1
+        Then the "Allow" response header should be "OPTIONS,GET"
+
     Scenario: Commit should link to all documents it contains changes for
         Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 3
         And response property "_links->cont:document->0->href" should be "/users/peej/repos/test/branches/master/documents/adir/emptyFile.txt"
