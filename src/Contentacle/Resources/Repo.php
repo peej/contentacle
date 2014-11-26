@@ -7,6 +7,9 @@ namespace Contentacle\Resources;
  */
 class Repo extends Resource
 {
+    /**
+     * Generate a successful response.
+     */
     private function response($repo)
     {
         $response = $this->createHalResponse(200);
@@ -26,9 +29,20 @@ class Repo extends Resource
     }
 
     /**
+     * Get a repository
+     *
      * @method get
+     * @response 200 OK
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @field username The username of the repo owner.
+     * @field name The short name of the repo.
+     * @field title The display name of the repo.
+     * @field description A description of the repo.
+     * @links self Link to itself.
+     * @links cont:doc Link to this documentation.
+     * @links cont:branches Link to the repositories branches.
+     * @embeds cont:branch A list of the repositories branches.
      */
     function get($username, $repoName)
     {
@@ -45,12 +59,25 @@ class Repo extends Resource
     }
 
     /**
+     * Update a repositories metadata.
+     *
      * @method patch
+     * @field username The username of the repo owner.
+     * @field name The short name of the repo.
+     * @field title The display name of the repo.
+     * @field description A description of the repo.
      * @accepts application/json-patch+yaml
      * @accepts application/json-patch+json
+     * @secure
+     * @response 200 OK
+     * @response 400 Bad Request
      * @provides application/hal+yaml
      * @provides application/hal+json
-     * @secure
+     * @links self Link to itself.
+     * @links cont:doc Link to this documentation.
+     * @links cont:branches Link to the repositories branches.
+     * @embeds cont:branch A list of the repositories branches.
+     * @embeds cont:error A list of errored fields.
      */
     public function patchRepo($username, $repoName)
     {
@@ -65,7 +92,7 @@ class Repo extends Resource
             $response = $this->createHalResponse(400);
             $response->contentType = 'application/hal';
             foreach ($e->errors as $field) {
-                $response->embed('errors', array(
+                $response->embed('cont:error', array(
                     'logref' => $field,
                     'message' => '"'.$field.'" field failed validation'
                 ));
@@ -78,14 +105,27 @@ class Repo extends Resource
     }
 
     /**
+     * Update a repositories metadata.
+     *
      * @method put
+     * @field username The username of the repo owner.
+     * @field name The short name of the repo.
+     * @field title The display name of the repo.
+     * @field description A description of the repo.
      * @accepts application/hal+json
      * @accepts application/hal+yaml
      * @accepts application/yaml
      * @accepts application/json
+     * @secure
+     * @response 200 OK
+     * @response 400 Bad Request
      * @provides application/hal+yaml
      * @provides application/hal+json
-     * @secure
+     * @links self Link to itself.
+     * @links cont:doc Link to this documentation.
+     * @links cont:branches Link to the repositories branches.
+     * @embeds cont:branch A list of the repositories branches.
+     * @embeds cont:error A list of errored fields.
      */
     public function updateRepo($username, $repoName)
     {
@@ -100,7 +140,7 @@ class Repo extends Resource
             $response = $this->createHalResponse(400);
             $response->contentType = 'application/hal';
             foreach ($e->errors as $field) {
-                $response->embed('errors', array(
+                $response->embed('cont:error', array(
                     'logref' => $field,
                     'message' => '"'.$field.'" field failed validation'
                 ));
@@ -113,8 +153,15 @@ class Repo extends Resource
     }
 
     /**
+     * Delete a repository.
+     *
      * @method delete
      * @secure
+     * @response 204 No content
+     * @response 400 Bad request
+     * @provides application/hal+yaml
+     * @provides application/hal+json
+     * @embeds cont:error A list of errored fields.
      */
     public function deleteRepo($username, $repoName)
     {

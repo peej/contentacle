@@ -7,11 +7,21 @@ namespace Contentacle\Resources;
  */
 class User extends Resource
 {
-
     /**
+     * Get a user.
+     *
      * @method get
+     * @response 200 OK
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @field username Username
+     * @field name Users real name
+     * @field password Password
+     * @field email Email address
+     * @links self Link to itself
+     * @links cont:doc Link to this documentation.
+     * @links cont:repos Link to the users repositories.
+     * @embeds cont:repo A list of the users repositories.
      */
     function get($username)
     {   
@@ -43,12 +53,23 @@ class User extends Resource
     }
 
     /**
+     * Update a user.
+     *
      * @method patch
      * @accepts application/json-patch+yaml
      * @accepts application/json-patch+json
+     * @secure
+     * @field username Username
+     * @field name Users real name
+     * @field password Password
+     * @field email Email address
+     * @response 200 OK
      * @provides application/hal+yaml
      * @provides application/hal+json
-     * @secure
+     * @links self Link to itself
+     * @links cont:doc Link to this documentation.
+     * @links cont:repos Link to the users repositories.
+     * @embeds cont:repo A list of the users repositories.
      */
     public function updateUser($username)
     {
@@ -70,8 +91,11 @@ class User extends Resource
     }
 
     /**
+     * Delete a user.
+     *
      * @method delete
      * @secure
+     * @response 204 No content
      */
     public function deleteUser($username)
     {

@@ -7,6 +7,9 @@ namespace Contentacle\Resources;
  */
 class Branch extends Resource
 {
+    /**
+     * Generate a successful response.
+     */
     private function response($repo, $branchName)
     {
         $response = $this->createHalResponse(200);
@@ -27,9 +30,18 @@ class Branch extends Resource
     }
 
     /**
+     * Get a branch.
+     *
      * @method get
+     * @response 200 OK
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @field name Name of the branch
+     * @links self Link to itself
+     * @links cont:doc Link to this documentation.
+     * @links cont:commits Link to the branches commits.
+     * @links cont:documents Link to the branches documents.
+     * @links cont:merges Link to merges possible with this branch..
      */
     function get($username, $repoName, $branchName)
     {
@@ -50,12 +62,19 @@ class Branch extends Resource
     }
 
     /**
+     * Rename a branch.
+     *
      * @method patch
      * @accepts application/json-patch+yaml
      * @accepts application/json-patch+json
+     * @field name Name of the branch
+     * @secure
+     * @response 201 Created
+     * @response 400 Bad Request
      * @provides application/hal+yaml
      * @provides application/hal+json
-     * @secure
+     * @header Location The URL of the created branch.
+     * @embeds cont:error A list of errored fields.
      */
     public function renameBranch($username, $repoName, $branchName)
     {
@@ -97,10 +116,15 @@ class Branch extends Resource
     }
 
     /**
+     * Delete a branch
+     *
      * @method delete
+     * @secure
+     * @response 204 No content
+     * @response 400 Bad request
      * @provides application/hal+yaml
      * @provides application/hal+json
-     * @secure
+     * @embeds cont:error A list of errored fields.
      */
     public function deleteBranch($username, $repoName, $branchName)
     {
@@ -118,7 +142,7 @@ class Branch extends Resource
         } catch (\Contentacle\Exceptions\ValidationException $e) {
             $response = $this->createHalResponse(400);
             foreach ($e->errors as $field) {
-                $response->embed('errors', array(
+                $response->embed('cont:error', array(
                     'logref' => $field,
                     'message' => '"'.$field.'" field failed validation'
                 ));
@@ -126,7 +150,7 @@ class Branch extends Resource
 
         } catch (\Contentacle\Exceptions\RepoException $e) {
             $response = $this->createHalResponse(400);
-            $response->embed('errors', array(
+            $response->embed('cont:error', array(
                 'logref' => 'name',
                 'message' => 'Can not delete "'.$branchName.'" branch'
             ));

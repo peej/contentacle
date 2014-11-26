@@ -5,10 +5,13 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch/raw/(.+)$
  */
-class Raw extends Resource {
-
+class Raw extends Resource
+{
     /**
+     * Get the raw contents of a document.
+     *
      * @method get
+     * @response 200 OK
      */
     function get($username, $repoName, $branch, $path)
     {

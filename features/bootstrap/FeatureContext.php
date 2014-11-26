@@ -109,6 +109,19 @@ TABLE
         return $data;
     }
 
+    private function getResponseProperty($name)
+    {
+        $data = $this->getResponseBody();
+        $parts = explode('->', $name);
+        foreach ($parts as $part) {
+            if (!array_key_exists($part, $data)) {
+                throw new Exception('Could not find '.$part);
+            }
+            $data = $data[$part];
+        }
+        return $data;
+    }
+
     /**
      * Set HTTP header for next request
      *
@@ -136,14 +149,7 @@ TABLE
      */
     public function theResponseShouldHavePropertyWithValue($name, $value)
     {
-        $data = $this->getResponseBody();
-        $parts = explode('->', $name);
-        foreach ($parts as $part) {
-            if (!isset($data[$part])) {
-                throw new Exception('Could not find '.$part);
-            }
-            $data = $data[$part];
-        }
+        $data = $this->getResponseProperty($name);
 
         if ($data === false) {
             $data = 'false';
@@ -183,17 +189,19 @@ TABLE
      */
     public function responsePropertyShouldContain($name, $value)
     {
-        $data = $this->getResponseBody();
-        $parts = explode('->', $name);
-        foreach ($parts as $part) {
-            if (!isset($data[$part])) {
-                throw new Exception;
-            }
-            $data = $data[$part];
-        }
+        $data = $this->getResponseProperty($name);
+
         if (!is_array($data) || !in_array($value, $data)) {
             throw new Exception;
         }
+    }
+
+    /**
+     * @Then /^response property "([^"]*)" should exist$/
+     */
+    public function responsePropertyShouldExist($name)
+    {
+        $this->getResponseProperty($name);
     }
 
     /**
@@ -201,10 +209,12 @@ TABLE
      */
     public function responsePropertyShouldNotExist($name)
     {
-        $data = $this->getResponseBody();
-        if (isset($data[$name])) {
-            throw new Exception;
+        try {
+            $this->getResponseProperty($name);
+        } catch (Exception $e) {
+            return;
         }
+        throw new Exception('Property '.$name.' exists');
     }
 
     /**
@@ -354,6 +364,61 @@ TABLE
             throw new Exception('No location header returned');
         }
         $this->shas[] = substr($responseHeaders['Location'][0], -40);
+    }
+
+    /**
+     * @Given /^I follow the (?:(\d+)[a-z]{2} )?"([^"]*)" relation$/
+     */
+    public function iFollowTheRelation($num, $rel)
+    {
+        if (!$num) $num = 1;
+
+        $data = $this->getResponseBody();
+
+        if (!isset($data['_links']) && !isset($data['_embedded'])) {
+            throw new Exception('No relations in the response');
+        }
+
+        if (isset($data['_links'][$rel])) {
+            $href = $data['_links'][$rel]['href'];
+
+        } elseif (isset($data['_embedded'][$rel])) {
+            $items = $data['_embedded'][$rel];
+            if (!isset($items[$num - 1])) {
+                throw new Exception('Relation "'.$rel.'" does not have '.$num.' items');
+            }
+            $href = $items[$num - 1]['_links']['self']['href'];
+
+        } else {
+            throw new Exception('Relation "'.$rel.'" not found');
+        }
+
+        return new Given('I send a GET request to "'.$href.'"');
+    }
+
+    /**
+     * @When /^I uncurie the "([^"]*)" relation$/
+     */
+    public function iUncurieTheRelation($rel)
+    {
+        $data = $this->getResponseBody();
+        list($curieName, $relName) = explode(':', $rel);
+
+        if (!isset($data['_links']['curies'])) {
+            throw new Exception('No curies found in document');
+        }
+
+        foreach ($data['_links']['curies'] as $curie) {
+            if ($curie['name'] == $curieName) {
+                $href = str_replace('{rel}', $relName, $curie['href']);
+            }
+        }
+
+        if (!isset($href)) {
+            throw new Exception('Curie "'.$curieName.'" not found');
+        }
+
+        return new Given('I send a GET request to "'.$href.'"');
     }
 
 }

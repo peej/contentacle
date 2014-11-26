@@ -208,3 +208,76 @@ Feature:
         Given I add "Authorization" header equal to "Basic wrong"
         When I send a DELETE request to "/users/peej/repos/test"
         Then the response status code should be 401
+
+    Scenario: Navigate to a repo
+        Given I am on the homepage
+        When I follow the "cont:users" relation
+        And I follow the 2nd "cont:user" relation
+        And I follow the 2nd "cont:repo" relation
+        Then the response status code should be 200
+        And response property "username" should be "peej"
+        And response property "name" should be "test"
+        And response property "title" should be "Test"
+        And response property "description" should be "No description"
+
+    Scenario: The cont:repos link relation has documentation
+        Given I send a GET request to "/users/peej/repos"
+        When I uncurie the "cont:repos" relation
+        Then the response status code should be 200
+        And response property "get->description" should exist
+        And response property "get->response" should contain "200 OK"
+        And response property "get->field->username" should exist
+        And response property "get->field->name" should exist
+        And response property "get->field->title" should exist
+        And response property "get->field->description" should exist
+        And response property "get->links->self" should exist
+        And response property "get->links->cont:doc" should exist
+        And response property "get->embeds->cont:repo" should exist
+        And response property "get->provides" should contain "application/hal+yaml"
+        And response property "get->provides" should contain "application/hal+json"
+        And response property "post->description" should exist
+        And response property "post->field->name" should exist
+        And response property "post->field->title" should exist
+        And response property "post->field->description" should exist
+        And response property "post->secure" should exist
+        And response property "post->response" should contain "201 Created"
+        And response property "post->response" should contain "400 Bad request"
+        And response property "post->header->Location" should exist
+        And response property "post->embeds->cont:error" should exist
+        And response property "post->accepts" should contain "application/yaml"
+        And response property "post->accepts" should contain "application/json"
+        And response property "post->provides" should contain "application/hal+yaml"
+        And response property "post->provides" should contain "application/hal+json"
+
+    Scenario: The cont:repo link relation has documentation
+        Given I send a GET request to "/users/peej/repos/test"
+        When I uncurie the "cont:repo" relation
+        Then the response status code should be 200
+        And response property "get->description" should exist
+        And response property "get->response" should contain "200 OK"
+        And response property "get->field->username" should exist
+        And response property "get->field->name" should exist
+        And response property "get->field->title" should exist
+        And response property "get->field->description" should exist
+        And response property "get->links->self" should exist
+        And response property "get->links->cont:doc" should exist
+        And response property "get->links->cont:branches" should exist
+        And response property "get->embeds->cont:branch" should exist
+        And response property "get->provides" should contain "application/hal+yaml"
+        And response property "get->provides" should contain "application/hal+json"
+        And response property "patch->description" should exist
+        And response property "patch->response" should contain "200 OK"
+        And response property "patch->field->username" should exist
+        And response property "patch->field->name" should exist
+        And response property "patch->field->title" should exist
+        And response property "patch->field->description" should exist
+        And response property "patch->links->self" should exist
+        And response property "patch->links->cont:doc" should exist
+        And response property "patch->links->cont:branches" should exist
+        And response property "patch->embeds->cont:branch" should exist
+        And response property "patch->accepts" should contain "application/json-patch+yaml"
+        And response property "patch->accepts" should contain "application/json-patch+json"
+        And response property "patch->provides" should contain "application/hal+yaml"
+        And response property "patch->provides" should contain "application/hal+json"
+        And response property "delete->description" should exist
+        And response property "delete->response" should contain "204 No content"

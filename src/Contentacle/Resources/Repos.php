@@ -5,12 +5,22 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos
  */
-class Repos extends Resource {
-
+class Repos extends Resource
+{
     /**
+     * Get a list of a users repositories.
+     *
      * @method get
+     * @response 200 OK
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @field name The short name of the repo.
+     * @field title The display name of the repo.
+     * @field description A description of the repo.
+     * @field username The owner of the repo.
+     * @links self Link to itself.
+     * @links cont:doc Link to this documentation
+     * @embeds cont:repo The list of repositories
      */
     function get($username)
     {
@@ -41,14 +51,23 @@ class Repos extends Resource {
     }
 
     /**
+     * Create a repository.
+     *
      * @method post
+     * @field name The short name of the repo.
+     * @field title The display name of the repo.
+     * @field description A description of the repo.
      * @accepts application/hal+yaml
      * @accepts application/hal+json
      * @accepts application/yaml
      * @accepts application/json
+     * @secure
+     * @response 201 Created
+     * @response 400 Bad request
      * @provides application/hal+yaml
      * @provides application/hal+json
-     * @secure
+     * @header Location The URL of the created repository.
+     * @embeds cont:error A list of errored fields.
      */
     public function createRepo($username)
     {

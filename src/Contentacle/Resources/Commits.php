@@ -10,9 +10,15 @@ class Commits extends Resource {
     const PAGESIZE = 25;
 
     /**
+     * Get a list of commits.
+     *
      * @method get
+     * @response 200 OK
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @links self Link to itself
+     * @links cont:doc Link to this documentation.
+     * @embeds cont:commit List of commits
      */
     function get($username, $repoName, $branchName)
     {

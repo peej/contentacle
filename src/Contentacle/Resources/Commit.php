@@ -5,12 +5,19 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch/commits/([0-9a-f]{40})
  */
-class Commit extends Resource {
-
+class Commit extends Resource
+{
     /**
+     * Get a commit.
+     *
      * @method get
-     * @provides contentacle/commit+yaml
-     * @provides contentacle/commit+json
+     * @response 200 OK
+     * @provides application/hal+yaml
+     * @provides application/hal+json
+     * @links self Link to itself
+     * @links cont:doc Link to this documentation.
+     * @links cont:user Link to the creator of this commit.
+     * @links cont:document Link to documents within this commit.
      */
     function get($username, $repoName, $branchName, $sha)
     {

@@ -5,12 +5,19 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch/merges/:merge
  */
-class Merge extends Resource {
-
+class Merge extends Resource
+{
     /**
+     * Get details of a merge that can be performed on this branch.
+     *
      * @method get
+     * @response 200 OK
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @field canMerge If the merge can be accomplished successfully.
+     * @field conflicts Conflicts which stop these branches from being merged.
+     * @links self Link to itself
+     * @links cont:doc Link to this documentation.
      */
     function get($username, $repoName, $branch1, $branch2)
     {
@@ -42,9 +49,12 @@ class Merge extends Resource {
     }
 
     /**
+     * Perform a merge between two branches.
+     *
      * @method post
-     * @provides application/hal+yaml
-     * @provides application/hal+json
+     * @response 204 No content
+     * @response 400 Bad request
+     * @response 404 Not found
      */
     function post($username, $repoName, $branch1, $branch2)
     {

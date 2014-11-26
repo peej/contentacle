@@ -8,9 +8,19 @@ namespace Contentacle\Resources;
 class Users extends Resource
 {
     /**
+     * Get a list of users.
+     *
      * @method get
+     * @response 200 OK
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @field username Username
+     * @field name Users real name
+     * @field password Password
+     * @field email Email address
+     * @links self Link to itself
+     * @links cont:doc Link to this documentation.
+     * @embeds cont:user The list of users.
      */
     function get()
     {
@@ -34,13 +44,23 @@ class Users extends Resource
     }
     
     /**
+     * Create a user.
+     *
      * @method post
      * @accepts application/hal+yaml
      * @accepts application/hal+json
      * @accepts application/yaml
      * @accepts application/json
+     * @field username Username
+     * @field name Users real name
+     * @field password Password
+     * @field email Email address
+     * @response 201 Created
+     * @response 400 Bad request
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @header Location The URL of the created user.
+     * @embeds cont:error A list of errored fields.
      */
     function createUser()
     {
@@ -54,7 +74,7 @@ class Users extends Resource
         } catch (\Contentacle\Exceptions\ValidationException $e) {
             $response = $this->createHalResponse(400);
             foreach ($e->errors as $field) {
-                $response->embed('errors', array(
+                $response->embed('cont:error', array(
                     'logref' => $field,
                     'message' => '"'.$field.'" field failed validation'
                 ));

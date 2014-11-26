@@ -117,7 +117,11 @@ class Resource extends \Tonic\Resource
     }
 
     /**
+     * Discover which HTTP methods are allowed on this resource.
+     *
      * @method options
+     * @response 200 OK
+     * @header Allow HTTP methods this resource allows.
      */
     function options() {
         $className = get_class($this);

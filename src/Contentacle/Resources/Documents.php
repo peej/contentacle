@@ -6,8 +6,11 @@ namespace Contentacle\Resources;
  * @uri /users/:username/repos/:repo/branches/:branch/documents
  * @uri /users/:username/repos/:repo/branches/:branch/documents/?(.*)$
  */
-class Documents extends Resource {
-
+class Documents extends Resource
+{
+    /**
+     * Generate a successful response.
+     */
     private function response($code, $username, $repoName, $branchName, $document)
     {
         $response = $this->createHalResponse($code, $document);
@@ -23,11 +26,22 @@ class Documents extends Resource {
     }
 
     /**
+     * Get the contents of a document.
+     *
      * @method get
+     * @response 200 OK
      * @provides application/hal+yaml
-     * @provides contentacle/document+yaml
      * @provides application/hal+json
-     * @provides contentacle/document+json
+     * @field filename The filename of the document.
+     * @field path The path of the document.
+     * @field type Directory or file.
+     * @links self Link to itself
+     * @links cont:doc Link to this documentation.
+     * @links cont:user Link to creator of the document.
+     * @links cont:history Link to the history of the document.
+     * @links cont:raw Link to the raw content of the document.
+     * @links cont:commit Link to the commit this document was a part of.
+     * @embeds cont:document Documents within this document (if it is a directory).
      */
     function get($username, $repoName, $branchName, $path = null, $fixPath = true)
     {
@@ -73,10 +87,27 @@ class Documents extends Resource {
     }
 
     /**
+     * Update or create a document.
+     *
      * @method put
+     * @accepts application/hal+yaml
+     * @accepts application/hal+json
+     * @accepts application/json
+     * @accepts application/yaml
+     * @accepts *
+     * @field content The content of the document.
+     * @field message The commit message.
+     * @secure
+     * @response 200 OK
+     * @response 201 Created
      * @provides application/hal+yaml
      * @provides application/hal+json
-     * @secure
+     * @links self Link to itself
+     * @links cont:doc Link to this documentation.
+     * @links cont:user Link to creator of the document.
+     * @links cont:history Link to the history of the document.
+     * @links cont:raw Link to the raw content of the document.
+     * @links cont:commit Link to the commit this document was a part of.
      */
     public function createDocument($username, $repoName, $branchName, $path = null)
     {
@@ -114,12 +145,17 @@ class Documents extends Resource {
         return $this->response($code, $username, $repoName, $branchName, $document);
     }
 
-
     /**
+     * Delete the document
+     *
      * @method delete
-     * @provides application/hal+yaml
-     * @provides application/hal+json
+     * @accepts application/hal+yaml
+     * @accepts application/hal+json
+     * @accepts application/json
+     * @accepts application/yaml
+     * @field message The commit message.
      * @secure
+     * @response 204 No content
      */
     public function deleteDocument($username, $repoName, $branchName, $path = null)
     {

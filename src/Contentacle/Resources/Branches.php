@@ -5,12 +5,19 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches
  */
-class Branches extends Resource {
-
+class Branches extends Resource
+{
     /**
+     * Get a list of branches.
+     *
      * @method get
+     * @response 200 OK
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @field name Name of the branch
+     * @links self Link to itself
+     * @links cont:doc Link to this documentation.
+     * @embeds cont:branch The list of branches.
      */
     function get($username, $repoName)
     {
@@ -37,14 +44,21 @@ class Branches extends Resource {
     }
 
     /**
+     * Create a branch.
+     *
      * @method post
      * @accepts application/hal+yaml
      * @accepts application/hal+json
      * @accepts application/yaml
      * @accepts application/json
+     * @field name Name of the branch
+     * @secure
+     * @response 201 Created
+     * @response 400 Bad Request
      * @provides application/hal+yaml
      * @provides application/hal+json
-     * @secure
+     * @header Location The URL of the created branch.
+     * @embeds cont:error A list of errored fields.
      */
     public function createBranch($username, $repoName)
     {
@@ -74,7 +88,7 @@ class Branches extends Resource {
         } catch (\Contentacle\Exceptions\ValidationException $e) {
             $response = $this->createHalResponse(400);
             foreach ($e->errors as $field) {
-                $response->embed('errors', array(
+                $response->embed('cont:error', array(
                     'logref' => $field,
                     'message' => '"'.$field.'" field failed validation'
                 ));

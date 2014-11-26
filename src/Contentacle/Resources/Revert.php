@@ -8,7 +8,9 @@ namespace Contentacle\Resources;
 class Revert extends Resource {
 
     /**
-     * @method POST
+     * Revert a commit by creating a new commit that undoes the actions of the first commit.
+     *
+     * @method post
      * @accepts application/hal+yaml
      * @accepts application/hal+json
      * @accepts application/yaml

@@ -59,7 +59,7 @@ class Hal extends \Tonic\Response
     private function addCuries() {
         $this->links['curies'][] = array(
             'name' => 'cont',
-            'href' => 'http://contentacle.io/rels/{rel}',
+            'href' => '/rels/{rel}',
             'templated' => true
         );
     }
