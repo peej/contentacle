@@ -52,8 +52,10 @@ class RepoSpec extends ObjectBehavior
         $commit->getMetadata('email')->willReturn('cobb@localhost');
         $commit->getFiles()->willReturn(array('totem.txt', 'new-york/the-hotel/mr-charles.txt'));
         $commit->getMetadata('diff')->willReturn(array(
-            'totem.txt' => array(
-                '1+A Totem is an object that is used to test if oneself is in one\'s own reality and not in another person\'s dream.'
+            'diff' => array(
+                'totem.txt' => array(
+                    '1+A Totem is an object that is used to test if oneself is in one\'s own reality and not in another person\'s dream.'
+                )
             )
         ));
         

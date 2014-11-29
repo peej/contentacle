@@ -380,7 +380,11 @@ TABLE
         }
 
         if (isset($data['_links'][$rel])) {
-            $href = $data['_links'][$rel]['href'];
+            if (!isset($data['_links'][$rel]['href'])) {
+                $href = $data['_links'][$rel][$num - 1]['href'];
+            } else {
+                $href = $data['_links'][$rel]['href'];
+            }
 
         } elseif (isset($data['_embedded'][$rel])) {
             $items = $data['_embedded'][$rel];

@@ -8,9 +8,20 @@ namespace Contentacle\Resources;
 class History extends Resource {
 
     /**
+     * Get the history of a document
+     *
      * @method get
+     * @response 200 OK
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @field filename The filename of the document.
+     * @field path The path of the document.
+     * @links self Link to itself
+     * @links cont:doc Link to this documentation.
+     * @links cont:document Link to this documentation.
+     * @links cont:raw Link to creator of the document.
+     * @links cont:raw Link to creator of the document.
+     * @embeds cont:commit List of commits making up this documents history.
      */
     function get($username, $repoName, $branchName, $path = null)
     {
@@ -28,6 +39,7 @@ class History extends Resource {
             ));
 
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/history/'.$path.$this->formatExtension());
+            $response->addLink('cont:doc', '/rels/history');
             $response->addLink('cont:document', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$path.$this->formatExtension());
             $response->addLink('cont:raw', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$path.$this->formatExtension());
 

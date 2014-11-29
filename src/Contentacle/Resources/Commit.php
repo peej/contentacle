@@ -12,6 +12,15 @@ class Commit extends Resource
      *
      * @method get
      * @response 200 OK
+     * @field sha Hash of this commit
+     * @field parents Hash(es) of parent commit(s)
+     * @field message Commit message
+     * @field date Date of the commit (as unix timestamp)
+     * @field username Username of committer
+     * @field author Name of committer
+     * @field email Email of committer
+     * @field files Paths of changed documents within the commit
+     * @field diff The changes to documents within the commit
      * @provides application/hal+yaml
      * @provides application/hal+json
      * @links self Link to itself

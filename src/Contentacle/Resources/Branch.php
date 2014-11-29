@@ -10,7 +10,7 @@ class Branch extends Resource
     /**
      * Generate a successful response.
      */
-    private function response($repo, $branchName)
+    private function buildResponse($repo, $branchName)
     {
         $response = $this->createHalResponse(200);
 
@@ -23,7 +23,7 @@ class Branch extends Resource
         $response->addLink('self', $branchUrl.$this->formatExtension());
         $response->addLink('cont:doc', '/rels/branch');
         $response->addLink('cont:commits', $branchUrl.'/commits'.$this->formatExtension());
-        $response->addLink('cont:documents', $branchUrl.'/documents'.$this->formatExtension());
+        $response->addLink('cont:document', $branchUrl.'/documents'.$this->formatExtension());
         $response->addLink('cont:merges', $branchUrl.'/merges'.$this->formatExtension());
 
         return $response;
@@ -37,10 +37,12 @@ class Branch extends Resource
      * @provides application/hal+yaml
      * @provides application/hal+json
      * @field name Name of the branch
+     * @field repo Name of the repo the branch is of
+     * @field username Username of the branch creator
      * @links self Link to itself
      * @links cont:doc Link to this documentation.
      * @links cont:commits Link to the branches commits.
-     * @links cont:documents Link to the branches documents.
+     * @links cont:document Link to the branches documents.
      * @links cont:merges Link to merges possible with this branch..
      */
     function get($username, $repoName, $branchName)
@@ -51,7 +53,7 @@ class Branch extends Resource
             if (!$repo->hasBranch($branchName)) {
                 throw new \Tonic\NotFoundException;
             }
-            return $this->response($repo, $branchName);
+            return $this->buildResponse($repo, $branchName);
 
         } catch (\Contentacle\Exceptions\RepoException $e) {
             throw new \Tonic\NotFoundException;
@@ -69,11 +71,15 @@ class Branch extends Resource
      * @accepts application/json-patch+json
      * @field name Name of the branch
      * @secure
-     * @response 201 Created
-     * @response 400 Bad Request
+     * @response 200 OK
+     * @response 400 Bad request
      * @provides application/hal+yaml
      * @provides application/hal+json
-     * @header Location The URL of the created branch.
+     * @links self Link to itself
+     * @links cont:doc Link to this documentation.
+     * @links cont:commits Link to the branches commits.
+     * @links cont:document Link to the branches documents.
+     * @links cont:merges Link to merges possible with this branch..
      * @embeds cont:error A list of errored fields.
      */
     public function renameBranch($username, $repoName, $branchName)
@@ -90,12 +96,12 @@ class Branch extends Resource
                 }
             }
 
-            $response = $this->response($repo, $item['value']);
+            $response = $this->buildResponse($repo, $item['value']);
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
             $response = $this->createHalResponse(400);
             foreach ($e->errors as $field) {
-                $response->embed('errors', array(
+                $response->embed('cont:error', array(
                     'logref' => $field,
                     'message' => '"'.$field.'" field failed validation'
                 ));
@@ -103,7 +109,7 @@ class Branch extends Resource
         } catch (\Git\Exception $e) {
             if (preg_match('/fatal: (A branch named \''.$item['value'].'\' already exists)/', $e->getMessage(), $match)) {
                 $response = $this->createHalResponse(400);
-                $response->embed('errors', array(
+                $response->embed('cont:error', array(
                     'logref' => 'name',
                     'message' => $match[1]
                 ));

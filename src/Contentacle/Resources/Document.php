@@ -6,12 +6,12 @@ namespace Contentacle\Resources;
  * @uri /users/:username/repos/:repo/branches/:branch/documents
  * @uri /users/:username/repos/:repo/branches/:branch/documents/?(.*)$
  */
-class Documents extends Resource
+class Document extends Resource
 {
     /**
      * Generate a successful response.
      */
-    private function response($code, $username, $repoName, $branchName, $document)
+    private function buildResponse($code, $username, $repoName, $branchName, $document)
     {
         $response = $this->createHalResponse($code, $document);
 
@@ -34,7 +34,15 @@ class Documents extends Resource
      * @provides application/hal+json
      * @field filename The filename of the document.
      * @field path The path of the document.
-     * @field type Directory or file.
+     * @field type Directory (dir) or file.
+     * @field sha Hash of this documents content blob
+     * @field username Username of committer
+     * @field email Email of committer
+     * @field author Name of committer
+     * @field date Date of the commit (as unix timestamp)
+     * @field branch The branch the document is committed to
+     * @field commit Hash of the commit
+     * @field content The content of the document
      * @links self Link to itself
      * @links cont:doc Link to this documentation.
      * @links cont:user Link to creator of the document.
@@ -65,11 +73,11 @@ class Documents extends Resource
                 $path = '/'.$path;
             }
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents'.$path.$this->formatExtension());
-            $response->addLink('cont:doc', '/rels/documents');
+            $response->addLink('cont:doc', '/rels/document');
 
             if ($this->embed) {
                 foreach ($documents as $filename) {
-                    $response->embed('cont:document', $this->getChildResource('\Contentacle\Resources\Documents', array($username, $repoName, $branchName, $filename, false)));
+                    $response->embed('cont:document', $this->getChildResource('\Contentacle\Resources\Document', array($username, $repoName, $branchName, $filename, false)));
                 }
             }
 
@@ -78,7 +86,7 @@ class Documents extends Resource
         } catch (\Contentacle\Exceptions\RepoException $e) {
             try {
                 $document = $repo->document($branchName, $path);
-                $response = $this->response(200, $username, $repoName, $branchName, $document);
+                $response = $this->buildResponse(200, $username, $repoName, $branchName, $document);
                 return $response;
 
             } catch (\Contentacle\Exceptions\RepoException $e) {}
@@ -90,8 +98,6 @@ class Documents extends Resource
      * Update or create a document.
      *
      * @method put
-     * @accepts application/hal+yaml
-     * @accepts application/hal+json
      * @accepts application/json
      * @accepts application/yaml
      * @accepts *
@@ -102,6 +108,17 @@ class Documents extends Resource
      * @response 201 Created
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @field filename The filename of the document.
+     * @field path The path of the document.
+     * @field type Directory (dir) or file.
+     * @field sha Hash of this documents content blob
+     * @field username Username of committer
+     * @field email Email of committer
+     * @field author Name of committer
+     * @field date Date of the commit (as unix timestamp)
+     * @field branch The branch the document is committed to
+     * @field commit Hash of the commit
+     * @field content The content of the document
      * @links self Link to itself
      * @links cont:doc Link to this documentation.
      * @links cont:user Link to creator of the document.
@@ -142,15 +159,13 @@ class Documents extends Resource
         }
 
         $document = $repo->document($branchName, $path);
-        return $this->response($code, $username, $repoName, $branchName, $document);
+        return $this->buildResponse($code, $username, $repoName, $branchName, $document);
     }
 
     /**
      * Delete the document
      *
      * @method delete
-     * @accepts application/hal+yaml
-     * @accepts application/hal+json
      * @accepts application/json
      * @accepts application/yaml
      * @field message The commit message.

@@ -10,7 +10,7 @@ class Repo extends Resource
     /**
      * Generate a successful response.
      */
-    private function response($repo)
+    private function buildResponse($repo)
     {
         $response = $this->createHalResponse(200);
         $response->addData($repo);
@@ -49,7 +49,7 @@ class Repo extends Resource
         try {
             $repoRepo = $this->getRepoRepository();
             $repo = $repoRepo->getRepo($username, $repoName);
-            return $this->response($repo);
+            return $this->buildResponse($repo);
 
         } catch (\Contentacle\Exceptions\RepoException $e) {
             throw new \Tonic\NotFoundException;
@@ -86,7 +86,7 @@ class Repo extends Resource
             $repo = $repoRepo->getRepo($username, $repoName);
             $repo->patch($this->request->getData());
             $repo->writeMetadata();
-            $response = $this->response($repo);
+            $response = $this->buildResponse($repo);
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
             $response = $this->createHalResponse(400);
@@ -134,7 +134,7 @@ class Repo extends Resource
             $repo = $repoRepo->getRepo($username, $repoName);
             $repo->setProps($this->request->getData());
             $repo->writeMetadata();
-            $response = $this->response($repo);
+            $response = $this->buildResponse($repo);
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
             $response = $this->createHalResponse(400);

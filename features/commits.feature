@@ -43,6 +43,7 @@ Feature:
 
     Scenario: Revert a single commit
         Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        And I add "Content-Type" header equal to ""
         And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 3
         Then the response status code should be 201
         And I remember the commit sha from the location header
@@ -65,7 +66,7 @@ Feature:
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "message" should be "Custom commit message"
 
-    Scenario: Revert a single commit with a custom commit message
+    Scenario: Revert a single commit with a custom commit message in JSON
         Given I add "Content-Type" header equal to "application/json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 3 and body:
@@ -87,3 +88,48 @@ Feature:
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 3
         Then the response status code should be 400
+
+    Scenario: Navigate to a commit
+        Given I am on the homepage
+        When I follow the "cont:users" relation
+        And I follow the 2nd "cont:user" relation
+        And I follow the 2nd "cont:repo" relation
+        And I follow the 2nd "cont:branch" relation
+        And I follow the "cont:commits" relation
+        And I follow the 1st "cont:commit" relation
+        Then the response status code should be 200
+        And response property "message" should be "2nd commit"
+
+    Scenario: The cont:commits link relation has documentation
+        Given I send a GET request to "/users/peej/repos/test/branches/master/commits"
+        When I uncurie the "cont:commits" relation
+        Then the response status code should be 200
+        And response property "get->description" should exist
+        And response property "get->response" should contain "200 OK"
+        And response property "get->links->self" should exist
+        And response property "get->links->cont:doc" should exist
+        And response property "get->embeds->cont:commit" should exist
+        And response property "get->provides" should contain "application/hal+yaml"
+        And response property "get->provides" should contain "application/hal+json"
+
+    Scenario: The cont:commit link relation has documentation
+        Given I send a GET request to "/users/peej/repos/test/branches/master/commits/{sha}" with sha 1
+        When I uncurie the "cont:commit" relation
+        Then the response status code should be 200
+        And response property "get->description" should exist
+        And response property "get->response" should contain "200 OK"
+        And response property "get->field->sha" should exist
+        And response property "get->field->parents" should exist
+        And response property "get->field->message" should exist
+        And response property "get->field->date" should exist
+        And response property "get->field->username" should exist
+        And response property "get->field->author" should exist
+        And response property "get->field->email" should exist
+        And response property "get->field->files" should exist
+        And response property "get->field->diff" should exist
+        And response property "get->links->self" should exist
+        And response property "get->links->cont:doc" should exist
+        And response property "get->links->cont:user" should exist
+        And response property "get->links->cont:document" should exist
+        And response property "get->provides" should contain "application/hal+yaml"
+        And response property "get->provides" should contain "application/hal+json"

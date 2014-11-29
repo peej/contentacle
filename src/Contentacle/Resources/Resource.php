@@ -50,7 +50,13 @@ class Resource extends \Tonic\Resource
     protected function createHalResponse($code = null, $vars = array()) { return $this->getDependancy('hal_response', $code, $vars); }
 
     public function setHtmlResponse($dep) { $this->setDependancy('html_response', $dep); }
-    protected function createHtmlResponse($templateName) { return $this->getDependancy('html_response', $templateName); }
+    protected function createHtmlResponse($templateName, $data = array(), $headers = array()) { return $this->getDependancy('html_response', $templateName, $data, $headers); }
+
+    protected function accepts($mimetype)
+    {
+        if ($mimetype == '*') return 1;
+        return parent::accepts($mimetype);
+    }
 
     protected function provides($mimetype)
     {

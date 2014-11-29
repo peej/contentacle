@@ -53,3 +53,43 @@ Feature:
     Scenario: Fail to merge a merge that conflicts
         When I send a POST request on "/users/peej/repos/test/branches/master/merges/unmergable"
         Then the response status code should be 400
+
+    Scenario: Navigate to a merge
+        Given I am on the homepage
+        When I follow the "cont:users" relation
+        And I follow the 2nd "cont:user" relation
+        And I follow the 2nd "cont:repo" relation
+        And I follow the 2nd "cont:branch" relation
+        And I follow the "cont:merges" relation
+        And I follow the 1st "cont:merge" relation
+        Then the response status code should be 200
+        And response property "canMerge" should be "false"
+
+    Scenario: The cont:merges link relation has documentation
+        Given I send a GET request to "/users/peej/repos/test/branches/master"
+        When I uncurie the "cont:merges" relation
+        Then the response status code should be 200
+        And response property "get->description" should exist
+        And response property "get->response" should contain "200 OK"
+        And response property "get->links->self" should exist
+        And response property "get->links->cont:doc" should exist
+        And response property "get->links->cont:merge" should exist
+        And response property "get->provides" should contain "application/hal+yaml"
+        And response property "get->provides" should contain "application/hal+json"
+
+    Scenario: The cont:merge link relation has documentation
+        Given I send a GET request to "/users/peej/repos/test/branches/master/merges"
+        When I uncurie the "cont:merge" relation
+        Then the response status code should be 200
+        And response property "get->description" should exist
+        And response property "get->response" should contain "200 OK"
+        And response property "get->field->canMerge" should exist
+        And response property "get->field->conflicts" should exist
+        And response property "get->links->self" should exist
+        And response property "get->links->cont:doc" should exist
+        And response property "get->provides" should contain "application/hal+yaml"
+        And response property "get->provides" should contain "application/hal+json"
+        And response property "post->description" should exist
+        And response property "post->response" should contain "204 No content"
+        And response property "post->response" should contain "400 Bad request"
+        And response property "post->response" should contain "404 Not found"

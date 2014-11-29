@@ -98,7 +98,7 @@ class UsersSpec extends ObjectBehavior
 
         $response->getCode()->shouldBe(400);
         $response->contentType->shouldBe('application/hal+yaml');
-        $response->body['_embedded']['errors'][0]['logref']->shouldBe('username');
-        $response->body['_embedded']['errors'][1]['logref']->shouldBe('password');
+        $response->body['_embedded']['cont:error'][0]['logref']->shouldBe('username');
+        $response->body['_embedded']['cont:error'][1]['logref']->shouldBe('password');
     }
 }

@@ -42,7 +42,11 @@ class Merge extends Resource
 
         } catch (\Git\Exception $e) {
             $response->addData('canMerge', false);
-            $response->addData('conflicts', $repo->conflicts($branch1, $branch2));
+            $conflicts = $repo->conflicts($branch1, $branch2);
+
+            if ($conflicts) {
+                $response->addData('conflicts', $conflicts);
+            }
         }
 
         return $response;

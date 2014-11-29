@@ -5,7 +5,7 @@ namespace spec\Contentacle\Resources;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class DocumentsSpec extends ObjectBehavior
+class DocumentSpec extends ObjectBehavior
 {
     function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo, \Contentacle\Services\Yaml $yaml)
     {
@@ -59,7 +59,7 @@ class DocumentsSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType('Contentacle\Resources\Documents');
+        $this->shouldHaveType('Contentacle\Resources\Document');
     }
 
     function it_should_link_to_itself()
@@ -71,7 +71,7 @@ class DocumentsSpec extends ObjectBehavior
     function it_should_link_to_its_own_documentation()
     {
         $response = $this->get('cobb', 'extraction', 'master');
-        $response->body['_links']['cont:doc']['href']->shouldBe('/rels/documents');
+        $response->body['_links']['cont:doc']['href']->shouldBe('/rels/document');
     }
 
     function it_should_show_document_listing($repo)

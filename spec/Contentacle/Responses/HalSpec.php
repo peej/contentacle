@@ -54,7 +54,7 @@ class HalSpec extends ObjectBehavior
     {
         $this->addLink('self', '/url', false, 'title');
         $this->body['_links']['curies'][0]['name']->shouldBe('cont');
-        $this->body['_links']['curies'][0]['href']->shouldBe('http://contentacle.io/rels/{rel}');
+        $this->body['_links']['curies'][0]['href']->shouldBe('/rels/{rel}');
     }
 
     function it_should_encode_output_into_yaml(\Contentacle\Services\Yaml $yaml)

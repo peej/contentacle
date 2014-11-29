@@ -54,7 +54,7 @@ class Branches extends Resource
      * @field name Name of the branch
      * @secure
      * @response 201 Created
-     * @response 400 Bad Request
+     * @response 400 Bad request
      * @provides application/hal+yaml
      * @provides application/hal+json
      * @header Location The URL of the created branch.
