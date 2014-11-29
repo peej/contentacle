@@ -9,41 +9,21 @@ class Rel extends Resource {
 
     private function parseDocComment($docComment)
     {
-        $data = array(
-            'description' => ''
-        );
+        $data = array();
+        $description = '';
 
         preg_match('/^[^@]*@/s', $docComment, $match);
         if (isset($match[0])) {
             foreach (explode("\n", $match[0]) as $line) {
-                $data['description'] .= trim($line, "/* @\t");
+                $description .= trim($line, "/* @\t");
             }
         }
+        $data[] = array('description', $description);
 
         preg_match_all('/^\s*\*\s*@(.+)$/m', $docComment, $matches);
         if (isset($matches[1]) && $matches[1]) {
             foreach ($matches[1] as $match) {
-                $parts = explode(' ', $match);
-                $key = array_shift($parts);
-
-                switch ($key) {
-                case 'field':
-                case 'header':
-                case 'links':
-                case 'embeds':
-                    if (!isset($data[$key])) {
-                        $data[$key] = array();
-                    }
-                    $key2 = array_shift($parts);
-                    $data[$key][$key2] = join(' ', $parts);
-                    break;
-                default:
-                    if (isset($data[$key])) {
-                        $data[$key][] = join(' ', $parts);
-                    } else {
-                        $data[$key] = array(join(' ', $parts));
-                    }
-                }
+                $data[] = explode(' ', $match);
             }
         }
 
@@ -65,9 +45,41 @@ class Rel extends Resource {
             $docComment = $methodReflector->getDocComment();
             $parsedComment = $this->parseDocComment($docComment);
 
-            if (isset($parsedComment['method'])) {
-                foreach ($parsedComment['method'] as $method) {
-                    $data[$method] = $parsedComment;
+            $method = array();
+            $section = 'request';
+            foreach ($parsedComment as $item) {
+                $key = array_shift($item);
+
+                if ($key == 'field' || $key == 'header' || $key == 'links' || $key == 'embeds') {
+                    $key2 = array_shift($item);
+                    $value = array($key2 => join(' ', $item));
+
+                } else {
+                    $value = join(' ', $item);
+                }
+
+                if ($key == 'description') {
+                    $method['description'] = $value;
+
+                } else {
+                    if ($key == 'response') {
+                        $key = 'code';
+                        $section = 'response';
+                    }
+
+                    if (!isset($method[$section][$key])) {
+                        $method[$section][$key] = array();
+                    }
+                    if (is_array($value)) {
+                        $method[$section][$key] = array_merge($method[$section][$key], $value);
+                    } else {
+                        $method[$section][$key][] = $value;
+                    }
+                }
+            }
+            if (isset($method['request']['method'])) {
+                foreach ($method['request']['method'] as $methodName) {
+                    $data[$methodName] = $method;
                 }
             }
         }
