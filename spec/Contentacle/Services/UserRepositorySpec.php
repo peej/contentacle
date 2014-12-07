@@ -53,6 +53,24 @@ class UserRepositorySpec extends ObjectBehavior
         $user->username->shouldBe('cobb');
     }
 
+    function it_should_retrieve_a_filtered_list_of_users()
+    {
+        $this->getUsers('a')->shouldHaveCount(0);
+        $this->getUsers('c')->shouldHaveCount(1);
+        $this->getUsers('')->shouldHaveCount(1);
+        $this->getUsers(' c')->shouldHaveCount(0);
+    }
+
+    function it_should_retrieve_a_range_of_users()
+    {
+        $this->getUsers(null, 0, 9)->shouldHaveCount(1);
+        $this->getUsers(null, 10, 19)->shouldHaveCount(0);
+        $this->getUsers(null, -6, 4)->shouldHaveCount(1);
+        $this->getUsers(null, 0, 0)->shouldHaveCount(1);
+        $this->getUsers(null, 1, 0)->shouldHaveCount(0);
+        $this->getUsers(null, 0, -4)->shouldHaveCount(0);
+    }
+
     function it_should_retrieve_a_given_user()
     {
         $user = $this->getUser('cobb');

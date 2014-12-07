@@ -12,14 +12,19 @@ class UserRepository
         $this->userProvider = $userProvider;
     }
 
-    function getUsers($search = null)
+    function getUsers($search = null, $from = 0, $to = 19)
     {
         $users = array();
+        $count = 0;
+
         foreach (glob($this->repoDir.'/'.$search.'*', GLOB_ONLYDIR) as $userDir) {
-            try {
-                $user = $this->getUser(basename($userDir));
-                $users[$user->username] = $user;
-            } catch (\Contentacle\Exceptions\ValidationException $e) {}
+            if ($count >= $from && $count <= $to) {
+                try {
+                    $user = $this->getUser(basename($userDir));
+                    $users[$user->username] = $user;
+                } catch (\Contentacle\Exceptions\ValidationException $e) {}
+            }
+            $count++;
         }
         return $users;
     }
