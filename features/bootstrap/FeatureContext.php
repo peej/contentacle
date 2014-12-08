@@ -277,14 +277,16 @@ TABLE
     }
 
     /**
-     * @Given /^I have user:$/
+     * @Given /^I have a user:$/
+     * @Given /^I have users:$/
      */
     public function iHaveUser(TableNode $userData)
     {
-        $data = $userData->getHash()[0];
-        $data['password'] = sha1($data['username'].':'.$data['password']);
-        mkdir($this->repoDir.'/'.$data['username']);
-        file_put_contents($this->repoDir.'/'.$data['username'].'/profile.json', json_encode($data, JSON_PRETTY_PRINT));
+        foreach ($userData->getHash() as $data) {
+            $data['password'] = sha1($data['username'].':'.$data['password']);
+            mkdir($this->repoDir.'/'.$data['username']);
+            file_put_contents($this->repoDir.'/'.$data['username'].'/profile.json', json_encode($data, JSON_PRETTY_PRINT));
+        }
     }
 
     private function getRepo($username, $repoName)

@@ -28,6 +28,43 @@ Feature:
         When I send a GET request to "/users.yaml?q=peej"
         Then response property "_embedded->cont:user->0->username" should be "peej"
 
+    Scenario: View a lot of users
+        Given I have an empty data store
+        And I have users:
+            | username | password | name     | email              |
+            | alfa     | test     | Alfa     | alfa@gmail.com     |
+            | bravo    | test     | Bravo    | bravo@gmail.com    |
+            | charlie  | test     | Charlie  | charlie@gmail.com  |
+            | delta    | test     | Delta    | delta@gmail.com    |
+            | echo     | test     | Echo     | echo@gmail.com     |
+            | foxtrot  | test     | Foxtrot  | foxtrot@gmail.com  |
+            | golf     | test     | Golf     | golf@gmail.com     |
+            | hotel    | test     | Hotel    | hotel@gmail.com    |
+            | india    | test     | India    | india@gmail.com    |
+            | juliett  | test     | Juliett  | juliett@gmail.com  |
+            | kilo     | test     | Kilo     | kilo@gmail.com     |
+            | lima     | test     | Lima     | lima@gmail.com     |
+            | mike     | test     | Mike     | mike@gmail.com     |
+            | november | test     | November | november@gmail.com |
+            | oscar    | test     | Oscar    | oscar@gmail.com    |
+            | papa     | test     | Papa     | papa@gmail.com     |
+            | quebec   | test     | Quebec   | quebec@gmail.com   |
+            | romeo    | test     | Romeo    | romeo@gmail.com    |
+            | sierra   | test     | Sierra   | sierra@gmail.com   |
+            | tango    | test     | Tango    | tango@gmail.com    |
+            | uniform  | test     | Uniform  | uniform@gmail.com  |
+            | victor   | test     | Victor   | victor@gmail.com   |
+            | whiskey  | test     | Whiskey  | whiskey@gmail.com  |
+            | x-ray    | test     | X-ray    | x-ray@gmail.com    |
+            | yankee   | test     | Yankee   | yankee@gmail.com   |
+            | zulu     | test     | Zulu     | zulu@gmail.com     |
+        When I send a GET request to "/users.yaml"
+        Then response property "_embedded->cont:user->0->username" should be "alfa"
+        And response property "_embedded->cont:user->19->username" should be "tango"
+        And response property "_embedded->cont:user->20" should not exist
+        And response property "_links->prev" should not exist
+        And response property "_links->next->href" should be "/users?page=2"
+
     Scenario: View a users details
         When I send a GET request to "/users/peej.yaml"
         Then the response status code should be 200

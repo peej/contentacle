@@ -34,15 +34,29 @@ class Users extends Resource
         if ($this->embed) {
 
             $search = isset($_GET['q']) ? $_GET['q'] : null;
+            $page = isset($_GET['page']) ? $_GET['page'] : 1;
+            $pageSize = 20;
+            $from = ($page - 1) * $pageSize;
+            $to = $from + $pageSize - 1;
+            $users = $userRepo->getUsers($search, $from, $to);
 
-            foreach ($userRepo->getUsers($search) as $user) {
+            foreach ($users as $user) {
                 $response->embed('cont:user', $this->getChildResource('\Contentacle\Resources\User', array($user->username)));
+            }
+
+            if ($page > 1) {
+                $response->addLink('prev', '/users?page='.($page - 1));
+                $response->addVar('nextOrPrev', true);
+            }
+            if (count($users) == $pageSize) {
+                $response->addLink('next', '/users?page='.($page + 1));
+                $response->addVar('nextOrPrev', true);
             }
         }
 
         return $response;
     }
-    
+
     /**
      * Create a user.
      *
