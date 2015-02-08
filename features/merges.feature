@@ -69,27 +69,30 @@ Feature:
         Given I send a GET request to "/users/peej/repos/test/branches/master"
         When I uncurie the "cont:merges" relation
         Then the response status code should be 200
-        And response property "get->description" should exist
-        And response property "get->response" should contain "200 OK"
-        And response property "get->links->self" should exist
-        And response property "get->links->cont:doc" should exist
-        And response property "get->links->cont:merge" should exist
-        And response property "get->provides" should contain "application/hal+yaml"
-        And response property "get->provides" should contain "application/hal+json"
+        And response property "actions->get->description" should exist
+        And response property "actions->get->request->method" should contain "get"
+        And response property "actions->get->response->code" should contain "200 OK"
+        And response property "actions->get->response->links->self" should exist
+        And response property "actions->get->response->links->cont:doc" should exist
+        And response property "actions->get->response->links->cont:merge" should exist
+        And response property "actions->get->response->provides" should contain "application/hal+yaml"
+        And response property "actions->get->response->provides" should contain "application/hal+json"
 
     Scenario: The cont:merge link relation has documentation
         Given I send a GET request to "/users/peej/repos/test/branches/master/merges"
         When I uncurie the "cont:merge" relation
         Then the response status code should be 200
-        And response property "get->description" should exist
-        And response property "get->response" should contain "200 OK"
-        And response property "get->field->canMerge" should exist
-        And response property "get->field->conflicts" should exist
-        And response property "get->links->self" should exist
-        And response property "get->links->cont:doc" should exist
-        And response property "get->provides" should contain "application/hal+yaml"
-        And response property "get->provides" should contain "application/hal+json"
-        And response property "post->description" should exist
-        And response property "post->response" should contain "204 No content"
-        And response property "post->response" should contain "400 Bad request"
-        And response property "post->response" should contain "404 Not found"
+        And response property "actions->get->description" should exist
+        And response property "actions->get->request->method" should contain "get"
+        And response property "actions->get->response->code" should contain "200 OK"
+        And response property "actions->get->response->field->canMerge" should exist
+        And response property "actions->get->response->field->conflicts" should exist
+        And response property "actions->get->response->links->self" should exist
+        And response property "actions->get->response->links->cont:doc" should exist
+        And response property "actions->get->response->provides" should contain "application/hal+yaml"
+        And response property "actions->get->response->provides" should contain "application/hal+json"
+        And response property "actions->post->description" should exist
+        And response property "actions->post->request->method" should contain "post"
+        And response property "actions->post->response->code" should contain "204 No content"
+        And response property "actions->post->response->code" should contain "400 Bad request"
+        And response property "actions->post->response->code" should contain "404 Not found"

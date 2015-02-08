@@ -159,61 +159,66 @@ Feature:
         Given I send a GET request to "/users/peej/repos/test/branches/master/documents"
         When I uncurie the "cont:document" relation
         Then the response status code should be 200
-        And response property "get->description" should exist
-        And response property "get->response" should contain "200 OK"
-        And response property "get->field->filename" should exist
-        And response property "get->field->path" should exist
-        And response property "get->field->type" should exist
-        And response property "get->field->sha" should exist
-        And response property "get->field->username" should exist
-        And response property "get->field->author" should exist
-        And response property "get->field->email" should exist
-        And response property "get->field->date" should exist
-        And response property "get->field->branch" should exist
-        And response property "get->field->commit" should exist
-        And response property "get->field->content" should exist
-        And response property "get->links->self" should exist
-        And response property "get->links->cont:doc" should exist
-        And response property "get->links->cont:user" should exist
-        And response property "get->links->cont:history" should exist
-        And response property "get->links->cont:raw" should exist
-        And response property "get->links->cont:commit" should exist
-        And response property "get->embeds->cont:document" should exist
-        And response property "get->provides" should contain "application/hal+yaml"
-        And response property "get->provides" should contain "application/hal+json"
-        And response property "put->description" should exist
-        And response property "put->accepts" should contain "application/yaml"
-        And response property "put->accepts" should contain "application/json"
-        And response property "put->accepts" should contain "*"
-        And response property "put->field->message" should exist
-        And response property "put->field->content" should exist
-        And response property "put->response" should contain "200 OK"
-        And response property "put->response" should contain "201 Created"
-        And response property "delete->description" should exist
-        And response property "delete->accepts" should contain "application/yaml"
-        And response property "delete->accepts" should contain "application/json"
-        And response property "delete->field->message" should exist
-        And response property "delete->response" should contain "204 No content"
+        And response property "actions->get->description" should exist
+        And response property "actions->get->request->method" should contain "get"
+        And response property "actions->get->response->code" should contain "200 OK"
+        And response property "actions->get->response->field->filename" should exist
+        And response property "actions->get->response->field->path" should exist
+        And response property "actions->get->response->field->type" should exist
+        And response property "actions->get->response->field->sha" should exist
+        And response property "actions->get->response->field->username" should exist
+        And response property "actions->get->response->field->author" should exist
+        And response property "actions->get->response->field->email" should exist
+        And response property "actions->get->response->field->date" should exist
+        And response property "actions->get->response->field->branch" should exist
+        And response property "actions->get->response->field->commit" should exist
+        And response property "actions->get->response->field->content" should exist
+        And response property "actions->get->response->links->self" should exist
+        And response property "actions->get->response->links->cont:doc" should exist
+        And response property "actions->get->response->links->cont:user" should exist
+        And response property "actions->get->response->links->cont:history" should exist
+        And response property "actions->get->response->links->cont:raw" should exist
+        And response property "actions->get->response->links->cont:commit" should exist
+        And response property "actions->get->response->embeds->cont:document" should exist
+        And response property "actions->get->response->provides" should contain "application/hal+yaml"
+        And response property "actions->get->response->provides" should contain "application/hal+json"
+        And response property "actions->createDocument->description" should exist
+        And response property "actions->createDocument->request->method" should contain "put"
+        And response property "actions->createDocument->request->accepts" should contain "application/yaml"
+        And response property "actions->createDocument->request->accepts" should contain "application/json"
+        And response property "actions->createDocument->request->accepts" should contain "*"
+        And response property "actions->createDocument->request->field->message" should exist
+        And response property "actions->createDocument->request->field->content" should exist
+        And response property "actions->createDocument->response->code" should contain "200 OK"
+        And response property "actions->createDocument->response->code" should contain "201 Created"
+        And response property "actions->deleteDocument->description" should exist
+        And response property "actions->deleteDocument->request->method" should contain "delete"
+        And response property "actions->deleteDocument->request->accepts" should contain "application/yaml"
+        And response property "actions->deleteDocument->request->accepts" should contain "application/json"
+        And response property "actions->deleteDocument->request->field->message" should exist
+        And response property "actions->deleteDocument->response->code" should contain "204 No content"
 
     Scenario: The cont:history link relation has documentation
         Given I send a GET request to "/users/peej/repos/test/branches/master/documents"
         When I uncurie the "cont:history" relation
         Then the response status code should be 200
-        And response property "get->description" should exist
-        And response property "get->response" should contain "200 OK"
-        And response property "get->field->filename" should exist
-        And response property "get->field->path" should exist
-        And response property "get->links->self" should exist
-        And response property "get->links->cont:doc" should exist
-        And response property "get->links->cont:document" should exist
-        And response property "get->links->cont:raw" should exist
-        And response property "get->embeds->cont:commit" should exist
-        And response property "get->provides" should contain "application/hal+yaml"
-        And response property "get->provides" should contain "application/hal+json"
+        And response property "actions->get->description" should exist
+        And response property "actions->get->request->method" should contain "get"
+        And response property "actions->get->response->code" should contain "200 OK"
+        And response property "actions->get->response->field->filename" should exist
+        And response property "actions->get->response->field->path" should exist
+        And response property "actions->get->response->links->self" should exist
+        And response property "actions->get->response->links->cont:doc" should exist
+        And response property "actions->get->response->links->cont:document" should exist
+        And response property "actions->get->response->links->cont:raw" should exist
+        And response property "actions->get->response->embeds->cont:commit" should exist
+        And response property "actions->get->response->provides" should contain "application/hal+yaml"
+        And response property "actions->get->response->provides" should contain "application/hal+json"
 
     Scenario: The cont:raw link relation has documentation
         Given I send a GET request to "/users/peej/repos/test/branches/master/documents/afile.txt"
         When I uncurie the "cont:raw" relation
         Then the response status code should be 200
-        And response property "get->description" should exist
-        And response property "get->response" should contain "200 OK"
+        And response property "actions->get->description" should exist
+        And response property "actions->get->request->method" should contain "get"
+        And response property "actions->get->response->code" should contain "200 OK"

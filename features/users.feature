@@ -119,6 +119,16 @@ Feature:
         And response property "_embedded->cont:error->0->logref" should be "username"
         And response property "_embedded->cont:error->1->logref" should be "name"
 
+    Scenario: Create a user with an HTML form
+        Given I add "Content-Type" header equal to "application/x-www-form-urlencoded"
+        And I add "Accept" header equal to "text/html"
+        When I send a POST request to "/users" with body:
+            """
+            username=test1&name=Behat Tester&password=test1
+            """
+        Then the response status code should be 303
+        And the header "Location" should be equal to "/users/test1"
+
     Scenario: Patch a user
         Given I add "Content-Type" header equal to "application/json-patch+json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
@@ -162,60 +172,68 @@ Feature:
         Given I send a GET request to "/users"
         When I uncurie the "cont:users" relation
         Then the response status code should be 200
-        And response property "get->description" should exist
-        And response property "get->response" should contain "200 OK"
-        And response property "get->field->username" should exist
-        And response property "get->field->password" should exist
-        And response property "get->field->name" should exist
-        And response property "get->field->email" should exist
-        And response property "get->links->self" should exist
-        And response property "get->links->cont:doc" should exist
-        And response property "get->embeds->cont:user" should exist
-        And response property "get->provides" should contain "application/hal+yaml"
-        And response property "get->provides" should contain "application/hal+json"
-        And response property "post->description" should exist
-        And response property "post->response" should contain "201 Created"
-        And response property "post->response" should contain "400 Bad request"
-        And response property "post->field->username" should exist
-        And response property "post->field->password" should exist
-        And response property "post->field->name" should exist
-        And response property "post->field->email" should exist
-        And response property "post->header->Location" should exist
-        And response property "post->embeds->cont:error" should exist
-        And response property "post->accepts" should contain "application/yaml"
-        And response property "post->accepts" should contain "application/json"
-        And response property "post->provides" should contain "application/hal+yaml"
-        And response property "post->provides" should contain "application/hal+json"
+        And response property "actions->get->description" should exist
+        And response property "actions->get->request->method" should contain "get"
+        And response property "actions->get->response->code" should contain "200 OK"
+        And response property "actions->get->response->field->username" should exist
+        And response property "actions->get->response->field->password" should exist
+        And response property "actions->get->response->field->name" should exist
+        And response property "actions->get->response->field->email" should exist
+        And response property "actions->get->response->links->self" should exist
+        And response property "actions->get->response->links->cont:doc" should exist
+        And response property "actions->get->response->embeds->cont:user" should exist
+        And response property "actions->get->response->provides" should contain "application/hal+yaml"
+        And response property "actions->get->response->provides" should contain "application/hal+json"
+        And response property "actions->get->response->provides" should contain "text/html"
+        And response property "actions->createUser->description" should exist
+        And response property "actions->createUser->request->method" should contain "post"
+        And response property "actions->createUser->request->accepts" should contain "application/yaml"
+        And response property "actions->createUser->request->accepts" should contain "application/json"
+        And response property "actions->createUser->request->accepts" should contain "application/x-www-form-urlencoded"
+        And response property "actions->createUser->request->field->username" should exist
+        And response property "actions->createUser->request->field->password" should exist
+        And response property "actions->createUser->request->field->name" should exist
+        And response property "actions->createUser->request->field->email" should exist
+        And response property "actions->createUser->response->code" should contain "201 Created"
+        And response property "actions->createUser->response->code" should contain "400 Bad request"
+        And response property "actions->createUser->response->header->Location" should exist
+        And response property "actions->createUser->response->embeds->cont:error" should exist
+        And response property "actions->createUser->response->provides" should contain "application/hal+yaml"
+        And response property "actions->createUser->response->provides" should contain "application/hal+json"
+        And response property "actions->createUser->response->provides" should contain "text/html"
 
     Scenario: The cont:user link relation has documentation
         Given I send a GET request to "/users/peej"
         When I uncurie the "cont:user" relation
         Then the response status code should be 200
-        And response property "get->description" should exist
-        And response property "get->response" should contain "200 OK"
-        And response property "get->field->username" should exist
-        And response property "get->field->password" should exist
-        And response property "get->field->name" should exist
-        And response property "get->field->email" should exist
-        And response property "get->links->self" should exist
-        And response property "get->links->cont:doc" should exist
-        And response property "get->links->cont:repos" should exist
-        And response property "get->embeds->cont:repo" should exist
-        And response property "get->provides" should contain "application/hal+yaml"
-        And response property "get->provides" should contain "application/hal+json"
-        And response property "patch->description" should exist
-        And response property "patch->response" should contain "200 OK"
-        And response property "patch->field->username" should exist
-        And response property "patch->field->password" should exist
-        And response property "patch->field->name" should exist
-        And response property "patch->field->email" should exist
-        And response property "patch->links->self" should exist
-        And response property "patch->links->cont:doc" should exist
-        And response property "patch->links->cont:repos" should exist
-        And response property "patch->embeds->cont:repo" should exist
-        And response property "patch->accepts" should contain "application/json-patch+yaml"
-        And response property "patch->accepts" should contain "application/json-patch+json"
-        And response property "patch->provides" should contain "application/hal+yaml"
-        And response property "patch->provides" should contain "application/hal+json"
-        And response property "delete->description" should exist
-        And response property "delete->response" should contain "204 No content"
+        And response property "actions->get->description" should exist
+        And response property "actions->get->request->method" should contain "get"
+        And response property "actions->get->response->code" should contain "200 OK"
+        And response property "actions->get->response->field->username" should exist
+        And response property "actions->get->response->field->password" should exist
+        And response property "actions->get->response->field->name" should exist
+        And response property "actions->get->response->field->email" should exist
+        And response property "actions->get->response->links->self" should exist
+        And response property "actions->get->response->links->cont:doc" should exist
+        And response property "actions->get->response->links->cont:repos" should exist
+        And response property "actions->get->response->embeds->cont:repo" should exist
+        And response property "actions->get->response->provides" should contain "application/hal+yaml"
+        And response property "actions->get->response->provides" should contain "application/hal+json"
+        And response property "actions->updateUser->description" should exist
+        And response property "actions->updateUser->request->method" should contain "patch"
+        And response property "actions->updateUser->request->accepts" should contain "application/json-patch+json"
+        And response property "actions->updateUser->request->accepts" should contain "application/json-patch+yaml"
+        And response property "actions->updateUser->request->field->username" should exist
+        And response property "actions->updateUser->request->field->password" should exist
+        And response property "actions->updateUser->request->field->name" should exist
+        And response property "actions->updateUser->request->field->email" should exist
+        And response property "actions->updateUser->response->code" should contain "200 OK"
+        And response property "actions->updateUser->response->links->self" should exist
+        And response property "actions->updateUser->response->links->cont:doc" should exist
+        And response property "actions->updateUser->response->links->cont:repos" should exist
+        And response property "actions->updateUser->response->embeds->cont:repo" should exist
+        And response property "actions->updateUser->response->provides" should contain "application/hal+yaml"
+        And response property "actions->updateUser->response->provides" should contain "application/hal+json"
+        And response property "actions->deleteUser->description" should exist
+        And response property "actions->deleteUser->request->method" should contain "delete"
+        And response property "actions->deleteUser->response->code" should contain "204 No content"

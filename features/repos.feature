@@ -224,60 +224,87 @@ Feature:
         Given I send a GET request to "/users/peej/repos"
         When I uncurie the "cont:repos" relation
         Then the response status code should be 200
-        And response property "get->description" should exist
-        And response property "get->response" should contain "200 OK"
-        And response property "get->field->username" should exist
-        And response property "get->field->name" should exist
-        And response property "get->field->title" should exist
-        And response property "get->field->description" should exist
-        And response property "get->links->self" should exist
-        And response property "get->links->cont:doc" should exist
-        And response property "get->embeds->cont:repo" should exist
-        And response property "get->provides" should contain "application/hal+yaml"
-        And response property "get->provides" should contain "application/hal+json"
-        And response property "post->description" should exist
-        And response property "post->field->name" should exist
-        And response property "post->field->title" should exist
-        And response property "post->field->description" should exist
-        And response property "post->secure" should exist
-        And response property "post->response" should contain "201 Created"
-        And response property "post->response" should contain "400 Bad request"
-        And response property "post->header->Location" should exist
-        And response property "post->embeds->cont:error" should exist
-        And response property "post->accepts" should contain "application/yaml"
-        And response property "post->accepts" should contain "application/json"
-        And response property "post->provides" should contain "application/hal+yaml"
-        And response property "post->provides" should contain "application/hal+json"
+        And response property "actions->get->description" should exist
+        And response property "actions->get->request->method" should contain "get"
+        And response property "actions->get->response->code" should contain "200 OK"
+        And response property "actions->get->response->field->username" should exist
+        And response property "actions->get->response->field->name" should exist
+        And response property "actions->get->response->field->title" should exist
+        And response property "actions->get->response->field->description" should exist
+        And response property "actions->get->response->links->self" should exist
+        And response property "actions->get->response->links->cont:doc" should exist
+        And response property "actions->get->response->embeds->cont:repo" should exist
+        And response property "actions->get->response->provides" should contain "application/hal+yaml"
+        And response property "actions->get->response->provides" should contain "application/hal+json"
+        And response property "actions->createRepo->description" should exist
+        And response property "actions->createRepo->request->method" should contain "post"
+        And response property "actions->createRepo->request->secure" should exist
+        And response property "actions->createRepo->request->accepts" should contain "application/yaml"
+        And response property "actions->createRepo->request->accepts" should contain "application/json"
+        And response property "actions->createRepo->request->field->name" should exist
+        And response property "actions->createRepo->request->field->title" should exist
+        And response property "actions->createRepo->request->field->description" should exist
+        And response property "actions->createRepo->request->secure" should exist
+        And response property "actions->createRepo->response->code" should contain "201 Created"
+        And response property "actions->createRepo->response->code" should contain "400 Bad request"
+        And response property "actions->createRepo->response->header->Location" should exist
+        And response property "actions->createRepo->response->embeds->cont:error" should exist
+        And response property "actions->createRepo->response->provides" should contain "application/hal+yaml"
+        And response property "actions->createRepo->response->provides" should contain "application/hal+json"
 
     Scenario: The cont:repo link relation has documentation
         Given I send a GET request to "/users/peej/repos/test"
         When I uncurie the "cont:repo" relation
         Then the response status code should be 200
-        And response property "get->description" should exist
-        And response property "get->response" should contain "200 OK"
-        And response property "get->field->username" should exist
-        And response property "get->field->name" should exist
-        And response property "get->field->title" should exist
-        And response property "get->field->description" should exist
-        And response property "get->links->self" should exist
-        And response property "get->links->cont:doc" should exist
-        And response property "get->links->cont:branches" should exist
-        And response property "get->embeds->cont:branch" should exist
-        And response property "get->provides" should contain "application/hal+yaml"
-        And response property "get->provides" should contain "application/hal+json"
-        And response property "patch->description" should exist
-        And response property "patch->response" should contain "200 OK"
-        And response property "patch->field->username" should exist
-        And response property "patch->field->name" should exist
-        And response property "patch->field->title" should exist
-        And response property "patch->field->description" should exist
-        And response property "patch->links->self" should exist
-        And response property "patch->links->cont:doc" should exist
-        And response property "patch->links->cont:branches" should exist
-        And response property "patch->embeds->cont:branch" should exist
-        And response property "patch->accepts" should contain "application/json-patch+yaml"
-        And response property "patch->accepts" should contain "application/json-patch+json"
-        And response property "patch->provides" should contain "application/hal+yaml"
-        And response property "patch->provides" should contain "application/hal+json"
-        And response property "delete->description" should exist
-        And response property "delete->response" should contain "204 No content"
+        And response property "actions->get->description" should exist
+        And response property "actions->get->request->method" should contain "get"
+        And response property "actions->get->response->code" should contain "200 OK"
+        And response property "actions->get->response->field->username" should exist
+        And response property "actions->get->response->field->name" should exist
+        And response property "actions->get->response->field->title" should exist
+        And response property "actions->get->response->field->description" should exist
+        And response property "actions->get->response->links->self" should exist
+        And response property "actions->get->response->links->cont:doc" should exist
+        And response property "actions->get->response->links->cont:branches" should exist
+        And response property "actions->get->response->embeds->cont:branch" should exist
+        And response property "actions->get->response->provides" should contain "application/hal+yaml"
+        And response property "actions->get->response->provides" should contain "application/hal+json"
+        And response property "actions->redirectToMasterBranch->description" should exist
+        And response property "actions->redirectToMasterBranch->request->method" should contain "get"
+        And response property "actions->redirectToMasterBranch->response->code" should contain "302 Found"
+        And response property "actions->patchRepo->description" should exist
+        And response property "actions->patchRepo->request->method" should contain "patch"
+        And response property "actions->patchRepo->request->secure" should exist
+        And response property "actions->patchRepo->request->field->username" should exist
+        And response property "actions->patchRepo->request->field->name" should exist
+        And response property "actions->patchRepo->request->field->title" should exist
+        And response property "actions->patchRepo->request->field->description" should exist
+        And response property "actions->patchRepo->request->accepts" should contain "application/json-patch+yaml"
+        And response property "actions->patchRepo->request->accepts" should contain "application/json-patch+json"
+        And response property "actions->patchRepo->response->code" should contain "200 OK"
+        And response property "actions->patchRepo->response->links->self" should exist
+        And response property "actions->patchRepo->response->links->cont:doc" should exist
+        And response property "actions->patchRepo->response->links->cont:branches" should exist
+        And response property "actions->patchRepo->response->embeds->cont:branch" should exist
+        And response property "actions->patchRepo->response->provides" should contain "application/hal+yaml"
+        And response property "actions->patchRepo->response->provides" should contain "application/hal+json"
+        And response property "actions->updateRepo->description" should exist
+        And response property "actions->updateRepo->request->method" should contain "put"
+        And response property "actions->updateRepo->request->secure" should exist
+        And response property "actions->updateRepo->request->field->username" should exist
+        And response property "actions->updateRepo->request->field->name" should exist
+        And response property "actions->updateRepo->request->field->title" should exist
+        And response property "actions->updateRepo->request->field->description" should exist
+        And response property "actions->updateRepo->request->accepts" should contain "application/hal+yaml"
+        And response property "actions->updateRepo->request->accepts" should contain "application/hal+json"
+        And response property "actions->updateRepo->response->code" should contain "200 OK"
+        And response property "actions->updateRepo->response->links->self" should exist
+        And response property "actions->updateRepo->response->links->cont:doc" should exist
+        And response property "actions->updateRepo->response->links->cont:branches" should exist
+        And response property "actions->updateRepo->response->embeds->cont:branch" should exist
+        And response property "actions->updateRepo->response->provides" should contain "application/hal+yaml"
+        And response property "actions->updateRepo->response->provides" should contain "application/hal+json"
+        And response property "actions->deleteRepo->description" should exist
+        And response property "actions->deleteRepo->request->method" should contain "delete"
+        And response property "actions->deleteRepo->request->secure" should exist
+        And response property "actions->deleteRepo->response->code" should contain "204 No content"

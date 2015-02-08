@@ -1,0 +1,96 @@
+<h1>{{title}}</h1>
+
+<ul>
+    {{#each methods}}
+        <li>
+            <h2>{{uppercase @key}}</h2>
+            <p>{{description}}</p>
+
+            {{#if request}}
+                <h3>Request</h3>
+                {{#if request.method}}
+                    <h4>Method</h4>
+                    <ul>
+                        {{#each request.method}}
+                            <li>{{uppercase .}}</li>
+                        {{/each}}
+                    </ul>
+                {{/if}}
+                {{#if request.accepts}}
+                    <h4>Formats</h4>
+                    <ul>
+                        {{#each request.accepts}}
+                            <li>{{.}}</li>
+                        {{/each}}
+                    </ul>
+                {{/if}}
+                {{#if request.field}}
+                    <h4>Fields</h4>
+                    <dl>
+                        {{#each request.field}}
+                            <dt>{{@key}}</dt>
+                            <dd>{{.}}</dd>
+                        {{/each}}
+                    </dl>
+                {{/if}}
+                {{#if request.secure}}
+                    <p>The request must be authenticated to succeed.</p>
+                {{/if}}
+            {{/if}}
+
+            <h3>Response</h3>
+            {{#if response}}
+                <h4>Code</h4>
+                <ul>
+                    {{#each response.code}}
+                        <li>{{.}}</li>
+                    {{/each}}
+                </ul>
+            {{/if}}
+            {{#if response.provides}}
+                <h4>Format</h4>
+                <ul>
+                    {{#each response.provides}}
+                        <li>{{.}}</li>
+                    {{/each}}
+                </ul>
+            {{/if}}
+            {{#if response.field}}
+                <h4>Fields</h4>
+                <dl>
+                    {{#each response.field}}
+                        <dt>{{@key}}</dt>
+                        <dd>{{.}}</dd>
+                    {{/each}}
+                </dl>
+            {{/if}}
+            {{#if response.header}}
+                <h4>Headers</h4>
+                <dl>
+                {{#each response.header}}
+                    <dt>{{@key}}</dt>
+                    <dd>{{.}}</dd>
+                {{/each}}
+                </dl>
+            {{/if}}
+            {{#if response.links}}
+                <h4>Links</h4>
+                <dl>
+                    {{#each response.links}}
+                        <dt>{{{rel @key}}}</dt>
+                        <dd>{{.}}</dd>
+                    {{/each}}
+                </dl>
+            {{/if}}
+            {{#if response.embeds}}
+                <h4>Embedded</h4>
+                <dl>
+                    {{#each response.embeds}}
+                        <dt>{{{rel @key}}}</dt>
+                        <dd>{{.}}</dd>
+                    {{/each}}
+                </dl>
+            {{/if}}
+        </li>
+    {{/each}}
+</ul>

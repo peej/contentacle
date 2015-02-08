@@ -104,32 +104,34 @@ Feature:
         Given I send a GET request to "/users/peej/repos/test/branches/master/commits"
         When I uncurie the "cont:commits" relation
         Then the response status code should be 200
-        And response property "get->description" should exist
-        And response property "get->response" should contain "200 OK"
-        And response property "get->links->self" should exist
-        And response property "get->links->cont:doc" should exist
-        And response property "get->embeds->cont:commit" should exist
-        And response property "get->provides" should contain "application/hal+yaml"
-        And response property "get->provides" should contain "application/hal+json"
+        And response property "actions->get->description" should exist
+        And response property "actions->get->request->method" should contain "get"
+        And response property "actions->get->response->code" should contain "200 OK"
+        And response property "actions->get->response->links->self" should exist
+        And response property "actions->get->response->links->cont:doc" should exist
+        And response property "actions->get->response->embeds->cont:commit" should exist
+        And response property "actions->get->response->provides" should contain "application/hal+yaml"
+        And response property "actions->get->response->provides" should contain "application/hal+json"
 
     Scenario: The cont:commit link relation has documentation
         Given I send a GET request to "/users/peej/repos/test/branches/master/commits/{sha}" with sha 1
         When I uncurie the "cont:commit" relation
         Then the response status code should be 200
-        And response property "get->description" should exist
-        And response property "get->response" should contain "200 OK"
-        And response property "get->field->sha" should exist
-        And response property "get->field->parents" should exist
-        And response property "get->field->message" should exist
-        And response property "get->field->date" should exist
-        And response property "get->field->username" should exist
-        And response property "get->field->author" should exist
-        And response property "get->field->email" should exist
-        And response property "get->field->files" should exist
-        And response property "get->field->diff" should exist
-        And response property "get->links->self" should exist
-        And response property "get->links->cont:doc" should exist
-        And response property "get->links->cont:user" should exist
-        And response property "get->links->cont:document" should exist
-        And response property "get->provides" should contain "application/hal+yaml"
-        And response property "get->provides" should contain "application/hal+json"
+        And response property "actions->get->description" should exist
+        And response property "actions->get->request->method" should contain "get"
+        And response property "actions->get->response->code" should contain "200 OK"
+        And response property "actions->get->response->field->sha" should exist
+        And response property "actions->get->response->field->parents" should exist
+        And response property "actions->get->response->field->message" should exist
+        And response property "actions->get->response->field->date" should exist
+        And response property "actions->get->response->field->username" should exist
+        And response property "actions->get->response->field->author" should exist
+        And response property "actions->get->response->field->email" should exist
+        And response property "actions->get->response->field->files" should exist
+        And response property "actions->get->response->field->diff" should exist
+        And response property "actions->get->response->links->self" should exist
+        And response property "actions->get->response->links->cont:doc" should exist
+        And response property "actions->get->response->links->cont:user" should exist
+        And response property "actions->get->response->links->cont:document" should exist
+        And response property "actions->get->response->provides" should contain "application/hal+yaml"
+        And response property "actions->get->response->provides" should contain "application/hal+json"

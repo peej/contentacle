@@ -5,7 +5,7 @@ namespace Contentacle\Resources;
 /**
  * @uri /rels/{rel}
  */
-class Rel extends Resource {
+class Doc extends Resource {
 
     private function parseDocComment($docComment)
     {
@@ -78,36 +78,51 @@ class Rel extends Resource {
                 }
             }
             if (isset($method['request']['method'])) {
-                foreach ($method['request']['method'] as $methodName) {
-                    $data[$methodName] = $method;
-                }
+                $data[$methodName] = $method;
             }
         }
 
         return $data;
     }
 
-    /**
-     * @method get
-     * @provides application/hal+yaml
-     * @provides application/hal+json
-     */
-    function get($rel)
+    private function getDocumentation($rel)
     {
-        return $this->createHalResponse(200, $this->getDocumentationFromDocComment($rel));
+        if ($rel == 'error') {
+            return array(
+                'get' => array(
+                    'description' => 'Get a validation error.',
+                    'request' => array(
+                        'method' => array('get')
+                    ),
+                    'response' => array(
+                        'code' => array('200 OK'),
+                        'provides' => array('application/yaml', 'application/json')
+                    )
+                )
+            );
+
+        } else {
+            return $this->getDocumentationFromDocComment($rel);
+        }
     }
 
     /**
+     * Get documentation for the link relation.
+     *
      * @method get
+     * @response 200 OK
+     * @provides application/hal+yaml
+     * @provides application/hal+json
      * @provides text/html
      */
-    function getHtml($rel)
+    function get($rel)
     {
-        $data = array(
-            'title' => '/rels/'.$rel,
-            'methods' => $this->getDocumentationFromDocComment($rel)
-        );
-        return $this->createHtmlResponse('rel.html', $data);
+        $response = $this->createResponse(200, 'rel');
+
+        $response->addData('title', '/rels/'.$rel);
+        $response->addData('actions', $this->getDocumentation($rel));
+
+        return $response;
     }
 
 }

@@ -5,7 +5,7 @@ default:
             goutte:      ~
         Sanpi\Behatch\Extension:
             contexts:
-                #browser: ~
+                browser: ~
                 #debug: ~
                 #system: ~
                 #json: ~
