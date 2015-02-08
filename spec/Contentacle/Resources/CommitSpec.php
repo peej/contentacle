@@ -7,7 +7,7 @@ use Prophecy\Argument;
 
 class CommitSpec extends ObjectBehavior
 {
-    function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo, \Contentacle\Services\Yaml $yaml)
+    function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
     {
         $repo->commit('master', '123456')->willReturn(array(
             'sha' => '123456',
@@ -30,8 +30,8 @@ class CommitSpec extends ObjectBehavior
 
         $this->beConstructedWith($app, $request);
         $this->setRepoRepository($repoRepo);
-        $this->setHalResponse(function($code = null, $body = null, $headers = array()) use ($yaml) {
-            return new \Contentacle\Responses\Hal($yaml, $code, $body, $headers);
+        $this->setResponse(function($code = null, $templateName = null) {
+            return new \Contentacle\Response($code);
         });
     }
 
@@ -43,32 +43,32 @@ class CommitSpec extends ObjectBehavior
     function it_should_link_to_itself()
     {
         $response = $this->get('cobb', 'extraction', 'master', '123456');
-        $response->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/commits/123456');
+        $response->data['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/commits/123456');
     }
 
     function it_should_link_to_its_own_documentation()
     {
         $response = $this->get('cobb', 'extraction', 'master', '123456');
-        $response->body['_links']['cont:doc']['href']->shouldBe('/rels/commit');
+        $response->data['_links']['cont:doc']['href']->shouldBe('/rels/commit');
     }
 
     function it_should_link_to_a_user()
     {
         $response = $this->get('cobb', 'extraction', 'master', '123456');
-        $response->body['_links']['cont:user']['href']->shouldBe('/users/cobb');
+        $response->data['_links']['cont:user']['href']->shouldBe('/users/cobb');
     }
 
     function it_should_output_a_commit($repo)
     {
         $repo->commit('master', '123456')->shouldBeCalled();
         $response = $this->get('cobb', 'extraction', 'master', '123456');
-        $response->body['sha']->shouldBe('123456');
+        $response->data['sha']->shouldBe('123456');
     }
 
     function it_should_link_to_the_documents_it_contains()
     {
         $response = $this->get('cobb', 'extraction', 'master', '123456');
-        $response->body['_links']['cont:document']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel/totem.txt');
+        $response->data['_links']['cont:document']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel/totem.txt');
     }
 
     function it_should_error_for_invalid_commit(\Contentacle\Models\Repo $repo)

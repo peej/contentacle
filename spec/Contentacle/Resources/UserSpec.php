@@ -7,7 +7,7 @@ use Prophecy\Argument;
 
 class UserSpec extends ObjectBehavior
 {
-    function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Models\User $user, \Contentacle\Services\UserRepository $userRepo, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Services\Yaml $yaml)
+    function let(\Tonic\Application $app, \Contentacle\Request $request, \Contentacle\Models\User $user, \Contentacle\Services\UserRepository $userRepo, \Contentacle\Services\RepoRepository $repoRepo)
     {
         $repo = (object)array(
             'name' => 'extraction',
@@ -56,8 +56,8 @@ class UserSpec extends ObjectBehavior
         $this->beConstructedWith($app, $request);
         $this->setUserRepository($userRepo);
         $this->setRepoRepository($repoRepo);
-        $this->setHalResponse(function($code = null, $body = null, $headers = array()) use ($yaml) {
-            return new \Contentacle\Responses\Hal($yaml, $code, $body, $headers);
+        $this->setResponse(function($code = null, $templateName = null) {
+            return new \Contentacle\Response($code);
         });
     }
 
@@ -69,32 +69,32 @@ class UserSpec extends ObjectBehavior
     function it_should_link_to_itself()
     {
         $response = $this->get('cobb');
-        $response->body['_links']['self']['href']->shouldBe('/users/cobb');
+        $response->data['_links']['self']['href']->shouldBe('/users/cobb');
     }
 
     function it_should_link_to_its_own_documentation()
     {
         $response = $this->get('cobb');
-        $response->body['_links']['cont:doc']['href']->shouldBe('/rels/user');
+        $response->data['_links']['cont:doc']['href']->shouldBe('/rels/user');
     }
 
     function it_should_link_to_repos()
     {
         $response = $this->get('cobb');
-        $response->body['_links']['cont:repos']['href']->shouldBe('/users/cobb/repos');
+        $response->data['_links']['cont:repos']['href']->shouldBe('/users/cobb/repos');
     }
 
     function it_should_show_user_details()
     {
         $response = $this->get('cobb');
-        $response->body['username']->shouldBe('cobb');
-        $response->body['name']->shouldBe('Dominick Cobb');
-        $response->body['_embedded']['cont:repo']->shouldBeArray();
-        $response->body['_embedded']['cont:repo'][0]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction');
-        $response->body['_embedded']['cont:repo'][0]['name']->shouldBe('extraction');
-        $response->body['_embedded']['cont:repo'][0]['username']->shouldBe('cobb');
-        $response->body['_embedded']['cont:repo'][0]['title']->shouldBe('Extraction 101');
-        $response->body['_embedded']['cont:repo'][0]['description']->shouldBe('Extraction instructions for Ariadne');
+        $response->data['username']->shouldBe('cobb');
+        $response->data['name']->shouldBe('Dominick Cobb');
+        $response->data['_embedded']['cont:repo']->shouldBeArray();
+        $response->data['_embedded']['cont:repo'][0]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction');
+        $response->data['_embedded']['cont:repo'][0]['name']->shouldBe('extraction');
+        $response->data['_embedded']['cont:repo'][0]['username']->shouldBe('cobb');
+        $response->data['_embedded']['cont:repo'][0]['title']->shouldBe('Extraction 101');
+        $response->data['_embedded']['cont:repo'][0]['description']->shouldBe('Extraction instructions for Ariadne');
     }
 
     function it_should_error_for_unknown_user()
@@ -104,6 +104,8 @@ class UserSpec extends ObjectBehavior
 
     function it_should_update_a_user($request)
     {
+        $request->getAccept()->willReturn();
+        $request->getParams()->willReturn();
         $request->getData()->willReturn(array(
             'op' => 'replace',
             'path' => 'name',
@@ -113,8 +115,8 @@ class UserSpec extends ObjectBehavior
         $response = $this->updateUser('cobb');
 
         $response->code->shouldBe(200);
-        $response->body['username']->shouldBe('cobb');
-        $response->body['name']->shouldBe('Cobb');
+        $response->data['username']->shouldBe('cobb');
+        $response->data['name']->shouldBe('Cobb');
     }
 
     function it_should_delete_a_user()

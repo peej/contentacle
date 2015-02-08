@@ -1,0 +1,35 @@
+<div>
+    <h1>Sign up</h1>
+
+    <form action="/users" method="post">
+        <label>
+            Username:
+            <input name="username" type="text" value="{{_post.username}}" maxlength="40" required>
+            {{#if error.username}}
+                <p>Username can't be blank, and can only contain lowercase letters and numbers.</p>
+            {{/if}}
+        </label>
+        <label>
+            Password:
+            <input name="password" type="password" value="{{_post.password}}" required>
+            {{#if error.password}}
+                <p>Password can't be blank.</p>
+            {{/if}}
+        </label>
+        <label>
+            Full name:
+            <input name="name" type="text" value="{{_post.name}}" maxlength="40" required>
+            {{#if error.name}}
+                <p>Your name can't be blank, and can only contain letters and numbers.</p>
+            {{/if}}
+        </label>
+        <label>
+            Email:
+            <input name="email" type="email" value="{{_post.email}}">
+            {{#if error.email}}
+                <p>You must enter a valid email address.</p>
+            {{/if}}
+        </label>
+        <button type="submit">Join</button>
+    </form>
+</div>

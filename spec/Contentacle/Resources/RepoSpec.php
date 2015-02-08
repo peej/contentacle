@@ -7,7 +7,7 @@ use Prophecy\Argument;
 
 class RepoSpec extends ObjectBehavior
 {
-    function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo, \Contentacle\Services\Yaml $yaml)
+    function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
     {
         $repo->prop('name')->willReturn('extraction');
         $repo->prop('username')->willReturn('cobb');
@@ -28,8 +28,8 @@ class RepoSpec extends ObjectBehavior
 
         $this->beConstructedWith($app, $request);
         $this->setRepoRepository($repoRepo);
-        $this->setHalResponse(function($code = null, $body = null, $headers = array()) use ($yaml) {
-            return new \Contentacle\Responses\Hal($yaml, $code, $body, $headers);
+        $this->setResponse(function($code = null, $templateName = null) {
+            return new \Contentacle\Response($code);
         });
     }
 
@@ -41,30 +41,30 @@ class RepoSpec extends ObjectBehavior
     function it_should_link_to_itself()
     {
         $response = $this->get('cobb', 'extraction');
-        $response->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction');
+        $response->data['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction');
     }
 
     function it_should_link_to_its_own_documentation()
     {
         $response = $this->get('cobb', 'extraction');
-        $response->body['_links']['cont:doc']['href']->shouldBe('/rels/repo');
+        $response->data['_links']['cont:doc']['href']->shouldBe('/rels/repo');
     }
 
     function it_should_link_to_branches()
     {
         $response = $this->get('cobb', 'extraction');
-        $response->body['_links']['cont:branches']['href']->shouldBe('/users/cobb/repos/extraction/branches');
+        $response->data['_links']['cont:branches']['href']->shouldBe('/users/cobb/repos/extraction/branches');
     }
 
     function it_should_get_a_list_of_a_users_repos()
     {
         $response = $this->get('cobb', 'extraction');
         
-        $response->body['_embedded']['cont:branch']->shouldHaveCount(2);
-        $response->body['_embedded']['cont:branch'][0]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master');
-        $response->body['_embedded']['cont:branch'][0]['name']->shouldBe('master');
-        $response->body['_embedded']['cont:branch'][1]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/branch');
-        $response->body['_embedded']['cont:branch'][1]['name']->shouldBe('branch');
+        $response->data['_embedded']['cont:branch']->shouldHaveCount(2);
+        $response->data['_embedded']['cont:branch'][0]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master');
+        $response->data['_embedded']['cont:branch'][0]['name']->shouldBe('master');
+        $response->data['_embedded']['cont:branch'][1]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/branch');
+        $response->data['_embedded']['cont:branch'][1]['name']->shouldBe('branch');
         
     }
 

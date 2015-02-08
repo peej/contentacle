@@ -7,6 +7,19 @@ namespace Contentacle\Resources;
  */
 class Repos extends Resource
 {
+    protected function createResponse($code, $templateName = null, $username = null)
+    {
+        $response = parent::createResponse($code, $templateName);
+
+        if ($username) {
+            $response->addVar('username', $username);
+            $response->addLink('self', '/users/'.$username.'/repos'.$this->formatExtension());
+            $response->addLink('cont:doc', '/rels/repos');
+        }
+
+        return $response;
+    }
+
     /**
      * Get a list of a users repositories.
      *
@@ -14,6 +27,7 @@ class Repos extends Resource
      * @response 200 OK
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @provides text/html
      * @field name The short name of the repo.
      * @field title The display name of the repo.
      * @field description A description of the repo.
@@ -24,10 +38,7 @@ class Repos extends Resource
      */
     function get($username)
     {
-        $response = $this->createHalResponse();
-
-        $response->addLink('self', '/users/'.$username.'/repos'.$this->formatExtension());
-        $response->addLink('cont:doc', '/rels/repos');
+        $response = $this->createResponse(200, 'repos', $username);
 
         try {
             $repoRepo = $this->getRepoRepository();
@@ -77,11 +88,11 @@ class Repos extends Resource
         $user = $userRepo->getUser($username);
         try {
             $repo = $repoRepo->createRepo($user, $this->request->getData());
-            $response = $this->createHalResponse(201);
+            $response = $this->createResponse(201);
             $response->location = '/users/'.$user->username.'/repos/'.$repo->name;
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = $this->createHalResponse(400);
+            $response = $this->createResponse(400, 'repos', $username);
             foreach ($e->errors as $field) {
                 $response->embed('errors', array(
                     'logref' => $field,

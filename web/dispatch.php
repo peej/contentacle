@@ -44,18 +44,16 @@ $container['repo'] = function ($c) {
         return new Contentacle\Models\Repo($data, $c['git'], $c['repo_dir'], $c['yaml'], $c['user_repository']);
     };
 };
-$container['hal_response'] = function ($c) {
-    return function ($code = null, $body = null, $headers = array()) use ($c) {
-        return new Contentacle\Responses\Hal($c['yaml'], $code, $body, $headers);
-    };
-};
-$container['html_response'] = function ($c) {
-    return function ($templateName, $vars = array(), $headers = array()) use ($c) {
-        return new Contentacle\Responses\Html($c['template'], $templateName, $vars, $headers);
+$container['response'] = function ($c) {
+    return function ($code = null, $template = null) use ($c) {
+        $response = new Contentacle\Response($code, $template);
+        $response->setYaml($c['yaml']);
+        $response->setTemplateEngine($c['template']);
+        return $response;
     };
 };
 
-$request = new Tonic\Request(array(
+$request = new Contentacle\Request(array(
     'uri' => $_SERVER['PHP_SELF'],
     'mimetypes' => array(
         'yaml' => 'text/yaml',
@@ -64,7 +62,23 @@ $request = new Tonic\Request(array(
     )
 ));
 
-if (substr($request->contentType, -4) == 'yaml') {
+if (
+    in_array('text/yaml', $request->accept) ||
+    in_array('application/yaml', $request->accept)
+) {
+    $request->addAccept('application/hal+yaml');
+}
+
+if (
+    in_array('text/json', $request->accept) ||
+    in_array('application/json', $request->accept)
+) {
+    $request->addAccept('application/hal+json');
+}
+
+if ($request->contentType == 'application/x-www-form-urlencoded') {
+    $request->data = $_POST;
+} elseif (substr($request->contentType, -4) == 'yaml') {
     $request->data = $container['yaml']->decode($request->data);
 } elseif (substr($request->contentType, -4) == 'json') {
     $request->data = json_decode($request->data, true);
@@ -77,8 +91,7 @@ try {
     $resource->setYaml($container['yaml']);
     $resource->setUserRepository($container['user_repository']);
     $resource->setRepoRepository($container['repo_repository']);
-    $resource->setHalResponse($container['hal_response']);
-    $resource->setHtmlResponse($container['html_response']);
+    $resource->setResponse($container['response']);
 
     $response = $resource->exec();
 
@@ -101,4 +114,4 @@ if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
     $response->setHeader('Access-Control-Allow-Headers', $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
 }
 
-$response->output();
+$response->output($request);

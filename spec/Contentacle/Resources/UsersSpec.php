@@ -7,7 +7,7 @@ use Prophecy\Argument;
 
 class UsersSpec extends ObjectBehavior
 {
-    function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\UserRepository $userRepo, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Services\Yaml $yaml)
+    function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\UserRepository $userRepo, \Contentacle\Services\RepoRepository $repoRepo)
     {
         $user1 = (object)array(
             'username' => 'cobb',
@@ -24,7 +24,7 @@ class UsersSpec extends ObjectBehavior
             'name' => 'Eames'
         );
 
-        $userRepo->getUsers(null)->willReturn(array($user1, $user2));
+        $userRepo->getUsers(null, 0, 19)->willReturn(array($user1, $user2));
         $userRepo->getUser('cobb')->willReturn($user1);
         $userRepo->getUser('arthur')->willReturn($user2);
 
@@ -42,8 +42,8 @@ class UsersSpec extends ObjectBehavior
         $this->beConstructedWith($app, $request);
         $this->setUserRepository($userRepo);
         $this->setRepoRepository($repoRepo);
-        $this->setHalResponse(function($code = null, $body = null, $headers = array()) use ($yaml) {
-            return new \Contentacle\Responses\Hal($yaml, $code, $body, $headers);
+        $this->setResponse(function($code = null, $templateName = null) {
+            return new \Contentacle\Response($code);
         });
     }
     function it_is_initializable()
@@ -54,25 +54,25 @@ class UsersSpec extends ObjectBehavior
     function it_should_link_to_itself()
     {
         $response = $this->get();
-        $response->body['_links']['self']['href']->shouldBe('/users');
+        $response->data['_links']['self']['href']->shouldBe('/users');
     }
 
     function it_should_link_to_its_own_documentation()
     {
         $response = $this->get();
-        $response->body['_links']['cont:doc']['href']->shouldBe('/rels/users');
+        $response->data['_links']['cont:doc']['href']->shouldBe('/rels/users');
     }
 
     function it_should_get_a_list_of_users()
     {
         $response = $this->get();
-        $response->body['_embedded']['cont:user']->shouldHaveCount(2);
-        $response->body['_embedded']['cont:user'][0]['_links']['self']['href']->shouldBe('/users/cobb');
-        $response->body['_embedded']['cont:user'][0]['username']->shouldBe('cobb');
-        $response->body['_embedded']['cont:user'][0]['name']->shouldBe('Dominick Cobb');
-        $response->body['_embedded']['cont:user'][1]['_links']['self']['href']->shouldBe('/users/arthur');
-        $response->body['_embedded']['cont:user'][1]['username']->shouldBe('arthur');
-        $response->body['_embedded']['cont:user'][1]['name']->shouldBe('Arthur');
+        $response->data['_embedded']['cont:user']->shouldHaveCount(2);
+        $response->data['_embedded']['cont:user'][0]['_links']['self']['href']->shouldBe('/users/cobb');
+        $response->data['_embedded']['cont:user'][0]['username']->shouldBe('cobb');
+        $response->data['_embedded']['cont:user'][0]['name']->shouldBe('Dominick Cobb');
+        $response->data['_embedded']['cont:user'][1]['_links']['self']['href']->shouldBe('/users/arthur');
+        $response->data['_embedded']['cont:user'][1]['username']->shouldBe('arthur');
+        $response->data['_embedded']['cont:user'][1]['name']->shouldBe('Arthur');
     }
 
     function it_should_create_a_user($request)
@@ -98,7 +98,7 @@ class UsersSpec extends ObjectBehavior
 
         $response->getCode()->shouldBe(400);
         $response->contentType->shouldBe('application/hal+yaml');
-        $response->body['_embedded']['cont:error'][0]['logref']->shouldBe('username');
-        $response->body['_embedded']['cont:error'][1]['logref']->shouldBe('password');
+        $response->data['_embedded']['cont:error'][0]['logref']->shouldBe('username');
+        $response->data['_embedded']['cont:error'][1]['logref']->shouldBe('password');
     }
 }

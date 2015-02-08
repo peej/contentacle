@@ -1,0 +1,13 @@
+<div>
+    <h1>Branches for "{{name}}"</h1>
+
+    {{#if _embedded.cont:branch}}
+        <ul>
+            {{#each _embedded.cont:branch}}
+                <li><a href="{{_links.self.href}}">{{name}}</a></li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <p>No branches found</p>
+    {{/if}}
+</div>

@@ -33,7 +33,9 @@ class History extends Resource {
         try {
             $history = $repo->history($branchName, $path);
 
-            $response = $this->createHalResponse(200, array(
+            $response = $this->createResponse(200, 'history');
+
+            $response->addData(array(
                 'filename' => basename($path),
                 'path' => $path
             ));

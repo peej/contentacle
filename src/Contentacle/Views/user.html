@@ -1,0 +1,15 @@
+<div>
+    <h1>{{name}}</h1>
+    <h2>{{username}}</h2>
+
+    {{#if _embedded.cont:repo}}
+        <ul>
+            {{#each _embedded.cont:repo}}
+                <li><a href="{{_links.self.href}}">{{name}} - {{default description "No description"}}</a></li>
+            {{/each}}
+        </ul>
+        <a href="{{_links.cont:repos.href}}">View all repositories</a>
+    {{else}}
+        <p>No repositories found</p>
+    {{/if}}
+</div>

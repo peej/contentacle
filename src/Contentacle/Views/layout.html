@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="cont: /rels/">
+    <title>{{default title "Contentacle"}}</title>
+    <link href="http://fonts.googleapis.com/css?family=Roboto|Satisfy" rel="stylesheet" type="text/css">
+    <link href="/css/base.css" rel="stylesheet" type="text/css">
+    {{#each _links}}
+        <link href="{{href}}" rel="{{@key}}">
+    {{/each}}
+</head>
+<body>
+    {{#if nav}}
+        <nav id="large">
+            {{#if repo}}
+                <h2>{{repo}}</h2>
+                <ul>
+                    <li><span class="icon-pages"></span><a href="{{_links.cont:document.href}}">Pages</a></li>
+                    <li><span class="icon-commits"></span><a href="{{_links.cont:commits.href}}">Revisions</a></li>
+                    <li><span class="icon-stage"></span><a href="">Stage</a> <sup>3</sup></li>
+                </ul>
+            {{/if}}
+            {{#if filename}}
+                <h2>{{filename}}</h2>
+                <ul>
+                    <li><span class="icon-edit"></span><a href="">Edit</a></li>
+                    <li><span class="icon-prop"></span><a href="">Properties</a></li>
+                    <li><span class="icon-history"></span><a href="">History</a></li>
+                </ul>
+            {{/if}}
+            <h2>{{username}}</h2>
+            <ul>
+                <li><span class="icon-user"></span><a href="/users/{{username}}">Profile</a></li>
+                <li><span class="icon-settings"></span><a href="/settings">Settings</a></li>
+                <li><span class="icon-signout"></span><a href="/logout">Sign out</a></li>
+            </ul>
+        </nav>
+    {{else}}
+        <nav id="small">
+            <span class="cthulhu"></span>
+            <a href="/login">Login</a>
+        </nav>
+    {{/if}}
+    <section class="{{section}}">
+        {{{_main}}}
+        <footer>
+            <a href="/about.html">About</a> <span class="cthulhu"></span> <a href="">Totherthing</a>
+        </footer>
+    </section>
+    {{#if nav}}
+        <script type="text/javascript">
+window.onload = function () {
+    var menu = document.getElementsByTagName("nav")[0],
+        body = document.getElementsByTagName("body")[0],
+        init = window.setTimeout(function () {
+            body.className = "js";
+        }, 3000);
+    body.className = "js menu";
+    menu.onmouseover = function () {
+        body.className = "js menu";
+        window.clearTimeout(init);
+    };
+    menu.onmouseout = function () {
+        body.className = "js";
+    };
+};
+        </script>
+    {{/if}}
+</body>
+</html>

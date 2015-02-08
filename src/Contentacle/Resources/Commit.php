@@ -36,7 +36,7 @@ class Commit extends Resource
             $repo = $repoRepo->getRepo($username, $repoName);
             $commit = $repo->commit($branchName, $sha);
 
-            $response = $this->createHalResponse(200);
+            $response = $this->createResponse(200, 'commit');
             $response->addData($commit);
 
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits/'.$sha.$this->formatExtension());

@@ -7,7 +7,7 @@ use Prophecy\Argument;
 
 class CommitsSpec extends ObjectBehavior
 {
-    function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo, \Contentacle\Services\Yaml $yaml)
+    function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
     {
         $repo->commits(Argument::cetera())->willThrow(new \Tonic\NotFoundException);
         $repo->hasBranch('master')->willReturn(true);
@@ -34,9 +34,14 @@ class CommitsSpec extends ObjectBehavior
 
         $this->beConstructedWith($app, $request);
         $this->setRepoRepository($repoRepo);
-        $this->setHalResponse(function($code = null, $body = null, $headers = array()) use ($yaml) {
-            return new \Contentacle\Responses\Hal($yaml, $code, $body, $headers);
+        $this->setResponse(function($code = null, $templateName = null) {
+            return new \Contentacle\Response($code);
         });
+    }
+
+    function letgo()
+    {
+        unset($_GET['page']);
     }
 
     function it_is_initializable()
@@ -47,21 +52,21 @@ class CommitsSpec extends ObjectBehavior
     function it_should_link_to_itself()
     {
         $response = $this->get('cobb', 'extraction', 'master');
-        $response->body['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/commits');
+        $response->data['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/commits');
     }
 
     function it_should_link_to_its_own_documentation()
     {
         $response = $this->get('cobb', 'extraction', 'master');
-        $response->body['_links']['cont:doc']['href']->shouldBe('/rels/commits');
+        $response->data['_links']['cont:doc']['href']->shouldBe('/rels/commits');
     }
 
     function it_should_list_commits($repo)
     {
         $repo->commits('master', 0, 24)->shouldBeCalled();
         $response = $this->get('cobb', 'extraction', 'master');
-        $response->body['_embedded']['cont:commit'][0]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/commits/123456');
-        $response->body['_embedded']['cont:commit'][0]['sha']->shouldBe('123456');
+        $response->data['_embedded']['cont:commit'][0]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/commits/123456');
+        $response->data['_embedded']['cont:commit'][0]['sha']->shouldBe('123456');
     }
 
     function it_should_error_for_invalid_branch($repo)
@@ -76,6 +81,6 @@ class CommitsSpec extends ObjectBehavior
         $repo->commits('master', 25, 49)->shouldBeCalled();
         $_GET['page'] = 2;
         $response = $this->get('cobb', 'extraction', 'master');
-        $response->body['_embedded']['cont:commit'][0]['sha']->shouldBe('654321');
+        $response->data['_embedded']['cont:commit'][0]['sha']->shouldBe('654321');
     }
 }

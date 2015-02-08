@@ -1,0 +1,31 @@
+<div>
+    <h1>Repositories for "{{username}}"</h1>
+
+    <form action="{{_links.self.href}}" method="get">
+        <label class="inline">
+            Repository:
+            <input name="q" type="search" value="{{_get.q}}">
+            <button type="submit">Search</button>
+        </label>
+    </form>
+
+    {{#if _embedded.cont:repo}}
+        <ul>
+            {{#each _embedded.cont:repo}}
+                <li><a href="{{_links.self.href}}">{{name}}</a></li>
+            {{/each}}
+        </ul>
+        {{#if nextOrPrev}}
+            <nav>
+                {{#if _links.prev}}
+                    <a href="{{_links.prev.href}}">Previous</a>
+                {{/if}}
+                {{#if _links.next}}
+                    <a href="{{_links.next.href}}">Next</a>
+                {{/if}}
+            </nav>
+        {{/if}}
+    {{else}}
+        <p>No repositories found</p>
+    {{/if}}
+</div>

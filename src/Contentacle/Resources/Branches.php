@@ -25,7 +25,9 @@ class Branches extends Resource
             $repoRepo = $this->getRepoRepository();
             $repo = $repoRepo->getRepo($username, $repoName);
             
-            $response = $this->createHalResponse();
+            $response = $this->createResponse(200, 'branches');
+
+            $response->addVar('name', $repoName);
 
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches'.$this->formatExtension());
             $response->addLink('cont:doc', '/rels/branches');
@@ -41,6 +43,20 @@ class Branches extends Resource
         } catch (\Git\Exception $e) {
             throw new \Tonic\NotFoundException;
         }
+    }
+
+    /**
+     * Redirect HTML client to master branch
+     *
+     * @method get
+     * @response 302 Found
+     * @provides text/html
+    */
+    function redirectToMasterBranch($username, $repoName)
+    {
+        return new \Tonic\Response(302, null, array(
+            'Location' => '/users/'.$username.'/repos/'.$repoName.'/branches/master'
+        ));
     }
 
     /**
@@ -82,11 +98,11 @@ class Branches extends Resource
                 throw $e;
             }
 
-            $response = $this->createHalResponse(201);
+            $response = $this->createResponse(201);
             $response->location = '/users/'.$repo->username.'/repos/'.$repo->name.'/branches/'.$data['name'];
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = $this->createHalResponse(400);
+            $response = $this->createResponse(400, 'branches');
             foreach ($e->errors as $field) {
                 $response->embed('cont:error', array(
                     'logref' => $field,

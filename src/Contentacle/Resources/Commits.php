@@ -35,7 +35,7 @@ class Commits extends Resource {
                 throw new \Tonic\NotFoundException;
             }
 
-            $response = $this->createHalResponse();
+            $response = $this->createResponse(200, 'commits');
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits'.$this->formatExtension());
             $response->addLink('cont:doc', '/rels/commits');
 

@@ -12,11 +12,12 @@ class Branch extends Resource
      */
     private function buildResponse($repo, $branchName)
     {
-        $response = $this->createHalResponse(200);
+        $response = $this->createResponse(200, 'branch');
 
         $response->addData('name', $branchName);
         $response->addData('repo', $repo->name);
         $response->addData('username', $repo->username);
+        $response->addData('nav', true);
 
         $branchUrl = '/users/'.$repo->username.'/repos/'.$repo->name.'/branches/'.$branchName;
 
@@ -99,7 +100,7 @@ class Branch extends Resource
             $response = $this->buildResponse($repo, $item['value']);
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = $this->createHalResponse(400);
+            $response = $this->createResponse(400, 'branch');
             foreach ($e->errors as $field) {
                 $response->embed('cont:error', array(
                     'logref' => $field,
@@ -108,7 +109,7 @@ class Branch extends Resource
             }
         } catch (\Git\Exception $e) {
             if (preg_match('/fatal: (A branch named \''.$item['value'].'\' already exists)/', $e->getMessage(), $match)) {
-                $response = $this->createHalResponse(400);
+                $response = $this->createResponse(400, 'branch');
                 $response->embed('cont:error', array(
                     'logref' => 'name',
                     'message' => $match[1]
@@ -140,13 +141,13 @@ class Branch extends Resource
 
             if ($repo->hasBranch($branchName)) {
                 $repo->deleteBranch($branchName);
-                $response = $this->createHalResponse(204);
+                $response = $this->createResponse(204, 'branch');
             } else {
                 throw new \Tonic\NotFoundException;
             }
         
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = $this->createHalResponse(400);
+            $response = $this->createResponse(400, 'branch');
             foreach ($e->errors as $field) {
                 $response->embed('cont:error', array(
                     'logref' => $field,
@@ -155,7 +156,7 @@ class Branch extends Resource
             }
 
         } catch (\Contentacle\Exceptions\RepoException $e) {
-            $response = $this->createHalResponse(400);
+            $response = $this->createResponse(400, 'branch');
             $response->embed('cont:error', array(
                 'logref' => 'name',
                 'message' => 'Can not delete "'.$branchName.'" branch'

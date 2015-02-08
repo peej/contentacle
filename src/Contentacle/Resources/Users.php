@@ -14,6 +14,7 @@ class Users extends Resource
      * @response 200 OK
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @provides text/html
      * @field username Username
      * @field name Users real name
      * @field password Password
@@ -24,17 +25,17 @@ class Users extends Resource
      */
     function get()
     {
+        $response = $this->createResponse(200, 'users');
         $userRepo = $this->getUserRepository();
-        
-        $response = $this->createHalResponse();
 
+        $response->addVar('title', 'Contentacle users');
         $response->addLink('self', '/users'.$this->formatExtension());
         $response->addLink('cont:doc', '/rels/users');
 
         if ($this->embed) {
 
             $search = isset($_GET['q']) ? $_GET['q'] : null;
-            $page = isset($_GET['page']) ? $_GET['page'] : 1;
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
             $pageSize = 20;
             $from = ($page - 1) * $pageSize;
             $to = $from + $pageSize - 1;
@@ -65,6 +66,7 @@ class Users extends Resource
      * @accepts application/hal+json
      * @accepts application/yaml
      * @accepts application/json
+     * @accepts application/x-www-form-urlencoded
      * @field username Username
      * @field name Users real name
      * @field password Password
@@ -73,6 +75,7 @@ class Users extends Resource
      * @response 400 Bad request
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @provides text/html
      * @header Location The URL of the created user.
      * @embeds cont:error A list of errored fields.
      */
@@ -82,16 +85,13 @@ class Users extends Resource
 
         try {
             $user = $userRepo->createUser($this->request->getData());
-            $response = $this->createHalResponse(201);
+            $response = $this->createResponse(201);
             $response->location = '/users/'.$user->username;
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = $this->createHalResponse(400);
+            $response = $this->createResponse(400, 'join');
             foreach ($e->errors as $field) {
-                $response->embed('cont:error', array(
-                    'logref' => $field,
-                    'message' => '"'.$field.'" field failed validation'
-                ));
+                $response->addError($field);
             }
         }
 

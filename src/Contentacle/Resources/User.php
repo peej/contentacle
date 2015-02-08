@@ -7,6 +7,25 @@ namespace Contentacle\Resources;
  */
 class User extends Resource
 {
+    private function response($user, $repoRepo)
+    {
+        $response = $this->createResponse(200, 'user');
+
+        $response->addData($user);
+        $response->addVar('title', $user->username.' ('.$user->name.')');
+        $response->addLink('self', '/users/'.$user->username.$this->formatExtension());
+        $response->addLink('cont:doc', '/rels/user');
+        $response->addLink('cont:repos', '/users/'.$user->username.'/repos'.$this->formatExtension());
+
+        if ($this->embed) {
+            foreach ($repoRepo->getRepos($user->username) as $repo) {
+                $response->embed('cont:repo', $this->getChildResource('\Contentacle\Resources\Repo', array($user->username, $repo->name)));
+            }
+        }
+
+        return $response;
+    }
+
     /**
      * Get a user.
      *
@@ -14,6 +33,7 @@ class User extends Resource
      * @response 200 OK
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @provides text/html
      * @field username Username
      * @field name Users real name
      * @field password Password
@@ -24,26 +44,14 @@ class User extends Resource
      * @embeds cont:repo A list of the users repositories.
      */
     function get($username)
-    {   
+    {
         $userRepo = $this->getUserRepository();
         $repoRepo = $this->getRepoRepository();
 
         try {
             $user = $userRepo->getUser($username);
 
-            $response = $this->createHalResponse(200, $user);
-
-            $response->addLink('self', '/users/'.$username.$this->formatExtension());
-            $response->addLink('cont:doc', '/rels/user');
-            $response->addLink('cont:repos', '/users/'.$username.'/repos'.$this->formatExtension());
-
-            if ($this->embed) {
-                foreach ($repoRepo->getRepos($user->username) as $repo) {
-                    $response->embed('cont:repo', $this->getChildResource('\Contentacle\Resources\Repo', array($user->username, $repo->name)));
-                }
-            }
-
-            return $response;
+            return $this->response($user, $repoRepo);
 
         } catch (\Contentacle\Exceptions\UserException $e) {
             throw new \Tonic\NotFoundException;
@@ -81,7 +89,7 @@ class User extends Resource
 
             $userRepo->updateUser($user, $this->request->getData(), true);
 
-            return $this->createHalResponse(200, $user);
+            return $this->response($user, $repoRepo);
 
         } catch (\Contentacle\Exceptions\UserException $e) {
             throw new \Tonic\NotFoundException;
@@ -106,7 +114,7 @@ class User extends Resource
 
             $userRepo->deleteUser($user);
 
-            return $this->createHalResponse(204);
+            return new \Tonic\Response(204);
 
         } catch (\Contentacle\Exceptions\UserException $e) {
             throw new \Tonic\NotFoundException;

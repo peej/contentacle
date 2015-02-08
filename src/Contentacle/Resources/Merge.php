@@ -31,7 +31,7 @@ class Merge extends Resource
             throw new \Tonic\NotFoundException;
         }
         
-        $response = $this->createHalResponse();
+        $response = $this->createResponse();
 
         $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branch1.'/merges/'.$branch2.$this->formatExtension());
         $response->addLink('cont:doc', '/rels/merge');

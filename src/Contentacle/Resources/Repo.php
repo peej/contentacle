@@ -12,9 +12,9 @@ class Repo extends Resource
      */
     private function buildResponse($repo)
     {
-        $response = $this->createHalResponse(200);
-        $response->addData($repo);
+        $response = $this->createResponse(200, 'repo');
 
+        $response->addData($repo);
         $response->addLink('self', '/users/'.$repo->username.'/repos/'.$repo->name.$this->formatExtension());
         $response->addLink('cont:doc', '/rels/repo');
         $response->addLink('cont:branches', '/users/'.$repo->username.'/repos/'.$repo->name.'/branches'.$this->formatExtension());
@@ -59,6 +59,20 @@ class Repo extends Resource
     }
 
     /**
+     * Redirect HTML client to master branch
+     *
+     * @method get
+     * @response 302 Found
+     * @provides text/html
+     */
+    function redirectToMasterBranch($username, $repoName)
+    {
+        return new \Tonic\Response(302, null, array(
+            'Location' => '/users/'.$username.'/repos/'.$repoName.'/branches/master'
+        ));
+    }
+
+    /**
      * Update a repositories metadata.
      *
      * @method patch
@@ -89,7 +103,7 @@ class Repo extends Resource
             $response = $this->buildResponse($repo);
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = $this->createHalResponse(400);
+            $response = $this->createResponse(400, 'repo');
             $response->contentType = 'application/hal';
             foreach ($e->errors as $field) {
                 $response->embed('cont:error', array(
@@ -137,7 +151,7 @@ class Repo extends Resource
             $response = $this->buildResponse($repo);
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = $this->createHalResponse(400);
+            $response = $this->createResponse(400, 'repo');
             $response->contentType = 'application/hal';
             foreach ($e->errors as $field) {
                 $response->embed('cont:error', array(

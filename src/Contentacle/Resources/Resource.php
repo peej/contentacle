@@ -46,11 +46,8 @@ class Resource extends \Tonic\Resource
     public function setRepoRepository($dep) { $this->setDependancy('repo_repository', $dep); }
     protected function getRepoRepository() { return $this->getDependancy('repo_repository'); }
 
-    public function setHalResponse($dep) { $this->setDependancy('hal_response', $dep); }
-    protected function createHalResponse($code = null, $vars = array()) { return $this->getDependancy('hal_response', $code, $vars); }
-
-    public function setHtmlResponse($dep) { $this->setDependancy('html_response', $dep); }
-    protected function createHtmlResponse($templateName, $data = array(), $headers = array()) { return $this->getDependancy('html_response', $templateName, $data, $headers); }
+    public function setResponse($dep) { $this->setDependancy('response', $dep); }
+    protected function createResponse($code = null, $templateName = null) { return $this->getDependancy('response', $code, $templateName); }
 
     protected function accepts($mimetype)
     {
@@ -102,7 +99,7 @@ class Resource extends \Tonic\Resource
         $resource->setDependancies($this->deps);
         $resource->embed = $embedChildren;
         $response = call_user_func_array(array($resource, 'get'), $parameters);
-        return $response->body;
+        return $response->data;
     }
 
     protected function formatExtension($prefix = '.')

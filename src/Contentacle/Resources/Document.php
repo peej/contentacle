@@ -8,12 +8,11 @@ namespace Contentacle\Resources;
  */
 class Document extends Resource
 {
-    /**
-     * Generate a successful response.
-     */
-    private function buildResponse($code, $username, $repoName, $branchName, $document)
+    private function documentResponse($code, $username, $repoName, $branchName, $document)
     {
-        $response = $this->createHalResponse($code, $document);
+        $response = $this->createResponse($code, 'document');
+
+        $response->addData($document);
 
         $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$document['path'].$this->formatExtension());
         $response->addLink('cont:doc', '/rels/document');
@@ -63,7 +62,8 @@ class Document extends Resource
         try {
             $documents = $repo->documents($branchName, $path);
 
-            $response = $this->createHalResponse(200, array(
+            $response = $this->createResponse(200, 'directory');
+            $response->addData(array(
                 'filename' => basename($path),
                 'path' => $path,
                 'type' => 'dir'
@@ -86,7 +86,7 @@ class Document extends Resource
         } catch (\Contentacle\Exceptions\RepoException $e) {
             try {
                 $document = $repo->document($branchName, $path);
-                $response = $this->buildResponse(200, $username, $repoName, $branchName, $document);
+                $response = $this->documentResponse(200, $username, $repoName, $branchName, $document);
                 return $response;
 
             } catch (\Contentacle\Exceptions\RepoException $e) {}
@@ -159,7 +159,7 @@ class Document extends Resource
         }
 
         $document = $repo->document($branchName, $path);
-        return $this->buildResponse($code, $username, $repoName, $branchName, $document);
+        return $this->documentResponse($code, $username, $repoName, $branchName, $document);
     }
 
     /**
@@ -191,6 +191,6 @@ class Document extends Resource
 
         $repo->deleteDocument($branchName, $path, $commitMessage);
 
-        return $this->createHalResponse(204);
+        return $this->createResponse(204);
     }
 }

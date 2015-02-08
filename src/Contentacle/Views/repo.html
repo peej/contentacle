@@ -1,0 +1,15 @@
+<div>
+    <h1>{{name}}</h1>
+    <h2>{{username}}</h2>
+
+    {{#if _embedded.cont:branch}}
+        <ul>
+            {{#each _embedded.cont:branch}}
+                <li><a href="{{_links.self.href}}">{{name}}</a></li>
+            {{/each}}
+        </ul>
+        <a href="{{_links.cont:branches.href}}">View all branches</a>
+    {{else}}
+        <p>Repository contains no branches</p>
+    {{/if}}
+</div>
