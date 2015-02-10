@@ -80,7 +80,7 @@ TABLE
     }
 
     /**
-     * @AfterScenario
+     * @sAfterScenario
      */
     public function tearDownRepo()
     {
@@ -425,6 +425,29 @@ TABLE
         }
 
         return new Given('I send a GET request to "'.$href.'"');
+    }
+
+    /**
+     * @Then /^I should see a link with relation "([^"]*)" to "([^"]*)"$/
+     */
+    public function iShouldSeeALinkWithRelationTo($rel, $href)
+    {
+        $session = $this->getSession();
+        $page = $session->getPage();
+        
+        $selector = 'link[rel=\''.$rel.'\'][href=\''.$href.'\']';
+
+        if (!$page->find('css', $selector)) {
+            throw new Exception;
+        }
+    }
+
+    /**
+     * @Then /^I should see a link to "([^"]*)"$/
+     */
+    public function iShouldSeeALinkTo($url)
+    {
+        return new Given('I should see an "a[href=\''.$url.'\']" element');
     }
 
 }

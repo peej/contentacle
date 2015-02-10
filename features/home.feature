@@ -36,3 +36,19 @@ Feature:
         When I send a GET request to "/.html"
         Then I should see a "body" element
         And the "Content-Type" response header should be "text/html"
+
+    Scenario: HTML homepage links to itself
+        When I send a GET request to "/.html"
+        Then I should see a link with relation "self" to "/"
+
+    Scenario: HTML homepage links to users
+        When I send a GET request to "/.html"
+        Then I should see a link with relation "cont:users" to "/users"
+
+    Scenario: HTML homepage links to login page
+        When I send a GET request to "/.html"
+        Then I should see a link to "/login"
+
+    Scenario: HTML homepage links to join page
+        When I send a GET request to "/.html"
+        Then I should see a link to "/join"
