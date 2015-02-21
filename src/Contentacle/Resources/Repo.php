@@ -12,7 +12,7 @@ class Repo extends Resource
      */
     private function buildResponse($repo)
     {
-        $response = $this->createResponse(200, 'repo');
+        $response = $this->response(200, 'repo');
 
         $response->addData($repo);
         $response->addLink('self', '/users/'.$repo->username.'/repos/'.$repo->name.$this->formatExtension());
@@ -47,8 +47,7 @@ class Repo extends Resource
     function get($username, $repoName)
     {
         try {
-            $repoRepo = $this->getRepoRepository();
-            $repo = $repoRepo->getRepo($username, $repoName);
+            $repo = $this->repoRepository->getRepo($username, $repoName);
             return $this->buildResponse($repo);
 
         } catch (\Contentacle\Exceptions\RepoException $e) {
@@ -95,9 +94,8 @@ class Repo extends Resource
      */
     public function patchRepo($username, $repoName)
     {
-        $repoRepo = $this->getRepoRepository();
         try {
-            $repo = $repoRepo->getRepo($username, $repoName);
+            $repo = $this->repoRepository->getRepo($username, $repoName);
             $repo->patch($this->request->getData());
             $repo->writeMetadata();
             $response = $this->buildResponse($repo);
@@ -143,9 +141,8 @@ class Repo extends Resource
      */
     public function updateRepo($username, $repoName)
     {
-        $repoRepo = $this->getRepoRepository();
         try {
-            $repo = $repoRepo->getRepo($username, $repoName);
+            $repo = $this->repoRepository->getRepo($username, $repoName);
             $repo->setProps($this->request->getData());
             $repo->writeMetadata();
             $response = $this->buildResponse($repo);
@@ -179,10 +176,8 @@ class Repo extends Resource
      */
     public function deleteRepo($username, $repoName)
     {
-        $repoRepo = $this->getRepoRepository();
-        
         try {
-            $repo = $repoRepo->getRepo($username, $repoName);
+            $repo = $this->repoRepository->getRepo($username, $repoName);
             $repo->delete();
         } catch (\Contentacle\Exceptions\RepoException $e) {
             throw new \Tonic\NotFoundException;

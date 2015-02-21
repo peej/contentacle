@@ -21,10 +21,8 @@ class Revert extends Resource {
      */
     function post($username, $repoName, $branchName, $sha)
     {
-        $repoRepo = $this->getRepoRepository();
-
         try {
-            $repo = $repoRepo->getRepo($username, $repoName);
+            $repo = $this->repoRepository->getRepo($username, $repoName);
             $commit = $repo->commit($branchName, $sha);
         } catch (\Git\Exception $e) {
             throw new \Tonic\NotFoundException;

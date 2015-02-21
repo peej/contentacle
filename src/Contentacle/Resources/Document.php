@@ -10,7 +10,7 @@ class Document extends Resource
 {
     private function documentResponse($code, $username, $repoName, $branchName, $document)
     {
-        $response = $this->createResponse($code, 'document');
+        $response = $this->response($code, 'document');
 
         $response->addData($document);
 
@@ -52,17 +52,15 @@ class Document extends Resource
      */
     function get($username, $repoName, $branchName, $path = null, $fixPath = true)
     {
-        $repoRepo = $this->getRepoRepository();
-
         if ($fixPath) {
             $path = $this->fixPath($path, $username, $repoName, $branchName, 'documents');
         }
 
-        $repo = $repoRepo->getRepo($username, $repoName);
+        $repo = $this->repoRepository->getRepo($username, $repoName);
         try {
             $documents = $repo->documents($branchName, $path);
 
-            $response = $this->createResponse(200, 'directory');
+            $response = $this->response(200, 'directory');
             $response->addData(array(
                 'filename' => basename($path),
                 'path' => $path,
@@ -128,11 +126,9 @@ class Document extends Resource
      */
     public function createDocument($username, $repoName, $branchName, $path = null)
     {
-        $repoRepo = $this->getRepoRepository();
-
         $path = $this->fixPath($path, $username, $repoName, $branchName, 'documents');
 
-        $repo = $repoRepo->getRepo($username, $repoName);
+        $repo = $this->repoRepository->getRepo($username, $repoName);
         $data = $this->request->getData();
 
         $commitMessage = null;
@@ -174,11 +170,9 @@ class Document extends Resource
      */
     public function deleteDocument($username, $repoName, $branchName, $path = null)
     {
-        $repoRepo = $this->getRepoRepository();
-
         $path = $this->fixPath($path, $username, $repoName, $branchName, 'documents');
 
-        $repo = $repoRepo->getRepo($username, $repoName);
+        $repo = $this->repoRepository->getRepo($username, $repoName);
         $data = $this->request->getData();
 
         $commitMessage = null;
@@ -191,6 +185,6 @@ class Document extends Resource
 
         $repo->deleteDocument($branchName, $path, $commitMessage);
 
-        return $this->createResponse(204);
+        return $this->response(204);
     }
 }

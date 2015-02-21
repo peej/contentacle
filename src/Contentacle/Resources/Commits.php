@@ -22,20 +22,18 @@ class Commits extends Resource {
      */
     function get($username, $repoName, $branchName)
     {
-
         $page = isset($_GET['page']) ? $_GET['page'] : 1;
         $start = ($page - 1) * self::PAGESIZE;
         $end = $start + self::PAGESIZE - 1;
         
         try {
-            $repoRepo = $this->getRepoRepository();
-            $repo = $repoRepo->getRepo($username, $repoName);
+            $repo = $this->repoRepository->getRepo($username, $repoName);
 
             if (!$repo->hasBranch($branchName)) {
                 throw new \Tonic\NotFoundException;
             }
 
-            $response = $this->createResponse(200, 'commits');
+            $response = $this->response(200, 'commits');
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits'.$this->formatExtension());
             $response->addLink('cont:doc', '/rels/commits');
 

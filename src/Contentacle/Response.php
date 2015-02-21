@@ -12,22 +12,14 @@ class Response extends \Tonic\Response
     private $links = array();
     private $embedded = array();
 
-    public function __construct($code = null, $templateName = null)
+    public function __construct($code, $templateName, $yaml, $templateEngine)
     {
         parent::__construct($code);
 
         $this->contentType = 'application/hal+yaml';
         $this->templateName = $templateName;
-    }
-
-    public function setYaml($yaml)
-    {
         $this->yaml = $yaml;
-    }
-
-    public function setTemplateEngine($engine)
-    {
-        $this->engine = $engine;
+        $this->engine = $templateEngine;
     }
 
     public function getCode()

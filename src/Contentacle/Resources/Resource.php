@@ -4,50 +4,24 @@ namespace Contentacle\Resources;
 
 class Resource extends \Tonic\Resource
 {
-    protected $deps = array();
     private $extension = '';
 
-    function __construct($app, $request)
+    function __construct($deps)
     {
-        parent::__construct($app, $request);
+        parent::__construct($deps['app'], $deps['request']);
         $this->params['embed'] = true;
-    }
 
-    public function setDependancies($deps)
-    {
-        $this->deps = $deps;
-    }
-
-    private function setDependancy($name, $dep)
-    {
-        $this->deps[$name] = $dep;
-    }
-
-    private function getDependancy($name)
-    {
-        if (!isset($this->deps[$name])) {
-            throw new \Exception('Dependancy '.$name.' not set.');
-        }
-        $dep = $this->deps[$name];
-        if (is_callable($dep)) {
-            $args = array_slice(func_get_args(), 1);
-            return call_user_func_array($dep, $args);
-        } else {
-            return $dep;
+        foreach ($deps as $depName => $dep) {
+            $this->$depName = $dep;
         }
     }
 
-    public function setYaml($dep) { $this->setDependancy('yaml', $dep); }
-    protected function getYaml() { return $this->getDependancy('yaml'); }
-
-    public function setUserRepository($dep) { $this->setDependancy('user_repository', $dep); }
-    protected function getUserRepository() { return $this->getDependancy('user_repository'); }
-
-    public function setRepoRepository($dep) { $this->setDependancy('repo_repository', $dep); }
-    protected function getRepoRepository() { return $this->getDependancy('repo_repository'); }
-
-    public function setResponse($dep) { $this->setDependancy('response', $dep); }
-    protected function createResponse($code = null, $templateName = null) { return $this->getDependancy('response', $code, $templateName); }
+    function __call($method, $args) {
+        if (is_callable($this->$method)) {
+            return call_user_func_array($this->$method, $args);
+        }
+        throw new \Exception('Trying to access undefined dependancy "'.$method.'"');
+    }
 
     protected function accepts($mimetype)
     {
@@ -95,8 +69,7 @@ class Resource extends \Tonic\Resource
 
     protected function getChildResource($resourceName, $parameters, $embedChildren = false)
     {
-        $resource = new $resourceName($this->app, $this->request);
-        $resource->setDependancies($this->deps);
+        $resource = $this->resourceFactory($resourceName);
         $resource->embed = $embedChildren;
         $response = call_user_func_array(array($resource, 'get'), $parameters);
         return $response->data;
@@ -156,8 +129,7 @@ class Resource extends \Tonic\Resource
         ) {
             $username = $this->request->getParams()['username'];
             if ($_SERVER['PHP_AUTH_USER'] == $username) {
-                $userRepo = $this->getUserRepository();
-                $user = $userRepo->getUser($username);
+                $user = $this->userRepository->getUser($username);
                 if ($user->verifyPassword($_SERVER['PHP_AUTH_PW'])) {
                     return;
                 }

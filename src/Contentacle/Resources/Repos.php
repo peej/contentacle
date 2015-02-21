@@ -7,9 +7,9 @@ namespace Contentacle\Resources;
  */
 class Repos extends Resource
 {
-    protected function createResponse($code, $templateName = null, $username = null)
+    protected function buildResponse($code, $templateName = null, $username = null)
     {
-        $response = parent::createResponse($code, $templateName);
+        $response = $this->response($code, $templateName);
 
         if ($username) {
             $response->addVar('username', $username);
@@ -38,12 +38,11 @@ class Repos extends Resource
      */
     function get($username)
     {
-        $response = $this->createResponse(200, 'repos', $username);
+        $response = $this->buildResponse(200, 'repos', $username);
 
         try {
-            $repoRepo = $this->getRepoRepository();
             $search = isset($_GET['q']) ? $_GET['q'] : null;
-            $repos = $repoRepo->getRepos($username, $search);
+            $repos = $this->repoRepository->getRepos($username, $search);
 
             if ($this->embed) {
                 foreach ($repos as $repo) {
@@ -82,17 +81,14 @@ class Repos extends Resource
      */
     public function createRepo($username)
     {
-        $userRepo = $this->getUserRepository();
-        $repoRepo = $this->getRepoRepository();
-
-        $user = $userRepo->getUser($username);
+        $user = $this->userRepository->getUser($username);
         try {
-            $repo = $repoRepo->createRepo($user, $this->request->getData());
-            $response = $this->createResponse(201);
+            $repo = $this->repoRepository->createRepo($user, $this->request->getData());
+            $response = $this->buildResponse(201);
             $response->location = '/users/'.$user->username.'/repos/'.$repo->name;
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = $this->createResponse(400, 'repos', $username);
+            $response = $this->buildResponse(400, 'repos', $username);
             foreach ($e->errors as $field) {
                 $response->embed('errors', array(
                     'logref' => $field,

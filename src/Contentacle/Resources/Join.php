@@ -16,6 +16,6 @@ class Join extends Resource
      */
     function get()
     {
-        return $this->createResponse(200, 'join');
+        return $this->response(200, 'join');
     }
 }

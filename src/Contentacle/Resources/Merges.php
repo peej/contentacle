@@ -21,8 +21,7 @@ class Merges extends Resource
     function get($username, $repoName, $branchName)
     {
         try {
-            $repoRepo = $this->getRepoRepository();
-            $repo = $repoRepo->getRepo($username, $repoName);
+            $repo = $this->repoRepository->getRepo($username, $repoName);
             if (!$repo->hasBranch($branchName)) {
                 throw new \Tonic\NotFoundException;
             }
@@ -30,7 +29,7 @@ class Merges extends Resource
             throw new \Tonic\NotFoundException;
         }
         
-        $response = $this->createResponse();
+        $response = $this->response();
 
         $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/merges'.$this->formatExtension());
         $response->addLink('cont:doc', '/rels/merges');

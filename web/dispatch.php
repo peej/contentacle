@@ -7,13 +7,24 @@ if (is_file(__DIR__.$_SERVER['REQUEST_URI'])) {
 require(__DIR__.'/../vendor/autoload.php');
 
 
-$app = new Tonic\Application(array(
-    'load' => array(
-        __DIR__.'/../src/Contentacle/Resources/*.php'
-    )
-));
-
-$container = new Pimple;
+$container = new Pimple\Container;
+$container['app'] = function () {
+    return new Tonic\Application(array(
+        'load' => array(
+            __DIR__.'/../src/Contentacle/Resources/*.php'
+        )
+    ));
+};
+$container['request'] = function () {
+    return new Contentacle\Request(array(
+        'uri' => $_SERVER['PHP_SELF'],
+        'mimetypes' => array(
+            'yaml' => 'text/yaml',
+            'yml' => 'text/yaml',
+            'json' => 'application/json'
+        )
+    ));
+};
 $container['repo_dir'] = __DIR__.'/../repos';
 $container['temp_dir'] = sys_get_temp_dir();
 $container['yaml'] = function () {
@@ -44,23 +55,27 @@ $container['repo'] = function ($c) {
         return new Contentacle\Models\Repo($data, $c['git'], $c['repo_dir'], $c['yaml'], $c['user_repository']);
     };
 };
+$container['resource_factory'] = function ($c) {
+    return function ($className) use ($c) {
+        $deps = array(
+            'app' => $c['app'],
+            'request' => $c['request'],
+            'resourceFactory' => $c['resource_factory'],
+            'response' => $c['response'],
+            'userRepository' => $c['user_repository'],
+            'repoRepository' => $c['repo_repository']
+        );
+        return new $className($deps);
+    };
+};
 $container['response'] = function ($c) {
     return function ($code = null, $template = null) use ($c) {
-        $response = new Contentacle\Response($code, $template);
-        $response->setYaml($c['yaml']);
-        $response->setTemplateEngine($c['template']);
-        return $response;
+        return new Contentacle\Response($code, $template, $c['yaml'], $c['template']);
     };
 };
 
-$request = new Contentacle\Request(array(
-    'uri' => $_SERVER['PHP_SELF'],
-    'mimetypes' => array(
-        'yaml' => 'text/yaml',
-        'yml' => 'text/yaml',
-        'json' => 'application/json'
-    )
-));
+$app = $container['app'];
+$request = $container['request'];
 
 if (
     in_array('text/yaml', $request->accept) ||
@@ -85,14 +100,9 @@ if ($request->contentType == 'application/x-www-form-urlencoded') {
 }
 
 try {
+    $route = $app->route($request);
 
-    $resource = $app->getResource($request);
-
-    $resource->setYaml($container['yaml']);
-    $resource->setUserRepository($container['user_repository']);
-    $resource->setRepoRepository($container['repo_repository']);
-    $resource->setResponse($container['response']);
-
+    $resource = $container['resource_factory']($route->getClass());
     $response = $resource->exec();
 
 } catch (Tonic\NotFoundException $e) {

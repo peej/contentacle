@@ -7,9 +7,9 @@ namespace Contentacle\Resources;
  */
 class User extends Resource
 {
-    private function response($user, $repoRepo)
+    private function buildResponse($user)
     {
-        $response = $this->createResponse(200, 'user');
+        $response = $this->response(200, 'user');
 
         $user->password = ''; // hide hashed user password from being output.
 
@@ -20,7 +20,7 @@ class User extends Resource
         $response->addLink('cont:repos', '/users/'.$user->username.'/repos'.$this->formatExtension());
 
         if ($this->embed) {
-            foreach ($repoRepo->getRepos($user->username) as $repo) {
+            foreach ($this->repoRepository->getRepos($user->username) as $repo) {
                 $response->embed('cont:repo', $this->getChildResource('\Contentacle\Resources\Repo', array($user->username, $repo->name)));
             }
         }
@@ -47,13 +47,10 @@ class User extends Resource
      */
     function get($username)
     {
-        $userRepo = $this->getUserRepository();
-        $repoRepo = $this->getRepoRepository();
-
         try {
-            $user = $userRepo->getUser($username);
+            $user = $this->userRepository->getUser($username);
 
-            return $this->response($user, $repoRepo);
+            return $this->buildResponse($user);
 
         } catch (\Contentacle\Exceptions\UserException $e) {
             throw new \Tonic\NotFoundException;
@@ -83,15 +80,12 @@ class User extends Resource
      */
     public function updateUser($username)
     {
-        $userRepo = $this->getUserRepository();
-        $repoRepo = $this->getRepoRepository();
-
         try {
-            $user = $userRepo->getUser($username);
+            $user = $this->userRepository->getUser($username);
 
-            $userRepo->updateUser($user, $this->request->getData(), true);
+            $this->userRepository->updateUser($user, $this->request->getData(), true);
 
-            return $this->response($user, $repoRepo);
+            return $this->buildResponse($user);
 
         } catch (\Contentacle\Exceptions\UserException $e) {
             throw new \Tonic\NotFoundException;
@@ -109,12 +103,10 @@ class User extends Resource
      */
     public function deleteUser($username)
     {
-        $userRepo = $this->getUserRepository();
-        
         try {
-            $user = $userRepo->getUser($username);
+            $user = $this->userRepository->getUser($username);
 
-            $userRepo->deleteUser($user);
+            $this->userRepository->deleteUser($user);
 
             return new \Tonic\Response(204);
 

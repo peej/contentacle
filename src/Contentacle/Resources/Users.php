@@ -25,8 +25,7 @@ class Users extends Resource
      */
     function get()
     {
-        $response = $this->createResponse(200, 'users');
-        $userRepo = $this->getUserRepository();
+        $response = $this->response(200, 'users');
 
         $response->addVar('title', 'Contentacle users');
         $response->addLink('self', '/users'.$this->formatExtension());
@@ -39,7 +38,7 @@ class Users extends Resource
             $pageSize = 20;
             $from = ($page - 1) * $pageSize;
             $to = $from + $pageSize - 1;
-            $users = $userRepo->getUsers($search, $from, $to);
+            $users = $this->userRepository->getUsers($search, $from, $to);
 
             foreach ($users as $user) {
                 $response->embed('cont:user', $this->getChildResource('\Contentacle\Resources\User', array($user->username)));
@@ -81,15 +80,13 @@ class Users extends Resource
      */
     function createUser()
     {
-        $userRepo = $this->getUserRepository();
-
         try {
-            $user = $userRepo->createUser($this->request->getData());
-            $response = $this->createResponse(201);
+            $user = $this->userRepository->createUser($this->request->getData());
+            $response = $this->response(201);
             $response->location = '/users/'.$user->username;
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = $this->createResponse(400, 'join');
+            $response = $this->response(400, 'join');
             foreach ($e->errors as $field) {
                 $response->addError($field);
             }

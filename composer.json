@@ -12,13 +12,13 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "pimple/pimple": "2.*",
+        "pimple/pimple": "3.*",
         "peej/tonic": "dev-master",
         "peej/git": "dev-master",
         "michelf/php-markdown": "1.*",
         "mustangostang/spyc": "0.5.*",
         "zf1/zend-search-lucene": "1.*",
-        "zordius/lightncandy": "dev-master"
+        "zordius/lightncandy": "0.*",
     },
     "require-dev": {
         "phpspec/phpspec": "2.0.*@dev",
@@ -27,7 +27,7 @@
         "behat/mink-extension": "1.*",
         "behat/mink-goutte-driver": "1.*",
         "fabpot/goutte": "1.*",
-        "sanpi/behatch-contexts": "*"
+        "behatch/contexts": "*"
     },
     "autoload": {
         "psr-0": {

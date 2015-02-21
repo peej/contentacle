@@ -12,7 +12,7 @@ class Branch extends Resource
      */
     private function buildResponse($repo, $branchName)
     {
-        $response = $this->createResponse(200, 'branch');
+        $response = $this->response(200, 'branch');
 
         $response->addData('name', $branchName);
         $response->addData('repo', $repo->name);
@@ -49,8 +49,7 @@ class Branch extends Resource
     function get($username, $repoName, $branchName)
     {
         try {
-            $repoRepo = $this->getRepoRepository();
-            $repo = $repoRepo->getRepo($username, $repoName);
+            $repo = $this->repoRepository->getRepo($username, $repoName);
             if (!$repo->hasBranch($branchName)) {
                 throw new \Tonic\NotFoundException;
             }
@@ -85,9 +84,8 @@ class Branch extends Resource
      */
     public function renameBranch($username, $repoName, $branchName)
     {
-        $repoRepo = $this->getRepoRepository();
         try {
-            $repo = $repoRepo->getRepo($username, $repoName);
+            $repo = $this->repoRepository->getRepo($username, $repoName);
 
             $patch = $this->request->getData();
             foreach ($patch as $item) {
@@ -100,7 +98,7 @@ class Branch extends Resource
             $response = $this->buildResponse($repo, $item['value']);
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = $this->createResponse(400, 'branch');
+            $response = $this->response(400, 'branch');
             foreach ($e->errors as $field) {
                 $response->embed('cont:error', array(
                     'logref' => $field,
@@ -109,7 +107,7 @@ class Branch extends Resource
             }
         } catch (\Git\Exception $e) {
             if (preg_match('/fatal: (A branch named \''.$item['value'].'\' already exists)/', $e->getMessage(), $match)) {
-                $response = $this->createResponse(400, 'branch');
+                $response = $this->response(400, 'branch');
                 $response->embed('cont:error', array(
                     'logref' => 'name',
                     'message' => $match[1]
@@ -135,19 +133,18 @@ class Branch extends Resource
      */
     public function deleteBranch($username, $repoName, $branchName)
     {
-        $repoRepo = $this->getRepoRepository();
         try {
-            $repo = $repoRepo->getRepo($username, $repoName);
+            $repo = $this->repoRepository->getRepo($username, $repoName);
 
             if ($repo->hasBranch($branchName)) {
                 $repo->deleteBranch($branchName);
-                $response = $this->createResponse(204, 'branch');
+                $response = $this->response(204, 'branch');
             } else {
                 throw new \Tonic\NotFoundException;
             }
         
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = $this->createResponse(400, 'branch');
+            $response = $this->response(400, 'branch');
             foreach ($e->errors as $field) {
                 $response->embed('cont:error', array(
                     'logref' => $field,
@@ -156,7 +153,7 @@ class Branch extends Resource
             }
 
         } catch (\Contentacle\Exceptions\RepoException $e) {
-            $response = $this->createResponse(400, 'branch');
+            $response = $this->response(400, 'branch');
             $response->embed('cont:error', array(
                 'logref' => 'name',
                 'message' => 'Can not delete "'.$branchName.'" branch'

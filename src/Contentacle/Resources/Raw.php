@@ -15,11 +15,9 @@ class Raw extends Resource
      */
     function get($username, $repoName, $branch, $path)
     {
-        $repoRepo = $this->getRepoRepository();
-
         $path = $this->fixPath($path, $username, $repoName, $branch, 'raw');
 
-        $repo = $repoRepo->getRepo($username, $repoName);
+        $repo = $this->repoRepository->getRepo($username, $repoName);
 
         try {
             $document = $repo->document($branch, $path);

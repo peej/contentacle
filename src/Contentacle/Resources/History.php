@@ -25,15 +25,13 @@ class History extends Resource {
      */
     function get($username, $repoName, $branchName, $path = null)
     {
-        $repoRepo = $this->getRepoRepository();
-
         $path = $this->fixPath($path, $username, $repoName, $branchName, 'history');
 
-        $repo = $repoRepo->getRepo($username, $repoName);
+        $repo = $this->repoRepository->getRepo($username, $repoName);
         try {
             $history = $repo->history($branchName, $path);
 
-            $response = $this->createResponse(200, 'history');
+            $response = $this->response(200, 'history');
 
             $response->addData(array(
                 'filename' => basename($path),

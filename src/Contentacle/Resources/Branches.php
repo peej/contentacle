@@ -22,10 +22,9 @@ class Branches extends Resource
     function get($username, $repoName)
     {
         try {
-            $repoRepo = $this->getRepoRepository();
-            $repo = $repoRepo->getRepo($username, $repoName);
+            $repo = $this->repoRepository->getRepo($username, $repoName);
             
-            $response = $this->createResponse(200, 'branches');
+            $response = $this->response(200, 'branches');
 
             $response->addVar('name', $repoName);
 
@@ -78,10 +77,8 @@ class Branches extends Resource
      */
     public function createBranch($username, $repoName)
     {
-        $repoRepo = $this->getRepoRepository();
-
         try {
-            $repo = $repoRepo->getRepo($username, $repoName);
+            $repo = $this->repoRepository->getRepo($username, $repoName);
             $data = $this->request->getData();
 
             if (!isset($data['name'])) {
@@ -98,11 +95,11 @@ class Branches extends Resource
                 throw $e;
             }
 
-            $response = $this->createResponse(201);
+            $response = $this->response(201);
             $response->location = '/users/'.$repo->username.'/repos/'.$repo->name.'/branches/'.$data['name'];
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = $this->createResponse(400, 'branches');
+            $response = $this->response(400, 'branches');
             foreach ($e->errors as $field) {
                 $response->embed('cont:error', array(
                     'logref' => $field,

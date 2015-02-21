@@ -12,8 +12,7 @@ class Blob extends Resource {
      */
     function get($username, $repoName, $branch, $sha)
     {
-        $repoRepo = $this->createRepoRepository();
-        $repo = $repoRepo->getRepo($username, $repoName);
+        $repo = $this->repoRepository->getRepo($username, $repoName);
 
         try {
             return $repo->blob($sha);

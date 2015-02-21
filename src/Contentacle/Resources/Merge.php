@@ -22,8 +22,7 @@ class Merge extends Resource
     function get($username, $repoName, $branch1, $branch2)
     {
         try {
-            $repoRepo = $this->getRepoRepository();
-            $repo = $repoRepo->getRepo($username, $repoName);
+            $repo = $this->repoRepository->getRepo($username, $repoName);
             if ($branch1 == $branch2 || !$repo->hasBranch($branch1) || !$repo->hasBranch($branch2)) {
                 throw new \Tonic\NotFoundException;
             }
@@ -31,7 +30,7 @@ class Merge extends Resource
             throw new \Tonic\NotFoundException;
         }
         
-        $response = $this->createResponse();
+        $response = $this->response();
 
         $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branch1.'/merges/'.$branch2.$this->formatExtension());
         $response->addLink('cont:doc', '/rels/merge');
@@ -63,8 +62,7 @@ class Merge extends Resource
     function post($username, $repoName, $branch1, $branch2)
     {
         try {
-            $repoRepo = $this->getRepoRepository();
-            $repo = $repoRepo->getRepo($username, $repoName);
+            $repo = $this->repoRepository->getRepo($username, $repoName);
             if ($branch1 == $branch2 || !$repo->hasBranch($branch1) || !$repo->hasBranch($branch2)) {
                 throw new \Tonic\NotFoundException;
             }

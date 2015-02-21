@@ -117,7 +117,7 @@ class Doc extends Resource {
      */
     function get($rel)
     {
-        $response = $this->createResponse(200, 'rel');
+        $response = $this->response(200, 'rel');
 
         $response->addData('title', '/rels/'.$rel);
         $response->addData('actions', $this->getDocumentation($rel));
