@@ -26,6 +26,8 @@ $container['request'] = function () {
     ));
 };
 $container['repo_dir'] = __DIR__.'/../repos';
+$container['token_dir'] = __DIR__.'/../tokens';
+$container['authcode_dir'] = __DIR__.'/../authcodes';
 $container['temp_dir'] = sys_get_temp_dir();
 $container['yaml'] = function () {
     return new Contentacle\Services\Yaml;
@@ -62,6 +64,7 @@ $container['resource_factory'] = function ($c) {
             'request' => $c['request'],
             'resourceFactory' => $c['resource_factory'],
             'response' => $c['response'],
+            'oauth' => $c['oauth'],
             'userRepository' => $c['user_repository'],
             'repoRepository' => $c['repo_repository']
         );
@@ -72,6 +75,15 @@ $container['response'] = function ($c) {
     return function ($code = null, $template = null) use ($c) {
         return new Contentacle\Response($code, $template, $c['yaml'], $c['template']);
     };
+};
+$container['oauth_storage'] = function ($c) {
+    return new Contentacle\Services\OAuthStorage($c['token_dir'], $c['authcode_dir'], $c['user_repository']);
+};
+$container['oauth'] = function ($c) {
+    $server = new Contentacle\Services\OAuthServer($c['oauth_storage']);
+    $server->addGrantType(new OAuth2\GrantType\ClientCredentials($c['oauth_storage']));
+    #$server->addGrantType(new OAuth2\GrantType\AuthorizationCode($c['oauth_storage']));
+    return $server;
 };
 
 $app = $container['app'];

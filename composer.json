@@ -19,6 +19,7 @@
         "mustangostang/spyc": "0.5.*",
         "zf1/zend-search-lucene": "1.*",
         "zordius/lightncandy": "0.*",
+        "bshaffer/oauth2-server-php": "1.6"
     },
     "require-dev": {
         "phpspec/phpspec": "2.0.*@dev",

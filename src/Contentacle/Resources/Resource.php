@@ -122,7 +122,9 @@ class Resource extends \Tonic\Resource
 
     function secure()
     {
-        if (
+        if ($this->oauth->verifyToken()) {
+            return;
+        } elseif (
             isset($_SERVER['PHP_AUTH_USER']) && $_SERVER['PHP_AUTH_USER'] != '' &&
             isset($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_PW'] != '' &&
             isset($this->request->getParams()['username'])

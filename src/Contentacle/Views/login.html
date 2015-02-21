@@ -1,0 +1,22 @@
+<div>
+    <h1>Login</h1>
+
+    <form action="/login" method="post">
+        <input type="hidden" name="grant_type" value="client_credentials">
+        <label>
+            Username:
+            <input name="client_id" type="text" value="{{_post.username}}" maxlength="40" required>
+            {{#if error.username}}
+                <p>Username can't be blank, and can only contain lowercase letters and numbers.</p>
+            {{/if}}
+        </label>
+        <label>
+            Password:
+            <input name="client_secret" type="password" value="{{_post.password}}" required>
+            {{#if error.password}}
+                <p>Password can't be blank.</p>
+            {{/if}}
+        </label>
+        <button type="submit">Login</button>
+    </form>
+</div>
