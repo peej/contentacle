@@ -108,12 +108,14 @@ class Response extends \Tonic\Response
     }
 
     private function addCuries() {
-        $this->links['curies'][] = array(
-            'name' => 'cont',
-            'href' => '/rels/{rel}',
-            'templated' => true
-        );
-        $this->data['_links'] = $this->links;
+        if (count($this->links)) {
+            $this->links['curies'][] = array(
+                'name' => 'cont',
+                'href' => '/rels/{rel}',
+                'templated' => true
+            );
+            $this->data['_links'] = $this->links;
+        }
     }
 
     private function calculateContentType($accept)
