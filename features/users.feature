@@ -102,7 +102,7 @@ Feature:
         Then the response status code should be 200
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "username" should be "test1"
-        And response property "password" should be "118b32994e63fd4a3ff1dd091d2e859d9fa66811"
+        And response property "password" should be ""
         And response property "email" should be "test1@localhost"
 
     Scenario: Try to create an invalid user

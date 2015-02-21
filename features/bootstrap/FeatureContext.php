@@ -283,7 +283,7 @@ TABLE
     public function iHaveUser(TableNode $userData)
     {
         foreach ($userData->getHash() as $data) {
-            $data['password'] = sha1($data['username'].':'.$data['password']);
+            $data['password'] = password_hash($data['username'].':'.$data['password'], PASSWORD_DEFAULT);
             mkdir($this->repoDir.'/'.$data['username']);
             file_put_contents($this->repoDir.'/'.$data['username'].'/profile.json', json_encode($data, JSON_PRETTY_PRINT));
         }

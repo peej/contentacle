@@ -23,18 +23,13 @@ class User extends Model
         ), $data);
     }
 
-    private function hashPassword($username, $password)
-    {
-        return sha1($username.':'.$password);
-    }
-
     public function setPassword($password)
     {
-        $this->setProp('password', $this->hashPassword($this->prop('username'), $password));
+        $this->setProp('password', password_hash($this->prop('username').':'.$password, PASSWORD_DEFAULT));
     }
 
     public function verifyPassword($password)
     {
-        return $this->hashPassword($this->prop('username'), $password) == $this->prop('password');
+        return password_verify($this->prop('username').':'.$password, $this->prop('password'));
     }
 }
