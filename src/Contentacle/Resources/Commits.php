@@ -57,6 +57,8 @@ class Commits extends Resource {
             
             return $response;
 
+        } catch (\Contentacle\Exceptions\RepoException $e) {
+            throw new \Tonic\NotFoundException;
         } catch (\Git\Exception $e) {
             throw new \Tonic\NotFoundException;
         }
