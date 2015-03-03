@@ -165,8 +165,9 @@ class Response extends \Tonic\Response
             } else {
                 $this->data['_get'] = $_GET;
                 $this->data['_post'] = $_POST;
+                $this->data['var'] = $this->vars;
 
-                echo $this->engine->render($this->templateName, array_merge($this->vars, $this->data));
+                echo $this->engine->render($this->templateName, $this->data);
             }
             break;
 

@@ -35,6 +35,12 @@ class Commits extends Resource {
             }
 
             $response = $this->response(200, 'commits');
+
+            $response->addData('name', $branchName);
+            $response->addData('repo', $repo->name);
+            $response->addData('username', $repo->username);
+            $response->addVar('nav', true);
+
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits'.$this->formatExtension());
             $response->addLink('cont:doc', '/rels/commits');
 

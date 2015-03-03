@@ -13,6 +13,10 @@ class Document extends Resource
         $response = $this->response($code, 'document');
 
         $response->addData($document);
+        $response->addData('branch', $branchName);
+        $response->addData('repo', $repoName);
+        $response->addData('username', $username);
+        $response->addVar('nav', true);
 
         $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$document['path'].$this->formatExtension());
         $response->addLink('cont:doc', '/rels/document');
@@ -67,6 +71,7 @@ class Document extends Resource
                 'path' => $path,
                 'type' => 'dir'
             ));
+            $response->addVar('nav', true);
 
             if ($path) {
                 $path = '/'.$path;

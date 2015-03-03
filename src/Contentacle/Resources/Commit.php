@@ -38,6 +38,11 @@ class Commit extends Resource
             $response = $this->response(200, 'commit');
             $response->addData($commit);
 
+            $response->addData('name', $branchName);
+            $response->addData('repo', $repo->name);
+            $response->addData('username', $repo->username);
+            $response->addVar('nav', true);
+
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits/'.$sha.$this->formatExtension());
             $response->addLink('cont:doc', '/rels/commit');
             $response->addLink('cont:user', '/users/'.$commit['username'].$this->formatExtension());
