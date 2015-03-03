@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "sass": "latest"
+  },
+  "scripts": {
+    "build-css": "sass --scss src/scss/base.scss web/style.css",
+    "build": "npm run build-css"
+  }
+}

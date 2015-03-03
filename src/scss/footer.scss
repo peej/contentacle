@@ -1,0 +1,20 @@
+footer {
+    text-align: center;
+    font-size: 60%;
+    margin: 1em 0;
+}
+
+footer a {
+    text-decoration: none;
+}
+
+footer span {
+    color: #ccc;
+    font-size: 200%;
+    position: relative;
+    top: 6px;
+}
+
+footer span:before {
+    padding: 0 10px;
+}

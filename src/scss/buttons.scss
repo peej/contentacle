@@ -1,0 +1,48 @@
+.button-bar {
+    display: block;
+    margin: 1em 20px;
+    text-align: center;
+}
+
+button,
+a.button {
+    display: inline-block;
+    background: #ddd;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #210;
+    padding: 8px 16px;
+    margin: 0 0 1px;
+    cursor: pointer;
+    font-size: 13px;
+    text-transform: uppercase;
+    text-decoration: none;
+    -webkit-transition: all 0.25s ease;
+    font-family: Arial;
+}
+
+button:hover,
+a.button:hover {
+    background-color: #eee;
+}
+
+button:before,
+a.button:before {
+    display: inline-block;
+    padding-right: 4px;
+}
+
+button.cancel,
+a.button.cancel {
+    color: #900;
+}
+
+button.okay,
+a.button.okay {
+    background-color: #5ca941;
+}
+
+button.okay:hover,
+a.button.okay:hover {
+    background-color: #488632;
+}

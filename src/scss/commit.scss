@@ -1,0 +1,90 @@
+h2.commit-metadata {
+    padding: 4px 8px;
+    font-size: 180%;
+    margin: 0 20px;
+    font-style: italic;
+    font-family: "Satisfy", cursive;
+    
+    &:before {
+        content: '“';
+    }
+    &:after {
+        content: '”';
+    }
+}
+
+div.commit-metadata {
+    margin: 20px;
+    background-color: $grey-colour;
+    padding: 6px 12px;
+    color: #fff;
+    font-size: 80%;
+}
+
+div.commit-metadata a,
+.commit h3 a {
+    color: #fff;
+    text-decoration: none;
+
+    &:hover {
+        color: #fff;
+        text-decoration: underline;
+    }
+}
+
+.commit ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.commit h3 {
+    background-color: $grey-colour-dark;
+    padding: 6px 12px;
+    color: #eee;
+    font-size: 80%;
+    font-weight: normal;
+    margin: 0 20px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.commit h3 a,
+.commit h3 a:hover {
+    color: $dark-colour;
+}
+
+.commit table {
+    border-collapse: collapse;
+    margin: 0 20px 20px;
+    width: 660px;
+    box-sizing: border-box;
+}
+
+.commit tr.add td {
+    background: $green-colour;
+    border-color: $green-colour-highlight;
+}
+
+.commit tr.remove td {
+    background: $red-colour;
+    border-color: $red-colour-highlight;
+}
+
+.commit td {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-color: $grey-colour-medium;
+    background: $grey-colour-light;
+    padding: 4px 8px;
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    font-size: 70%;
+    color: $dark-colour;
+}
+
+.commit td:nth-child(1),
+.commit td:nth-child(2) {
+    text-align: right;
+    border-right-width: 1px;
+    border-right-style: solid;
+}
