@@ -104,11 +104,22 @@ class Document extends Resource
             $response->addLink('cont:document', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/'.$url.$this->formatExtension());
             $response->addLink('cont:commits', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits'.$this->formatExtension());
 
+            $documents = $repo->documents($branchName, $path);
+            $commits = $repo->commits($branchName, null, 1);
 
-            if ($this->embed) {
-                foreach ($documents as $filename) {
+            foreach ($documents as $filename) {
+                if ($this->embed) {
                     $response->embed('cont:document', $this->getChildResource('\Contentacle\Resources\Document', array($username, $repoName, $branchName, $filename, false)));
+                } else {
+                    $response->addLink('cont:document', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$filename.$this->formatExtension());
                 }
+            }
+
+            foreach ($commits as $commit) {
+                if ($this->embed) {
+                    $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $commit['sha'])));
+                }
+                $response->addLink('cont:commit', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits/'.$commit['sha'].$this->formatExtension());
             }
 
             return $response;
