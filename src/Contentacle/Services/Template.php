@@ -4,6 +4,8 @@ namespace Contentacle\Services;
 
 class Template extends \LightnCandy
 {
+    private $currentDay;
+
     private function getCompiledPath($templateFilename)
     {
         $templatePath = 'src/Contentacle/Views/'.$templateFilename;
@@ -33,6 +35,31 @@ class Template extends \LightnCandy
                     },
                     'default' => function ($args) {
                         return $args[0] ? $args[0] : $args[1];
+                    },
+                    'date' => function ($args) {
+                        if (isset($args[1])) {
+                            return date($args[1], $args[0]);
+                        }
+                        if (date('Y', $args[0]) == date('Y')) {
+                            return date('M j', $args[0]);
+                        }
+                        return date('M j, \'y', $args[0]);
+                    },
+                    'since' => '\Contentacle\Services\Template::since'
+                ),
+                'blockhelpers' => array(
+                    'showDay' => function ($cs, $args) {
+                        $date = date('dmY', $args[0]);
+                        if ($this->currentDay != $date) {
+                            $this->currentDay = $date;
+                            return $cs;
+                        }
+                    },
+                    'showDayEnd' => function ($cs, $args) {
+                        $date = date('dmY', $args[0]);
+                        if ($this->currentDay && $this->currentDay != $date) {
+                            return $cs;
+                        }
                     }
                 )
             ));
@@ -50,6 +77,30 @@ class Template extends \LightnCandy
             '_main' => $main($data),
             'section' => $templateName
         )));
+    }
+
+    protected function since($args) {
+        $diff = time() - $args[0];
+        if ($diff < 60) {
+            $denomination = $diff;
+            $division = 'second';
+        } elseif ($diff < 3600) {
+            $denomination = $diff / 60;
+            $division = 'minute';
+        } elseif ($diff < 86400) {
+            $denomination = $diff / 3600;
+            $division = 'hour';
+        } elseif ($diff < 2592000) {
+            $denomination = $diff / 86400;
+            $division = 'day';
+        } elseif ($diff < 31536000) {
+            $denomination = $diff / 2592000;
+            $division = 'month';
+        } else {
+            $denomination = $diff / 31536000;
+            $division = 'year';
+        }
+        return floor($denomination).' '.$division.($division == 1 ? '' : 's').' ago';
     }
 
 }
