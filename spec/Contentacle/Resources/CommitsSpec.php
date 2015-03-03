@@ -9,6 +9,8 @@ class CommitsSpec extends ObjectBehavior
 {
     function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
     {
+        $repo->prop('name')->willReturn('Extraction');
+        $repo->prop('username')->willReturn('cobb');
         $repo->commits(Argument::cetera())->willThrow(new \Tonic\NotFoundException);
         $repo->hasBranch('master')->willReturn(true);
         $repo->hasBranch(Argument::cetera())->willReturn(false);
@@ -32,11 +34,14 @@ class CommitsSpec extends ObjectBehavior
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
         $repoRepo->getRepo(Argument::cetera())->willThrow(new \Git\Exception);
 
-        $this->beConstructedWith($app, $request);
-        $this->setRepoRepository($repoRepo);
-        $this->setResponse(function($code = null, $templateName = null) {
-            return new \Contentacle\Response($code);
-        });
+        $this->beConstructedWith(array(
+            'app' => $app,
+            'request' => $request,
+            'response' => function($code = null, $templateName = null) {
+                return new \Contentacle\Response($code, $templateName, null, null);
+            },
+            'repoRepository' => $repoRepo
+        ));
     }
 
     function letgo()

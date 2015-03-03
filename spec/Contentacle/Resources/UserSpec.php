@@ -38,6 +38,7 @@ class UserSpec extends ObjectBehavior
                 'name' => 'Cobb'
             ));
         });
+        $user->setProp('password', '')->willReturn();
         
         $userRepo->getUser('cobb')->willReturn($user);
         $userRepo->getUser(Argument::cetera())->willThrow(new \Contentacle\Exceptions\UserException);
@@ -53,12 +54,15 @@ class UserSpec extends ObjectBehavior
             $this->getUser('cobb')->willThrow('\Tonic\NotFoundException');
         });
 
-        $this->beConstructedWith($app, $request);
-        $this->setUserRepository($userRepo);
-        $this->setRepoRepository($repoRepo);
-        $this->setResponse(function($code = null, $templateName = null) {
-            return new \Contentacle\Response($code);
-        });
+        $this->beConstructedWith(array(
+            'app' => $app,
+            'request' => $request,
+            'response' => function($code = null, $templateName = null) {
+                return new \Contentacle\Response($code, '', null, null);
+            },
+            'userRepository' => $userRepo,
+            'repoRepository' => $repoRepo
+        ));
     }
 
     function it_is_initializable()

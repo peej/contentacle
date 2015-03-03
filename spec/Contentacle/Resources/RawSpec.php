@@ -14,8 +14,12 @@ class RawSpec extends ObjectBehavior
         
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
 
-        $this->beConstructedWith($app, $request);
-        $this->setRepoRepository($repoRepo);
+        
+        $this->beConstructedWith(array(
+            'app' => $app,
+            'request' => $request,
+            'repoRepository' => $repoRepo
+        ));
     }
 
     function it_is_initializable()

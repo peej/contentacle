@@ -9,6 +9,8 @@ class DocumentSpec extends ObjectBehavior
 {
     function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
     {
+        $repo->prop('name')->willReturn('Extraction');
+        $repo->prop('username')->willReturn('cobb');
         $repo->documents('master', null)->willReturn(array('new-york'));
         $repo->documents('master', 'new-york')->willReturn(array('new-york/the-hotel'));
         $repo->documents('master', 'new-york/the-hotel')->willReturn(array('new-york/the-hotel/totem.txt'));
@@ -44,17 +46,26 @@ class DocumentSpec extends ObjectBehavior
             ));
         });
         $repo->deleteDocument('master', 'new-york/the-hotel/totem.txt', Argument::any())->willReturn();
+        $repo->commits('master', null, 1)->willReturn(array(array(
+            'sha' => '111111'
+        )));
+        $repo->commit('master', 111111)->willReturn(array(
+            'username' => 'cobb'
+        ));
         
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
 
         $request->getAccept()->willReturn(array());
         $request->getParams()->willReturn(array());
 
-        $this->beConstructedWith($app, $request);
-        $this->setRepoRepository($repoRepo);
-        $this->setResponse(function($code = null, $templateName = null) {
-            return new \Contentacle\Response($code);
-        });
+        $this->beConstructedWith(array(
+            'app' => $app,
+            'request' => $request,
+            'response' => function($code = null, $templateName = null) {
+                return new \Contentacle\Response($code, '', null, null);
+            },
+            'repoRepository' => $repoRepo
+        ));
     }
 
     function it_is_initializable()

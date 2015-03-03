@@ -26,11 +26,14 @@ class RepoSpec extends ObjectBehavior
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
         $repoRepo->getRepo(Argument::cetera())->willThrow(new \Git\Exception);
 
-        $this->beConstructedWith($app, $request);
-        $this->setRepoRepository($repoRepo);
-        $this->setResponse(function($code = null, $templateName = null) {
-            return new \Contentacle\Response($code);
-        });
+        $this->beConstructedWith(array(
+            'app' => $app,
+            'request' => $request,
+            'response' => function($code = null, $templateName = null) {
+                return new \Contentacle\Response($code, '', null, null);
+            },
+            'repoRepository' => $repoRepo
+        ));
     }
 
     function it_is_initializable()

@@ -11,7 +11,6 @@ class BranchSpec extends ObjectBehavior
     {
         $repo->prop('name')->willReturn('extraction');
         $repo->prop('username')->willReturn('cobb');
-        $repo->prop('title')->willReturn('Extraction 101');
         $repo->prop('description')->willReturn('Extraction instructions for Ariadne');
         
         $repo->hasBranch('master')->willReturn(true);
@@ -21,11 +20,14 @@ class BranchSpec extends ObjectBehavior
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
         $repoRepo->getRepo(Argument::cetera())->willThrow(new \Git\Exception);
 
-        $this->beConstructedWith($app, $request);
-        $this->setRepoRepository($repoRepo);
-        $this->setResponse(function($code = null, $templateName = null) {
-            return new \Contentacle\Response($code);
-        });
+        $this->beConstructedWith(array(
+            'app' => $app,
+            'request' => $request,
+            'response' => function($code = null, $templateName = null) {
+                return new \Contentacle\Response($code, '', null, null);
+            },
+            'repoRepository' => $repoRepo
+        ));
     }
 
     function it_is_initializable()

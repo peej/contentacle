@@ -7,6 +7,11 @@ use Prophecy\Argument;
 
 class ResponseSpec extends ObjectBehavior
 {
+    function let(\Contentacle\Services\Yaml $yaml, \Contentacle\Services\Template $templateEngine)
+    {
+        $this->beConstructedWith(200, 'templateName', $yaml, $templateEngine);
+    }
+
     function it_is_initializable()
     {
         $this->shouldHaveType('Contentacle\Response');

@@ -39,12 +39,18 @@ class UsersSpec extends ObjectBehavior
             'username' => '***'
         ))->willThrow($exception);
 
-        $this->beConstructedWith($app, $request);
-        $this->setUserRepository($userRepo);
-        $this->setRepoRepository($repoRepo);
-        $this->setResponse(function($code = null, $templateName = null) {
-            return new \Contentacle\Response($code);
-        });
+        $request->getParams()->willReturn();
+        $request->getAccept()->willReturn();
+
+        $this->beConstructedWith(array(
+            'app' => $app,
+            'request' => $request,
+            'response' => function($code = null, $templateName = null) {
+                return new \Contentacle\Response($code, $templateName, null, null);
+            },
+            'userRepository' => $userRepo,
+            'repoRepository' => $repoRepo
+        ));
     }
     function it_is_initializable()
     {
