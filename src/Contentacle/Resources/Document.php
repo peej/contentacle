@@ -20,10 +20,15 @@ class Document extends Resource
 
         $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$document['path'].$this->formatExtension());
         $response->addLink('cont:doc', '/rels/document');
-        $response->addLink('cont:user', '/users/'.$document['username'].$this->formatExtension());
+        $response->addLink('cont:user', '/users/'.$username.$this->formatExtension());
+        $response->addLink('cont:repo', '/users/'.$username.'/repos/'.$repoName.$this->formatExtension());
+        $response->addLink('cont:branch', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.$this->formatExtension());
         $response->addLink('cont:history', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/history/'.$document['path'].$this->formatExtension());
         $response->addLink('cont:raw', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$document['path'].$this->formatExtension());
+        $response->addLink('cont:document', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$document['path'].$this->formatExtension());
+        $response->addLink('cont:commits', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits'.$this->formatExtension());
         $response->addLink('cont:commit', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits/'.$document['commit'].$this->formatExtension());
+        $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $document['commit'])));
 
         return $response;
     }
@@ -90,8 +95,15 @@ class Document extends Resource
                 }
             }
             $response->addVar('breadcrumb', $breadcrumb);
-            $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents'.$path.$this->formatExtension());
+
+            $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/'.$url.$this->formatExtension());
             $response->addLink('cont:doc', '/rels/document');
+            $response->addLink('cont:user', '/users/'.$username.$this->formatExtension());
+            $response->addLink('cont:repo', '/users/'.$username.'/repos/'.$repoName.$this->formatExtension());
+            $response->addLink('cont:branch', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.$this->formatExtension());
+            $response->addLink('cont:document', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/'.$url.$this->formatExtension());
+            $response->addLink('cont:commits', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits'.$this->formatExtension());
+
 
             if ($this->embed) {
                 foreach ($documents as $filename) {

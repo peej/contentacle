@@ -46,6 +46,7 @@ class Commit extends Resource
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits/'.$sha.$this->formatExtension());
             $response->addLink('cont:doc', '/rels/commit');
             $response->addLink('cont:user', '/users/'.$commit['username'].$this->formatExtension());
+            $response->addLink('cont:repo', '/users/'.$commit['username'].'/repos/'.$repoName.$this->formatExtension());
 
             if (isset($commit['files'])) {
                 foreach ($commit['files'] as $filename) {
