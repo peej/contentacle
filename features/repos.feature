@@ -8,7 +8,6 @@ Feature:
         And response property "_embedded->cont:repo->1->_links->self->href" should be "/users/peej/repos/test"
         And response property "_embedded->cont:repo->1->username" should be "peej"
         And response property "_embedded->cont:repo->1->name" should be "test"
-        And response property "_embedded->cont:repo->1->title" should be "Test"
         And response property "_embedded->cont:repo->1->description" should be "No description"
 
     Scenario: Have the correct HTTP methods
@@ -37,7 +36,6 @@ Feature:
         And response property "_links->self->href" should be "/users/peej/repos/test"
         And response property "_links->cont:doc->href" should be "/rels/repo"
         And response property "username" should be "peej"
-        And response property "title" should be "Test"
         And response property "description" should be "No description"
         And response property "_embedded->cont:branch->0->name" should be "branch"
         And response property "_embedded->cont:branch->0->_links->self->href" should be "/users/peej/repos/test/branches/branch"
@@ -55,7 +53,7 @@ Feature:
             """
             [{
                 "op": "replace",
-                "path": "title",
+                "path": "description",
                 "value": "Not a test"
             }]
             """
@@ -73,7 +71,6 @@ Feature:
             """
             {
                 "name": "another",
-                "title": "Test repo",
                 "description": "This is a test repo"
             }
             """
@@ -83,7 +80,6 @@ Feature:
         Then the response status code should be 200
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "name" should be "another"
-        And response property "title" should be "Test repo"
         And response property "description" should be "This is a test repo"
 
     Scenario: Try to create an invalid repo
@@ -106,7 +102,6 @@ Feature:
             """
             {
                 "name": "another",
-                "title": "Test repo",
                 "description": "This is a test repo"
             }
             """
@@ -119,20 +114,20 @@ Feature:
             """
             [{
                 "op": "replace",
-                "path": "title",
+                "path": "description",
                 "value": "Not a test"
             }]
             """
         Then the response status code should be 200
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "username" should be "peej"
-        And response property "title" should be "Not a test"
+        And response property "description" should be "Not a test"
         When I send a GET request to "/users/peej/repos/test"
         Then the response status code should be 200
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "test"
-        And response property "title" should be "Not a test"
+        And response property "description" should be "Not a test"
 
     Scenario: Rename a repo
         Given I add "Content-Type" header equal to "application/json-patch+json"
@@ -186,7 +181,6 @@ Feature:
             {
                 "username": "peej",
                 "name": "test",
-                "title": "A test repo",
                 "description": "This is an updated description"
             }
             """
@@ -194,7 +188,6 @@ Feature:
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "test"
-        And response property "title" should be "A test repo"
         And response property "description" should be "This is an updated description"
 
     Scenario: Delete a repo
@@ -217,7 +210,6 @@ Feature:
         Then the response status code should be 200
         And response property "username" should be "peej"
         And response property "name" should be "test"
-        And response property "title" should be "Test"
         And response property "description" should be "No description"
 
     Scenario: The cont:repos link relation has documentation
@@ -229,7 +221,6 @@ Feature:
         And response property "actions->get->response->code" should contain "200 OK"
         And response property "actions->get->response->field->username" should exist
         And response property "actions->get->response->field->name" should exist
-        And response property "actions->get->response->field->title" should exist
         And response property "actions->get->response->field->description" should exist
         And response property "actions->get->response->links->self" should exist
         And response property "actions->get->response->links->cont:doc" should exist
@@ -242,7 +233,6 @@ Feature:
         And response property "actions->createRepo->request->accepts" should contain "application/yaml"
         And response property "actions->createRepo->request->accepts" should contain "application/json"
         And response property "actions->createRepo->request->field->name" should exist
-        And response property "actions->createRepo->request->field->title" should exist
         And response property "actions->createRepo->request->field->description" should exist
         And response property "actions->createRepo->request->secure" should exist
         And response property "actions->createRepo->response->code" should contain "201 Created"
@@ -261,7 +251,6 @@ Feature:
         And response property "actions->get->response->code" should contain "200 OK"
         And response property "actions->get->response->field->username" should exist
         And response property "actions->get->response->field->name" should exist
-        And response property "actions->get->response->field->title" should exist
         And response property "actions->get->response->field->description" should exist
         And response property "actions->get->response->links->self" should exist
         And response property "actions->get->response->links->cont:doc" should exist
@@ -277,7 +266,6 @@ Feature:
         And response property "actions->patchRepo->request->secure" should exist
         And response property "actions->patchRepo->request->field->username" should exist
         And response property "actions->patchRepo->request->field->name" should exist
-        And response property "actions->patchRepo->request->field->title" should exist
         And response property "actions->patchRepo->request->field->description" should exist
         And response property "actions->patchRepo->request->accepts" should contain "application/json-patch+yaml"
         And response property "actions->patchRepo->request->accepts" should contain "application/json-patch+json"
@@ -293,7 +281,6 @@ Feature:
         And response property "actions->updateRepo->request->secure" should exist
         And response property "actions->updateRepo->request->field->username" should exist
         And response property "actions->updateRepo->request->field->name" should exist
-        And response property "actions->updateRepo->request->field->title" should exist
         And response property "actions->updateRepo->request->field->description" should exist
         And response property "actions->updateRepo->request->accepts" should contain "application/hal+yaml"
         And response property "actions->updateRepo->request->accepts" should contain "application/hal+json"

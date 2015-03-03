@@ -9,7 +9,7 @@ Feature:
         And response property "_links->self->href" should be "/users/peej/repos/test/branches/master/commits"
         And response property "_links->cont:doc->href" should be "/rels/commits"
         And response property "_embedded->cont:commit->0->sha" should be sha 4
-        And response property "_embedded->cont:commit->1->sha" should be sha 3
+        And response property "_embedded->cont:commit->1->sha" should be sha 2
         And response property "_embedded->cont:commit->2->sha" should be sha 1
 
     Scenario: View a commit
@@ -22,8 +22,8 @@ Feature:
         And response property "email" should be "paul@peej.co.uk"
         And response property "username" should be "peej"
         And response property "author" should be "Paul James"
-        And response property "files" should contain "contentacle.yaml"
-        And response property "_links->cont:document->href" should be "/users/peej/repos/test/branches/master/documents/contentacle.yaml"
+        And response property "files" should contain "adir/emptyFile.txt"
+        And response property "_links->cont:document->0->href" should be "/users/peej/repos/test/branches/master/documents/adir/emptyFile.txt"
 
     Scenario: Have the correct HTTP methods
         Given I send an OPTIONS request to "/users/peej/repos/test/branches/master/commits"
@@ -32,7 +32,7 @@ Feature:
         Then the "Allow" response header should be "OPTIONS,GET"
 
     Scenario: Commit should link to all documents it contains changes for
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 3
+        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 1
         And response property "_links->cont:document->0->href" should be "/users/peej/repos/test/branches/master/documents/adir/emptyFile.txt"
         And response property "_links->cont:document->1->href" should be "/users/peej/repos/test/branches/master/documents/afile.txt"
         And response property "_links->cont:document->2->href" should be "/users/peej/repos/test/branches/master/documents/anotherFile.txt"
@@ -44,24 +44,24 @@ Feature:
     Scenario: Revert a single commit
         Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         And I add "Content-Type" header equal to ""
-        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 3
+        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 2
         Then the response status code should be 201
         And I remember the commit sha from the location header
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
+        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 5
         Then the response status code should be 200
         And the header "Content-Type" should be equal to "application/hal+yaml"
-        And response property "message" should be "Undo change {sha}" with sha 3
+        And response property "message" should be "Undo change {sha}" with sha 2
 
     Scenario: Revert a single commit with a custom commit message
         Given I add "Content-Type" header equal to "text/plain"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
-        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 3 and body:
+        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 2 and body:
             """
             Custom commit message
             """
         Then the response status code should be 201
         And I remember the commit sha from the location header
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
+        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 5
         Then the response status code should be 200
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "message" should be "Custom commit message"
@@ -69,7 +69,7 @@ Feature:
     Scenario: Revert a single commit with a custom commit message in JSON
         Given I add "Content-Type" header equal to "application/json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
-        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 3 and body:
+        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 2 and body:
             """
             {
                 'message': 'Custom commit message'
@@ -77,7 +77,7 @@ Feature:
             """
         Then the response status code should be 201
         And I remember the commit sha from the location header
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
+        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 5
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "message" should be "Custom commit message"
 
@@ -86,7 +86,7 @@ Feature:
             | file               | content         |
             | afile.txt          | Changed content |
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
-        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 3
+        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 1
         Then the response status code should be 400
 
     Scenario: Navigate to a commit
@@ -96,7 +96,7 @@ Feature:
         And I follow the 2nd "cont:repo" relation
         And I follow the 2nd "cont:branch" relation
         And I follow the "cont:commits" relation
-        And I follow the 1st "cont:commit" relation
+        And I follow the 2nd "cont:commit" relation
         Then the response status code should be 200
         And response property "message" should be "2nd commit"
 

@@ -8,23 +8,18 @@ use Prophecy\Argument;
 class RepoSpec extends ObjectBehavior
 {
     function let(
-        \Contentacle\Services\Yaml $yaml,
         \Contentacle\Services\UserRepository $userRepo,
         \Contentacle\Models\User $user,
         \Git\Repo $repo,
         \Git\Tree $rootTree,
         \Git\Tree $subTree,
         \Git\Blob $totem,
-        \Git\Commit $commit
+        \Git\Commit $commit,
+        \Contentacle\Services\FileAccess $fileAccess
     )
     {
-        $repo->file('contentacle.yaml')->willReturn('Contentacle YAML');
+        $fileAccess->read(Argument::any())->willReturn('Extraction instructions for Ariadne');
         
-        $yaml->decode(Argument::any())->willReturn(array(
-            'title' => 'Extraction 101',
-            'description' => 'Extraction instructions for Ariadne'
-        ));
-
         $repo->setUser(Argument::any(), Argument::any())->willReturn(true);
         $repo->getBranches()->willReturn(array('master', 'arthur'));
         $repo->setBranch('master')->willReturn();
@@ -75,7 +70,7 @@ class RepoSpec extends ObjectBehavior
         $gitProvider = function ($username, $repoName) use ($repo) {
             return $repo->getWrappedObject();
         };
-        $this->beConstructedWith($data, $gitProvider, '', $yaml, $userRepo);
+        $this->beConstructedWith($data, $gitProvider, '', $userRepo, $fileAccess);
     }
 
     function it_is_initializable()
@@ -87,7 +82,6 @@ class RepoSpec extends ObjectBehavior
     {
         $this->username->shouldBe('cobb');
         $this->name->shouldBe('extraction');
-        $this->title->shouldBe('Extraction 101');
         $this->description->shouldBe('Extraction instructions for Ariadne');
     }
 

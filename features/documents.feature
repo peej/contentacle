@@ -18,9 +18,13 @@ Feature:
         Then the response status code should be 200
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "filename" should be "adir"
+        And response property "dir" should be "true"
+        And response property "path" should be "adir"
         And response property "_links->self->href" should be "/users/peej/repos/test/branches/master/documents/adir"
-        And response property "_embedded->cont:document->0->filename" should be "emptyFile.txt"
-        And response property "_embedded->cont:document->0->_links->self->href" should be "/users/peej/repos/test/branches/master/documents/adir/emptyFile.txt"
+        And response property "_embedded->cont:document->0->filename" should be "and"
+        And response property "_embedded->cont:document->0->_links->self->href" should be "/users/peej/repos/test/branches/master/documents/adir/and"
+        And response property "_embedded->cont:document->1->filename" should be "emptyFile.txt"
+        And response property "_embedded->cont:document->1->_links->self->href" should be "/users/peej/repos/test/branches/master/documents/adir/emptyFile.txt"
 
     Scenario: Have the correct HTTP methods
         Given I send an OPTIONS request to "/users/peej/repos/test/branches/master/documents"
@@ -34,6 +38,8 @@ Feature:
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "_links->self->href" should be "/users/peej/repos/test/branches/master/documents/afile.txt"
         And response property "filename" should be "afile.txt"
+        And response property "dir" should be "false"
+        And response property "path" should be "afile.txt"
         And response property "content" should be "Some content"
         And response property "_links->cont:raw->href" should be "/users/peej/repos/test/branches/master/raw/afile.txt"
         And response property "_links->cont:history->href" should be "/users/peej/repos/test/branches/master/history/afile.txt"
@@ -47,11 +53,11 @@ Feature:
         Given I send a GET request on "/users/peej/repos/test/branches/master/history/afile.txt"
         Then the response status code should be 200
         And the header "Content-Type" should be equal to "application/hal+yaml"
-        And response property "_embedded->cont:commit->0->_links->self->href" should be "/users/peej/repos/test/branches/master/commits/{sha}" with sha 3
+        And response property "_embedded->cont:commit->0->_links->self->href" should be "/users/peej/repos/test/branches/master/commits/{sha}" with sha 1
         And response property "_embedded->cont:commit->0->message" should be "1st commit"
         And response property "_embedded->cont:commit->0->username" should be "peej"
         And response property "_embedded->cont:commit->0->author" should be "Paul James"
-        And response property "_embedded->cont:commit->0->sha" should be sha 3
+        And response property "_embedded->cont:commit->0->sha" should be sha 1
 
     Scenario: Create a new document from raw content
         Given I add "Content-Type" header equal to "text/plain"
@@ -67,7 +73,8 @@ Feature:
         Then the response status code should be 200
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "filename" should be "new.txt"
-        And response property "type" should be "file"
+        And response property "dir" should be "false"
+        And response property "path" should be "new.txt"
         And response property "content" should be "New document"
         And response property "username" should be "peej"
         When I send a GET request to "/users/peej/repos/test/branches/master/commits"
@@ -91,7 +98,8 @@ Feature:
         Then the response status code should be 200
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "filename" should be "new.txt"
-        And response property "type" should be "file"
+        And response property "dir" should be "false"
+        And response property "path" should be "new.txt"
         And response property "content" should be "New document"
         And response property "username" should be "peej"
         When I send a GET request to "/users/peej/repos/test/branches/master/commits"
@@ -108,7 +116,8 @@ Feature:
         Then the response status code should be 200
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "filename" should be "afile.txt"
-        And response property "type" should be "file"
+        And response property "dir" should be "false"
+        And response property "path" should be "afile.txt"
         And response property "content" should be "Updated document"
         And response property "username" should be "peej"
         When I send a GET request to "/users/peej/repos/test/branches/master/commits"
@@ -128,7 +137,8 @@ Feature:
         Then the response status code should be 200
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "filename" should be "afile.txt"
-        And response property "type" should be "file"
+        And response property "dir" should be "false"
+        And response property "path" should be "afile.txt"
         And response property "content" should be "Updated document"
         And response property "username" should be "peej"
         When I send a GET request to "/users/peej/repos/test/branches/master/commits"

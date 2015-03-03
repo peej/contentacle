@@ -29,7 +29,6 @@ class Repos extends Resource
      * @provides application/hal+json
      * @provides text/html
      * @field name The short name of the repo.
-     * @field title The display name of the repo.
      * @field description A description of the repo.
      * @field username The owner of the repo.
      * @links self Link to itself.
@@ -65,7 +64,6 @@ class Repos extends Resource
      *
      * @method post
      * @field name The short name of the repo.
-     * @field title The display name of the repo.
      * @field description A description of the repo.
      * @accepts application/hal+yaml
      * @accepts application/hal+json

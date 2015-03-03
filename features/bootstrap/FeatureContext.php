@@ -306,11 +306,10 @@ TABLE
     public function iHaveARepo(TableNode $repoData)
     {
         $data = $repoData->getHash()[0];
-
         $repo = $this->getRepo($data['username'], $data['name']);
+        $repoPath = $this->repoDir.'/'.$data['username'].'/'.$data['name'].'.git/description';
 
-        $yaml = new Yaml;
-        $this->shas[] = $repo->add('contentacle.yaml', $yaml->encode($data), 'Initial commit');
+        file_put_contents($repoPath, $data['description']."\n");
     }
 
     /**

@@ -41,6 +41,9 @@ $container['git'] = function ($c) {
         return new Git\Repo($repoDir);
     };
 };
+$container['file'] = function () {
+    return new Contentacle\Services\FileAccess;
+};
 $container['user_repository'] = function ($c) {
     return new Contentacle\Services\UserRepository($c['repo_dir'], $c['user']);
 };
@@ -54,7 +57,7 @@ $container['user'] = function ($c) {
 };
 $container['repo'] = function ($c) {
     return function ($data) use ($c) {
-        return new Contentacle\Models\Repo($data, $c['git'], $c['repo_dir'], $c['yaml'], $c['user_repository']);
+        return new Contentacle\Models\Repo($data, $c['git'], $c['repo_dir'], $c['user_repository'], $c['file']);
     };
 };
 $container['resource_factory'] = function ($c) {

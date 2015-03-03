@@ -4,9 +4,9 @@ namespace Contentacle\Models;
 
 class Repo extends Model
 {
-    private $git, $gitProvider, $repoDir, $yaml, $userRepo;
+    private $git, $gitProvider, $repoDir, $userRepo, $fileAccess;
 
-    function __construct($data, $gitProvider, $repoDir, $yaml, $userRepo)
+    function __construct($data, $gitProvider, $repoDir, $userRepo, $fileAccess)
     {
         if (!isset($data['username'])) {
             throw new \Contentacle\Exceptions\RepoException("No username provided when creating repo");
@@ -18,26 +18,21 @@ class Repo extends Model
         $this->git = $gitProvider($data['username'], $data['name'].'.git');
         $this->gitProvider = $gitProvider;
         $this->repoDir = $repoDir;
-        $this->yaml = $yaml;
         $this->userRepo = $userRepo;
+        $this->fileAccess = $fileAccess;
 
         $user = $userRepo->getUser($data['username']);
         $this->git->setUser($user->name, $user->email);
 
-        try {
-            $repoMetadata = $yaml->decode($this->git->file('contentacle.yaml'));
-        } catch (\Git\Exception $e) {
-            $repoMetadata = array();
-        }
-
-        $data = array_merge($data, $repoMetadata);
-
         parent::__construct(array(
             'username' => '/^[a-z]{2,40}$/',
-            'name' => '/^[a-z-]{2,40}$/',
-            'title' => '/^[A-Za-z0-9 ]{0,100}$/',
+            'name' => '/^[a-z0-9-]{2,40}$/',
             'description' => true
         ), $data);
+
+        if (!isset($data['description'])) {
+            $this->readMetadata();
+        }
     }
 
     public function setProp($name, $value)
@@ -121,7 +116,7 @@ class Repo extends Model
                 return array(
                     'filename' => basename($document->filename),
                     'path' => $document->filename,
-                    'type' => 'file',
+                    'dir' => false,
                     'sha' => $document->sha,
                     'username' => $this->userRepo->getUsernameFromEmail($document->email),
                     'email' => $document->email,
@@ -209,27 +204,29 @@ class Repo extends Model
     }
 
     /**
-     * Write the repos metadata into the contentacle.yaml file in the root of the repo and commit it
-     * @param str $branch
+     * Get the path of the repos .git/description file
+     * @return str
+     */
+    private function metadataPath()
+    {
+        return $this->repoDir.'/'.$this->prop('username').'/'.$this->prop('name').'.git/description';
+    }
+
+    /**
+     * Read the repos metadata from the .git/description file
+     */
+    private function readMetadata()
+    {
+        $this->setProp('description', trim($this->fileAccess->read($this->metadataPath())));
+    }
+
+    /**
+     * Write the repos metadata into the .git/description file
      * @return bool
      */
-    public function writeMetadata($branch = 'master')
+    public function writeMetadata()
     {
-        try {
-            return $this->updateDocument(
-                $branch,
-                'contentacle.yaml',
-                $this->yaml->encode($this->props()),
-                'Update repo metadata'
-            );
-        } catch (\Contentacle\Exceptions\RepoException $e) {
-            return $this->createDocument(
-                $branch,
-                'contentacle.yaml',
-                $this->yaml->encode($this->props()),
-                'Created repo metadata'
-            );
-        }
+        return $this->fileAccess->write($this->metadataPath(), $this->prop('description')."\n");
     }
 
     /**

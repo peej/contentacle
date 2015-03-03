@@ -28,7 +28,6 @@ class RepoRepositorySpec extends ObjectBehavior
 
         $extraction->prop('name')->willReturn('extraction');
         $extraction->prop('username')->willReturn('cobb');
-        $extraction->prop('title')->willReturn('Extraction 101');
         $extraction->prop('description')->willReturn('Extraction information for Ariadne');
 
         $this->beConstructedWith(
@@ -65,7 +64,6 @@ class RepoRepositorySpec extends ObjectBehavior
         $this->getRepos('cobb')->shouldHaveCount(1);
         $repo = $this->getRepos('cobb')['extraction'];
         $repo->name->shouldBe('extraction');
-        $repo->title->shouldBe('Extraction 101');
         $repo->username->shouldBe('cobb');
         $repo->description->shouldBe('Extraction information for Ariadne');
     }
@@ -74,7 +72,6 @@ class RepoRepositorySpec extends ObjectBehavior
     {
         $repo = $this->getRepo('cobb', 'extraction');
         $repo->name->shouldBe('extraction');
-        $repo->title->shouldBe('Extraction 101');
         $repo->username->shouldBe('cobb');
         $repo->description->shouldBe('Extraction information for Ariadne');
     }
@@ -86,19 +83,16 @@ class RepoRepositorySpec extends ObjectBehavior
         $user->prop('email')->willReturn('dominick@cobb.com');
 
         $repo = $this->createRepo($user, array(
-            'name' => 'limbo',
-            'title' => 'Limbo'
+            'name' => 'limbo'
         ));
         
         $repo->name->shouldBe('limbo');
-        $repo->title->shouldBe('Limbo');
         $repo->username->shouldBe('cobb');
-        $repo->description->shouldBe(null);
+        $repo->description->shouldBe('No description');
 
         $repo = $this->getRepo('cobb', 'limbo');
         $repo->name->shouldBe('limbo');
-        $repo->title->shouldBe('Limbo');
         $repo->username->shouldBe('cobb');
-        $repo->description->shouldBe(null);
+        $repo->description->shouldBe('No description');
     }
 }

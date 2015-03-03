@@ -37,7 +37,6 @@ class Repo extends Resource
      * @provides application/hal+json
      * @field username The username of the repo owner.
      * @field name The short name of the repo.
-     * @field title The display name of the repo.
      * @field description A description of the repo.
      * @links self Link to itself.
      * @links cont:doc Link to this documentation.
@@ -77,7 +76,6 @@ class Repo extends Resource
      * @method patch
      * @field username The username of the repo owner.
      * @field name The short name of the repo.
-     * @field title The display name of the repo.
      * @field description A description of the repo.
      * @accepts application/json-patch+yaml
      * @accepts application/json-patch+json
@@ -122,7 +120,6 @@ class Repo extends Resource
      * @method put
      * @field username The username of the repo owner.
      * @field name The short name of the repo.
-     * @field title The display name of the repo.
      * @field description A description of the repo.
      * @accepts application/hal+json
      * @accepts application/hal+yaml
