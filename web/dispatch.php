@@ -65,7 +65,6 @@ $container['resource_factory'] = function ($c) {
         $deps = array(
             'app' => $c['app'],
             'request' => $c['request'],
-            'resourceFactory' => $c['resource_factory'],
             'response' => $c['response'],
             'oauth' => $c['oauth'],
             'userRepository' => $c['user_repository'],

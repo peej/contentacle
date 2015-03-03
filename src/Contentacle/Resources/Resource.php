@@ -4,10 +4,13 @@ namespace Contentacle\Resources;
 
 class Resource extends \Tonic\Resource
 {
+    private $deps;
     private $extension = '';
 
     function __construct($deps)
     {
+        $this->deps = $deps;
+
         parent::__construct($deps['app'], $deps['request']);
         $this->params['embed'] = true;
 
@@ -69,7 +72,7 @@ class Resource extends \Tonic\Resource
 
     protected function getChildResource($resourceName, $parameters, $embedChildren = false)
     {
-        $resource = $this->resourceFactory($resourceName);
+        $resource = new $resourceName($this->deps);
         $resource->embed = $embedChildren;
         $response = call_user_func_array(array($resource, 'get'), $parameters);
         return $response->data;
