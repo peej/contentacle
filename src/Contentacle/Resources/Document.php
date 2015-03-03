@@ -31,6 +31,7 @@ class Document extends Resource
      * @response 200 OK
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @provides text/html
      * @field filename The filename of the document.
      * @field path The path of the document.
      * @field type Directory (dir) or file.

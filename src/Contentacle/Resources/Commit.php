@@ -23,6 +23,7 @@ class Commit extends Resource
      * @field diff The changes to documents within the commit
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @provides text/html
      * @links self Link to itself
      * @links cont:doc Link to this documentation.
      * @links cont:user Link to the creator of this commit.

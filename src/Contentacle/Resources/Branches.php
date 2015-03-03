@@ -14,6 +14,7 @@ class Branches extends Resource
      * @response 200 OK
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @provides text/html
      * @field name Name of the branch
      * @links self Link to itself
      * @links cont:doc Link to this documentation.

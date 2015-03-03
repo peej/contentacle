@@ -16,6 +16,7 @@ class Commits extends Resource {
      * @response 200 OK
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @provides text/html
      * @links self Link to itself
      * @links cont:doc Link to this documentation.
      * @embeds cont:commit List of commits
