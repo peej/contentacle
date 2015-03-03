@@ -63,18 +63,24 @@ class Document extends Resource
 
         $repo = $this->repoRepository->getRepo($username, $repoName);
         try {
-            $documents = $repo->documents($branchName, $path);
-
             $response = $this->response(200, 'directory');
+
             $response->addData(array(
                 'filename' => basename($path),
+                'dir' => true,
                 'path' => $path,
-                'type' => 'dir'
+                'branch' => $branchName,
+                'repo' => $repo->name,
+                'username' => $repo->username
             ));
             $response->addVar('nav', true);
 
             if ($path) {
-                $path = '/'.$path;
+                $url = 'documents/'.$path;
+            } else {
+                $url = 'documents'.$path;
+            }
+
             }
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents'.$path.$this->formatExtension());
             $response->addLink('cont:doc', '/rels/document');

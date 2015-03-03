@@ -77,6 +77,11 @@ TABLE
         ));
         $this->iSwitchToBranch("master", "peej", "test");
         $this->iResetTheIndex("peej", "test");
+        $this->iHaveACommitWithMessage("peej", "test", "4th commit message is going to be a longer one for testing longer commit messages.", new TableNode(<<<TABLE
+            | file                      | content                 |
+            | adir/and/another/file.txt | Deeply nested directory |
+TABLE
+        ));
     }
 
     /**
