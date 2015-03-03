@@ -6,6 +6,8 @@ class UserRepository
 {
     private $repoDir, $userProvider;
 
+    private $users = array();
+
     function __construct($repoDir, $userProvider)
     {
         $this->repoDir = $repoDir;
@@ -31,8 +33,12 @@ class UserRepository
 
     function getUser($username)
     {
-        $data = $this->readProfile($username);
-        return $this->userProvider->__invoke($data);
+        if (!isset($this->users[$username])) {
+            $data = $this->readProfile($username);
+            $this->users[$username] = $this->userProvider->__invoke($data);
+        }
+
+        return $this->users[$username];
     }
 
     /**

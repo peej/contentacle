@@ -6,6 +6,8 @@ class RepoRepository
 {
     private $repoDir, $repoProvider;
 
+    private $repos = array();
+
     function __construct($repoDir, $repoProvider)
     {
         $this->repoDir = $repoDir;
@@ -31,24 +33,32 @@ class RepoRepository
 
     public function getRepo($username, $repoName)
     {
-        $normalRepoDir = $this->repoDir.'/'.$username.'/'.$repoName.'.git';
-        $bareRepoDir = $this->repoDir.'/'.$username.'/'.$repoName.'/.git';
-        if (!is_dir($normalRepoDir) && !is_dir($bareRepoDir)) {
-            throw new \Contentacle\Exceptions\RepoException('Repo "'.$username.'/'.$repoName.'" does not exist');
+        if (!isset($this->repos[$username][$repoName])) {
+            $normalRepoDir = $this->repoDir.'/'.$username.'/'.$repoName.'.git';
+            $bareRepoDir = $this->repoDir.'/'.$username.'/'.$repoName.'/.git';
+            if (!is_dir($normalRepoDir) && !is_dir($bareRepoDir)) {
+                throw new \Contentacle\Exceptions\RepoException('Repo "'.$username.'/'.$repoName.'" does not exist');
+            }
+            $data = array(
+                'username' => $username,
+                'name' => $repoName
+            );
+            $this->repos[$username][$repoName] = $this->repoProvider->__invoke($data);
         }
-        $data = array(
-            'username' => $username,
-            'name' => $repoName
-        );
-        return $this->repoProvider->__invoke($data);
+
+        return $this->repos[$username][$repoName];
     }
 
     public function createRepo($user, $data)
     {
         $data['username'] = $user->username;
 
+        if (!isset($data['description']) || $data['description'] == '') {
+            $data['description'] = 'No description';
+        }
+
         $repo = $this->repoProvider->__invoke($data);
-        $repo->writeMetadata('master');
+        $repo->writeMetadata();
 
         return $repo;
     }
