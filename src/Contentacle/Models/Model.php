@@ -19,7 +19,7 @@ class Model
             }
         }
         if ($errors) {
-            $e = new \Contentacle\Exceptions\ValidationException;
+            $e = new \Contentacle\Exceptions\ValidationException(join(' ', $errors));
             $e->errors = $errors;
             throw $e;
         }
