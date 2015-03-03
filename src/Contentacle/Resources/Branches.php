@@ -45,20 +45,6 @@ class Branches extends Resource
     }
 
     /**
-     * Redirect HTML client to master branch
-     *
-     * @method get
-     * @response 302 Found
-     * @provides text/html
-    */
-    function redirectToMasterBranch($username, $repoName)
-    {
-        return new \Tonic\Response(302, null, array(
-            'Location' => '/users/'.$username.'/repos/'.$repoName.'/branches/master'
-        ));
-    }
-
-    /**
      * Create a branch.
      *
      * @method post

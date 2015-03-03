@@ -173,9 +173,6 @@ Feature:
         And response property "actions->get->response->embeds->cont:branch" should exist
         And response property "actions->get->response->provides" should contain "application/hal+yaml"
         And response property "actions->get->response->provides" should contain "application/hal+json"
-        And response property "actions->redirectToMasterBranch->description" should exist
-        And response property "actions->redirectToMasterBranch->request->method" should contain "get"
-        And response property "actions->redirectToMasterBranch->response->code" should contain "302 Found"
         And response property "actions->createBranch->description" should exist
         And response property "actions->createBranch->request->method" should contain "post"
         And response property "actions->createBranch->request->secure" should exist

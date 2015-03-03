@@ -64,6 +64,20 @@ class Branch extends Resource
     }
 
     /**
+     * Redirect HTML client to documents view
+     *
+     * @method get
+     * @response 302 Found
+     * @provides text/html
+    */
+    function redirectToDocuments($username, $repoName)
+    {
+        return new \Tonic\Response(302, null, array(
+            'Location' => '/users/'.$username.'/repos/'.$repoName.'/branches/master/documents'
+        ));
+    }
+
+    /**
      * Rename a branch.
      *
      * @method patch
