@@ -1,0 +1,44 @@
+<div>
+    <h1>
+        <a href="{{_links.cont:user.href}}">{{username}}</a> /
+        <a href="{{_links.cont:repo.href}}">{{repo}}</a> /
+        <a href="{{_links.cont:branch.href}}">{{branch}}</a>
+    </h1>
+
+    <div class="path">
+        <a href="{{_links.cont:branch.href}}">{{branch}}</a> /
+        {{#if var.breadcrumb}}
+            {{#each var.breadcrumb}}
+                <a href="{{@key}}">{{this}}</a> /
+            {{/each}}
+        {{/if}}
+        <a href="new.html" class="icon-plus" title="Create a new page"></a>
+    </div>
+
+    {{#each _embedded.cont:commit}}
+        <h2 class="commit-metadata">{{message}}</h2>
+        <div class="commit-metadata">
+            <a href="{{_links.cont:user.href}}">{{username}}</a> wrote <a href="{{_links.self.href}}">{{since date}}</a>
+        </div>
+    {{/each}}
+
+    {{#if _embedded.cont:document}}
+        <table>
+            {{#each _embedded.cont:document}}
+                <tr>
+                    {{#if dir}}
+                        <td><span class="icon-folder"></span></td>
+                        <td><a href="{{_links.self.href}}">{{filename}}</a></td>
+                        <td></td>
+                    {{else}}
+                        <td><span class="icon-page"></span></td>
+                        <td><a href="{{_links.self.href}}">{{filename}}</a></td>
+                        <td><a href="{{_links.cont:user.href}}">{{username}}</a> wrote <a href="{{_links.cont:commit.href}}">{{since date}}</a></td>
+                    {{/if}}
+                </tr>
+            {{/each}}
+        </table>
+    {{else}}
+        <p>There are no documents yet.</p>
+    {{/if}}
+</div>

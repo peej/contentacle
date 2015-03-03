@@ -1,0 +1,42 @@
+<div>
+    <h1>
+        <a href="{{_links.cont:user.href}}">{{username}}</a> /
+        <a href="{{_links.cont:repo.href}}">{{repo}}</a> /
+        {{name}}
+    </h1>
+
+    <h2 class="commit-metadata">{{message}}</h2>
+    <div class="commit-metadata">
+        <a href="{{_links.cont:user.href}}">{{username}}</a> wrote {{since date}}
+    </div>
+    {{#if diff}}
+        <ul>
+            {{#each diff}}
+                <li>
+                    <h3><a href="">{{@key}}</a></h3>
+                    <table>
+                        {{#each this}}
+                            <tr>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>{{this}}</td>
+                            </tr>
+                        {{/each}}
+                        <tr class="add">
+                            <td></td>
+                            <td>2</td>
+                            <td>added line</td>
+                        </tr>
+                        <tr class="remove">
+                            <td>2</td>
+                            <td></td>
+                            <td>removed line</td>
+                        </tr>
+                    </table>
+                </li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <p>This commit made no changes.</p>
+    {{/if}}
+</div>
