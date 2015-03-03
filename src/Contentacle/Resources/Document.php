@@ -81,7 +81,15 @@ class Document extends Resource
                 $url = 'documents'.$path;
             }
 
+            $breadcrumb = array();
+            $breadcrumbUrl = '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents';
+            foreach (explode('/', $path) as $part) {
+                if ($part) {
+                    $breadcrumbUrl .= '/'.$part;
+                    $breadcrumb[$breadcrumbUrl] = $part;
+                }
             }
+            $response->addVar('breadcrumb', $breadcrumb);
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents'.$path.$this->formatExtension());
             $response->addLink('cont:doc', '/rels/document');
 
