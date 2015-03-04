@@ -16,8 +16,8 @@
             {{#if repo}}
                 <h2>{{repo}}</h2>
                 <ul>
-                    {{#if _links.cont:document}}
-                        <li><span class="icon-pages"></span><a href="{{_links.cont:document.href}}">Pages</a></li>
+                    {{#if _links.cont:documents}}
+                        <li><span class="icon-pages"></span><a href="{{_links.cont:documents.href}}">Pages</a></li>
                     {{/if}}
                     {{#if _links.cont:commits}}
                         <li><span class="icon-commits"></span><a href="{{_links.cont:commits.href}}">Revisions</a></li>
