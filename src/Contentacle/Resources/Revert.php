@@ -38,7 +38,7 @@ class Revert extends Resource {
 
         if ($revertSha = $repo->revert($commit['sha'], $commitMessage)) {
             $response = new \Tonic\Response(201);
-            $response->location = '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits/'.$revertSha;
+            $response->location = $this->buildUrl($username, $repoName, $branchName, 'commits', $revertSha);
             return $response;
         } else {
             return new \Tonic\Response(400);

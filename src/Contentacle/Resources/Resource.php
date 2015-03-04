@@ -78,6 +78,34 @@ class Resource extends \Tonic\Resource
         return $response->data;
     }
 
+    protected function buildUrl($username, $repoName = null, $branchName = null)
+    {
+        $url = '/users/'.$username;
+
+        if (is_string($repoName)) {
+            $url .= '/repos/'.$repoName;
+        } elseif ($repoName) {
+            $url .= '/repos';
+        }
+
+        if (is_string($branchName)) {
+            $url .= '/branches/'.$branchName;
+        } elseif ($branchName) {
+            $url .= '/branches';
+        }
+
+        if (func_num_args() > 3) {
+            for ($argNum = 3; $argNum < func_num_args(); $argNum++) {
+                $arg = func_get_arg($argNum);
+                if ($arg) {
+                    $url .= '/'.$arg;
+                }
+            }
+        }
+
+        return $url.$this->formatExtension();
+    }
+
     protected function formatExtension($prefix = '.')
     {
         if (isset($this->request->accept[0])) {

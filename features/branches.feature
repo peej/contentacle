@@ -20,7 +20,7 @@ Feature:
         And response property "repo" should be "test"
         And response property "username" should be "peej"
         And response property "_links->cont:doc->href" should be "/rels/branch"
-        And response property "_links->cont:document->href" should be "/users/peej/repos/test/branches/master/documents"
+        And response property "_links->cont:documents->href" should be "/users/peej/repos/test/branches/master/documents"
         And response property "_links->cont:commits->href" should be "/users/peej/repos/test/branches/master/commits"
         And response property "_links->cont:merges->href" should be "/users/peej/repos/test/branches/master/merges"
 

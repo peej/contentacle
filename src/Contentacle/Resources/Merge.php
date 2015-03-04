@@ -32,7 +32,7 @@ class Merge extends Resource
         
         $response = $this->response();
 
-        $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branch1.'/merges/'.$branch2.$this->formatExtension());
+        $response->addLink('self', $this->buildUrl($username, $repoName, $branch1, 'merges', $branch2));
         $response->addLink('cont:doc', '/rels/merge');
 
         try {

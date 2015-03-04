@@ -15,9 +15,9 @@ class User extends Resource
 
         $response->addData($user);
         $response->addVar('title', $user->username.' ('.$user->name.')');
-        $response->addLink('self', '/users/'.$user->username.$this->formatExtension());
+        $response->addLink('self', $this->buildUrl($user->username));
         $response->addLink('cont:doc', '/rels/user');
-        $response->addLink('cont:repos', '/users/'.$user->username.'/repos'.$this->formatExtension());
+        $response->addLink('cont:repos', $this->buildUrl($user->username, false, false, 'repos'));
 
         if ($this->embed) {
             foreach ($this->repoRepository->getRepos($user->username) as $repo) {

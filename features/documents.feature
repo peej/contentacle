@@ -160,7 +160,7 @@ Feature:
         And I follow the 2nd "cont:user" relation
         And I follow the 2nd "cont:repo" relation
         And I follow the 2nd "cont:branch" relation
-        And I follow the 1st "cont:document" relation
+        And I follow the 1st "cont:documents" relation
         And I follow the 2nd "cont:document" relation
         Then the response status code should be 200
         And response property "filename" should be "afile.txt"

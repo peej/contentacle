@@ -14,18 +14,19 @@ class Branch extends Resource
     {
         $response = $this->response(200, 'branch');
 
+        $username = $repo->username;
+        $repoName = $repo->name;
+
         $response->addData('name', $branchName);
-        $response->addData('repo', $repo->name);
-        $response->addData('username', $repo->username);
+        $response->addData('repo', $repoName);
+        $response->addData('username', $username);
         $response->addVar('nav', true);
 
-        $branchUrl = '/users/'.$repo->username.'/repos/'.$repo->name.'/branches/'.$branchName;
-
-        $response->addLink('self', $branchUrl.$this->formatExtension());
+        $response->addLink('self', $this->buildUrl($username, $repoName, $branchName));
         $response->addLink('cont:doc', '/rels/branch');
-        $response->addLink('cont:commits', $branchUrl.'/commits'.$this->formatExtension());
-        $response->addLink('cont:document', $branchUrl.'/documents'.$this->formatExtension());
-        $response->addLink('cont:merges', $branchUrl.'/merges'.$this->formatExtension());
+        $response->addLink('cont:commits', $this->buildUrl($username, $repoName, $branchName, 'commits'));
+        $response->addLink('cont:documents', $this->buildUrl($username, $repoName, $branchName, 'documents'));
+        $response->addLink('cont:merges', $this->buildUrl($username, $repoName, $branchName, 'merges'));
 
         return $response;
     }

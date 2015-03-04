@@ -31,14 +31,14 @@ class Merges extends Resource
         
         $response = $this->response();
 
-        $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/merges'.$this->formatExtension());
+        $response->addLink('self', $this->buildUrl($username, $repoName, $branchName, 'merges'));
         $response->addLink('cont:doc', '/rels/merges');
 
         foreach ($repo->branches() as $branch) {
             if ($branchName != $branch) {
                 $response->addLink(
                     'cont:merge',
-                    '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/merges/'.$branch.$this->formatExtension(),
+                    $this->buildUrl($username, $repoName, $branchName, 'merges', $branch),
                     false,
                     $branch
                 );

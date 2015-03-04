@@ -41,11 +41,11 @@ class Commits extends Resource {
             $response->addData('username', $repo->username);
             $response->addVar('nav', true);
 
-            $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits'.$this->formatExtension());
+            $response->addLink('self', $this->buildUrl($username, $repoName, $branchName, 'commits'));
             $response->addLink('cont:doc', '/rels/commits');
-            $response->addLink('cont:user', '/users/'.$username.$this->formatExtension());
-            $response->addLink('cont:repo', '/users/'.$username.'/repos/'.$repoName.$this->formatExtension());
-            $response->addLink('cont:documents', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents'.$this->formatExtension());
+            $response->addLink('cont:user', $this->buildUrl($username));
+            $response->addLink('cont:repo', $this->buildUrl($username, $repoName));
+            $response->addLink('cont:documents', $this->buildUrl($username, $repoName, $branchName, 'documents'));
 
             if ($this->embed) {
                 $commits = $repo->commits($branchName, $start, $end);

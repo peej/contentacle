@@ -83,7 +83,7 @@ class Users extends Resource
         try {
             $user = $this->userRepository->createUser($this->request->getData());
             $response = $this->response(201);
-            $response->location = '/users/'.$user->username;
+            $response->location = '/users/'.$user->username.$this->formatExtension();
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
             $response = $this->response(400, 'join');

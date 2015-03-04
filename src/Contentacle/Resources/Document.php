@@ -80,12 +80,6 @@ class Document extends Resource
             ));
             $response->addVar('nav', true);
 
-            if ($path) {
-                $url = 'documents/'.$path;
-            } else {
-                $url = 'documents'.$path;
-            }
-
             $breadcrumb = array();
             $breadcrumbUrl = '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents';
             foreach (explode('/', $path) as $part) {
@@ -96,13 +90,13 @@ class Document extends Resource
             }
             $response->addVar('breadcrumb', $breadcrumb);
 
-            $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/'.$url.$this->formatExtension());
+            $response->addLink('self', $this->buildUrl($username, $repoName, $branchName, 'documents', $path));
             $response->addLink('cont:doc', '/rels/document');
-            $response->addLink('cont:user', '/users/'.$username.$this->formatExtension());
-            $response->addLink('cont:repo', '/users/'.$username.'/repos/'.$repoName.$this->formatExtension());
-            $response->addLink('cont:branch', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.$this->formatExtension());
-            $response->addLink('cont:document', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/'.$url.$this->formatExtension());
-            $response->addLink('cont:commits', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits'.$this->formatExtension());
+            $response->addLink('cont:user', $this->buildUrl($username));
+            $response->addLink('cont:repo', $this->buildUrl($username, $repoName));
+            $response->addLink('cont:branch', $this->buildUrl($username, $repoName, $branchName));
+            $response->addLink('cont:documents', $this->buildUrl($username, $repoName, $branchName, 'documents', $path));
+            $response->addLink('cont:commits', $this->buildUrl($username, $repoName, $branchName, 'commits'));
 
             $documents = $repo->documents($branchName, $path);
             $commits = $repo->commits($branchName, null, 1);
@@ -111,7 +105,7 @@ class Document extends Resource
                 if ($this->embed) {
                     $response->embed('cont:document', $this->getChildResource('\Contentacle\Resources\Document', array($username, $repoName, $branchName, $filename, false)));
                 } else {
-                    $response->addLink('cont:document', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$filename.$this->formatExtension());
+                    $response->addLink('cont:document', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$filename);
                 }
             }
 
@@ -119,7 +113,7 @@ class Document extends Resource
                 if ($this->embed) {
                     $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $commit['sha'])));
                 }
-                $response->addLink('cont:commit', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits/'.$commit['sha'].$this->formatExtension());
+                $response->addLink('cont:commit', $this->buildUrl($username, $repoName, $branchName, 'commits', $commit['sha']));
             }
 
             return $response;

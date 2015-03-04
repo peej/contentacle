@@ -29,8 +29,8 @@ class Branches extends Resource
 
             $response->addData('repo', $repo->name);
             $response->addData('username', $repo->username);
-            
-            $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches'.$this->formatExtension());
+
+            $response->addLink('self', $this->buildUrl($username, $repoName, true));
             $response->addLink('cont:doc', '/rels/branches');
 
             if ($this->embed) {
