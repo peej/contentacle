@@ -8,10 +8,9 @@ namespace Contentacle\Resources;
  */
 class Document extends Resource
 {
-    private function documentResponse($code, $username, $repoName, $branchName, $document)
+    protected function documentResponse($response, $username, $repoName, $branchName, $document)
     {
         $response->addVar('nav', true);
-        $response = $this->response($code, 'document');
 
         $response->addData(array(
             'username' => $username,
@@ -129,7 +128,8 @@ class Document extends Resource
         } catch (\Contentacle\Exceptions\RepoException $e) {
             try {
                 $document = $repo->document($branchName, $path);
-                $response = $this->documentResponse(200, $username, $repoName, $branchName, $document);
+                $response = $this->response(200, 'document');
+                $response = $this->documentResponse($response, $username, $repoName, $branchName, $document);
                 return $response;
 
             } catch (\Contentacle\Exceptions\RepoException $e) {}
@@ -200,7 +200,8 @@ class Document extends Resource
         }
 
         $document = $repo->document($branchName, $path);
-        return $this->documentResponse($code, $username, $repoName, $branchName, $document);
+        $response = $this->response($code, 'document');
+        return $this->documentResponse($response, $username, $repoName, $branchName, $document);
     }
 
     /**

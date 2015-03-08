@@ -1,34 +1,34 @@
-.edit {
-    overflow: hidden;
-}
-
-.edit > textarea,
-.edit > div {
+#edit,
+#preview {
     position: absolute;
-    top: 90px;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     width: 50%;
+    height: 50%;
     margin: 0;
     padding: 20px;
     border: none;
 }
 
-.edit > div {
+#edit {
     right: 0;
     font-size: 16px;
     overflow-y: scroll;
 }
 
-.edit > textarea:focus,
-.edit > div:focus {
+#preview {
+    left: 0;
+    overflow-y: scroll;
+}
+
+#edit:focus,
+#preview:focus {
     outline: none;
 }
 
-.edit > textarea {
+#edit {
     display: block;
-    height: 50%;
     background: transparent;
 }
 
