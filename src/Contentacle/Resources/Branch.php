@@ -17,9 +17,10 @@ class Branch extends Resource
         $username = $repo->username;
         $repoName = $repo->name;
 
-        $response->addData('name', $branchName);
-        $response->addData('repo', $repoName);
         $response->addData('username', $username);
+        $response->addData('repo', $repoName);
+        $response->addData('branch', $branchName);
+
         $response->addVar('nav', true);
 
         $response->addLink('self', $this->buildUrl($username, $repoName, $branchName));

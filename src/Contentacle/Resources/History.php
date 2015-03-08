@@ -33,7 +33,12 @@ class History extends Resource {
 
             $response = $this->response(200, 'history');
 
+            $response->addVar('nav', true);
+
             $response->addData(array(
+                'username' => $username,
+                'repo' => $repoName,
+                'branch' => $branchName,
                 'filename' => basename($path),
                 'path' => $path
             ));

@@ -10,13 +10,15 @@ class Document extends Resource
 {
     private function documentResponse($code, $username, $repoName, $branchName, $document)
     {
+        $response->addVar('nav', true);
         $response = $this->response($code, 'document');
 
+        $response->addData(array(
+            'username' => $username,
+            'repo' => $repoName,
+            'branch' => $branchName
+        ));
         $response->addData($document);
-        $response->addData('branch', $branchName);
-        $response->addData('repo', $repoName);
-        $response->addData('username', $username);
-        $response->addVar('nav', true);
 
         $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$document['path'].$this->formatExtension());
         $response->addLink('cont:doc', '/rels/document');
@@ -71,12 +73,12 @@ class Document extends Resource
             $response = $this->response(200, 'directory');
 
             $response->addData(array(
-                'filename' => basename($path),
-                'dir' => true,
-                'path' => $path,
-                'branch' => $branchName,
+                'username' => $repo->username,
                 'repo' => $repo->name,
-                'username' => $repo->username
+                'branch' => $branchName,
+                'path' => $path,
+                'filename' => basename($path),
+                'dir' => true
             ));
             $response->addVar('nav', true);
 
