@@ -1,0 +1,28 @@
+<div>
+    <h1>
+        <a href="{{_links.cont:user.href}}">{{username}}</a> /
+        <a href="{{_links.cont:repo.href}}">{{repo}}</a> /
+        <a href="{{_links.cont:branch.href}}">{{branch}}</a> /
+        {{#if dir}}<a href="{{_links.cont:documents.href}}/{{dir}}">{{dir}}</a> /{{/if}}
+        {{filename}}
+    </h1>
+
+    {{#if _embedded.cont:commit}}
+        {{#each _embedded.cont:commit}}
+            {{#showDayEnd date}}
+                </table>
+            {{/showDayEnd}}
+            {{#showDay date}}
+                <h2>Commits on {{date date 'M j, Y'}}</h2>
+                <table>
+            {{/showDay}}
+            <tr>
+                <td><a href="{{_links.self.href}}">{{message}}</a></td>
+                <td><a href="{{_links.cont:user.href}}">{{username}}</a> wrote {{since date}}</td>
+            </tr>
+        {{/each}}
+        </table>
+    {{else}}
+        <p>Nothing has been committed yet.</p>
+    {{/if}}
+</div>
