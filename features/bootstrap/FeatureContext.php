@@ -82,6 +82,7 @@ TABLE
             | adir/and/another/file.txt | Deeply nested directory |
 TABLE
         ));
+        $this->iHaveACommitedFile("example.md", "peej", "test", "Adding some Markdown.");
     }
 
     /**
@@ -329,6 +330,18 @@ TABLE
         foreach ($data as $item) {
             $repo->add($item['file'], $item['content']);
         }
+        $this->shas[] = $repo->save($message);
+    }
+
+    /**
+     * @Given /^I have a commited file "([^"]*)" in "([^"\/]*)\/([^"]*)" with message "([^"]*)"$/
+     */
+    public function iHaveACommitedFile($filename, $username, $repoName, $message)
+    {
+        $repo = $this->getRepo($username, $repoName);
+
+        $repo->add($filename, file_get_contents(dirname(__FILE__).'/'.$filename));
+
         $this->shas[] = $repo->save($message);
     }
 
