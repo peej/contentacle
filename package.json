@@ -1,9 +1,11 @@
 {
   "dependencies": {
-    "sass": "latest"
+    "sass": "latest",
+    "uglify-js": "latest"
   },
   "scripts": {
     "build-css": "sass --scss src/scss/base.scss web/style.css",
-    "build": "npm run build-css"
+    "build-js": "uglifyjs src/js/*.js -o web/edit.js",
+    "build": "npm run build-css; npm run build-js"
   }
 }
