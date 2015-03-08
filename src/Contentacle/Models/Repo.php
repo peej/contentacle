@@ -188,7 +188,26 @@ class Repo extends Model
     public function commit($branch, $sha)
     {
         $commit = $this->git->commit($sha);
-        $diff = (array)$commit->diff;
+        $diffs = array();
+
+        foreach ($commit->diff->diff as $filename => $diff) {
+            $diffs[$filename] = array();
+            foreach ($diff as $line) {
+                preg_match('/^([0-9]+)([ +-])(.*)$/', $line, $match);
+                if ($match) {
+                    $item = array(
+                        'line' => $match[1],
+                        'text' => $match[3]
+                    );
+                    if ($match[2] == '+') {
+                        $item['add'] = true;
+                    } elseif ($match[2] == '-') {
+                        $item['minus'] = true;
+                    }
+                    $diffs[$filename][] = $item;
+                }
+            }
+        }
 
         return array(
             'sha' => $commit->sha,
@@ -199,7 +218,7 @@ class Repo extends Model
             'author' => $commit->user,
             'email' => $commit->email,
             'files' => $commit->getFiles(),
-            'diff' => $diff['diff']
+            'diff' => $diffs
         );
     }
 

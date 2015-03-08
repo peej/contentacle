@@ -16,22 +16,28 @@
                     <h3><a href="">{{@key}}</a></h3>
                     <table>
                         {{#each this}}
-                            <tr>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>{{this}}</td>
-                            </tr>
+                            {{#if this.add}}
+                                <tr class="add">
+                                    <td>{{this.line}}</td>
+                                    <td></td>
+                                    <td>{{this.text}}</td>
+                                </tr>
+                            {{else}}
+                                {{#if this.minus}}
+                                    <tr class="remove">
+                                        <td></td>
+                                        <td>{{this.line}}</td>
+                                        <td>{{this.text}}</td>
+                                    </tr>
+                                {{else}}
+                                    <tr>
+                                        <td>{{this.line}}</td>
+                                        <td>{{this.line}}</td>
+                                        <td>{{this.text}}</td>
+                                    </tr>
+                                {{/if}}
+                            {{/if}}
                         {{/each}}
-                        <tr class="add">
-                            <td></td>
-                            <td>2</td>
-                            <td>added line</td>
-                        </tr>
-                        <tr class="remove">
-                            <td>2</td>
-                            <td></td>
-                            <td>removed line</td>
-                        </tr>
                     </table>
                 </li>
             {{/each}}
