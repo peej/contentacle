@@ -54,9 +54,11 @@
     {{/if}}
     <section class="{{section}}">
         {{{_main}}}
-        <footer>
-            <a href="/about.html">About</a> <span class="cthulhu"></span> <a href="">Totherthing</a>
-        </footer>
+        {{#if var.footer}}
+            <footer>
+                <a href="/about.html">About</a> <span class="cthulhu"></span> <a href="">Totherthing</a>
+            </footer>
+        {{/if}}
     </section>
     {{#if var.nav}}
         <script type="text/javascript">

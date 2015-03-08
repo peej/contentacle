@@ -7,7 +7,9 @@ class Response extends \Tonic\Response
     private $yaml;
     private $engine;
     private $templateName;
-    private $vars = array();
+    private $vars = array(
+        'footer' => true
+    );
     public $data = array();
     private $links = array();
     private $embedded = array();
