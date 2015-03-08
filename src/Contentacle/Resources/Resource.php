@@ -103,7 +103,12 @@ class Resource extends \Tonic\Resource
             }
         }
 
-        return $url.$this->formatExtension();
+        return $url;
+    }
+
+    protected function buildUrlWithFormat()
+    {
+        return call_user_func_array(array($this, 'buildUrl'), func_get_args()).$this->formatExtension();
     }
 
     protected function formatExtension($prefix = '.')

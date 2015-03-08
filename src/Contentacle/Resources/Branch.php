@@ -23,11 +23,11 @@ class Branch extends Resource
 
         $response->addVar('nav', true);
 
-        $response->addLink('self', $this->buildUrl($username, $repoName, $branchName));
+        $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName));
         $response->addLink('cont:doc', '/rels/branch');
-        $response->addLink('cont:commits', $this->buildUrl($username, $repoName, $branchName, 'commits'));
-        $response->addLink('cont:documents', $this->buildUrl($username, $repoName, $branchName, 'documents'));
-        $response->addLink('cont:merges', $this->buildUrl($username, $repoName, $branchName, 'merges'));
+        $response->addLink('cont:commits', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits'));
+        $response->addLink('cont:documents', $this->buildUrlWithFormat($username, $repoName, $branchName, 'documents'));
+        $response->addLink('cont:merges', $this->buildUrlWithFormat($username, $repoName, $branchName, 'merges'));
 
         return $response;
     }

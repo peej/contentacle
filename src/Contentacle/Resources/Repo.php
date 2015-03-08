@@ -15,9 +15,9 @@ class Repo extends Resource
         $response = $this->response(200, 'repo');
 
         $response->addData($repo);
-        $response->addLink('self', $this->buildUrl($repo->username, $repo->name));
+        $response->addLink('self', $this->buildUrlWithFormat($repo->username, $repo->name));
         $response->addLink('cont:doc', '/rels/repo');
-        $response->addLink('cont:branches', $this->buildUrl($repo->username, $repo->name, false, 'branches'));
+        $response->addLink('cont:branches', $this->buildUrlWithFormat($repo->username, $repo->name, false, 'branches'));
 
         if ($this->embed) {
             foreach ($repo->branches() as $branchName) {

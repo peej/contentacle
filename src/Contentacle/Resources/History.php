@@ -45,6 +45,9 @@ class History extends Resource {
 
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/history/'.$path);
             $response->addLink('cont:doc', '/rels/history');
+            $response->addLink('cont:user', $this->buildUrl($username));
+            $response->addLink('cont:repo', $this->buildUrl($username, $repoName));
+            $response->addLink('cont:documents', $this->buildUrl($username, $repoName, $branchName, 'documents'));
             $response->addLink('cont:document', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$path);
             $response->addLink('cont:raw', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$path);
 

@@ -44,10 +44,13 @@ class Commit extends Resource
             
             $response->addVar('nav', true);
 
-            $response->addLink('self', $this->buildUrl($username, $repoName, $branchName, 'commits', $sha));
+            $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits', $sha));
             $response->addLink('cont:doc', '/rels/commit');
-            $response->addLink('cont:user', $this->buildUrl($commit['username']));
-            $response->addLink('cont:repo', $this->buildUrl($commit['username'], $repoName));
+            $response->addLink('cont:user', $this->buildUrlWithFormat($commit['username']));
+            $response->addLink('cont:repo', $this->buildUrlWithFormat($commit['username'], $repoName));
+            $response->addLink('cont:branch', $this->buildUrlWithFormat($commit['username'], $repoName, $branchName));
+            $response->addLink('cont:documents', $this->buildUrlWithFormat($commit['username'], $repoName, $branchName, 'documents'));
+            $response->addLink('cont:commits', $this->buildUrlWithFormat($commit['username'], $repoName, $branchName, 'commits'));
 
             if (isset($commit['files'])) {
                 foreach ($commit['files'] as $filename) {

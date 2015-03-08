@@ -20,16 +20,22 @@ class Document extends Resource
         ));
         $response->addData($document);
 
-        $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$document['path'].$this->formatExtension());
+        $selfUrl = $this->buildUrl($username, $repoName, $branchName, 'documents', $document['path']);
+
+        $response->addLink('self', $selfUrl);
         $response->addLink('cont:doc', '/rels/document');
-        $response->addLink('cont:user', '/users/'.$username.$this->formatExtension());
-        $response->addLink('cont:repo', '/users/'.$username.'/repos/'.$repoName.$this->formatExtension());
-        $response->addLink('cont:branch', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.$this->formatExtension());
-        $response->addLink('cont:history', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/history/'.$document['path'].$this->formatExtension());
-        $response->addLink('cont:raw', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$document['path'].$this->formatExtension());
-        $response->addLink('cont:document', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$document['path'].$this->formatExtension());
-        $response->addLink('cont:commits', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits'.$this->formatExtension());
-        $response->addLink('cont:commit', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/commits/'.$document['commit'].$this->formatExtension());
+        $response->addLink('cont:user', $this->buildUrlWithFormat($username));
+        $response->addLink('cont:repo', $this->buildUrlWithFormat($username, $repoName));
+        $response->addLink('cont:branch', $this->buildUrlWithFormat($username, $repoName, $branchName));
+        $response->addLink('cont:history', $this->buildUrl($username, $repoName, $branchName, 'history', $document['path']));
+        $response->addLink('cont:raw', $this->buildUrl($username, $repoName, $branchName, 'raw', $document['path']));
+        $response->addLink('cont:documents', $this->buildUrl($username, $repoName, $branchName, 'documents'));
+        $response->addLink('cont:document', $selfUrl);
+        $response->addLink('cont:commits', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits'));
+        $response->addLink('cont:commit', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits', $document['commit']));
+        $response->addLink('cont:edit', $this->buildUrl($username, $repoName, $branchName, 'edit', $document['path']));
+        $response->addLink('cont:properties', $this->buildUrl($username, $repoName, $branchName, 'props', $document['path']));
+
         $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $document['commit'])));
 
         return $response;

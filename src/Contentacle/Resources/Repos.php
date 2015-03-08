@@ -13,7 +13,7 @@ class Repos extends Resource
 
         if ($username) {
             $response->addData('username', $username);
-            $response->addLink('self', $this->buildUrl($username, false, false, 'repos'));
+            $response->addLink('self', $this->buildUrlWithFormat($username, false, false, 'repos'));
             $response->addLink('cont:doc', '/rels/repos');
         }
 
