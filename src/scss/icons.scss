@@ -1,6 +1,6 @@
-#nav-button,
-#props-button,
 .cthulhu:before,
+#nav-toggle:before,
+#commit-toggle:before,
 [class^="icon-"]:before,
 [class*=" icon-"]:before {
     font-family: 'contentacle';
@@ -14,9 +14,9 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.cthulhu:before, #nav-button:before { content: "\e600"; }
-.icon-github:before { content: "\e601"; }
-.icon-prop:before, #props-button:before { content: "\e603"; }
+.cthulhu:before { content: "\e600"; }
+#nav-toggle:before { content: "\e601"; }
+.icon-prop:before { content: "\e603"; }
 .icon-pages:before { content: "\e604"; }
 .icon-page:before { content: "\e605"; }
 .icon-folder:before { content: "\e606"; }
@@ -31,3 +31,4 @@
 .icon-minus:before { content: "\e60f"; }
 .icon-cancel:before { content: "\e602"; }
 .icon-okay:before { content: "\e610"; }
+#commit-toggle:before { content: "\e611"; }
