@@ -17,7 +17,7 @@
                 <h2>{{repo}}</h2>
                 <ul>
                     {{#if _links.cont:documents}}
-                        <li><span class="icon-pages"></span><a href="{{_links.cont:documents.href}}">Documents</a></li>
+                        <li><span class="icon-pages"></span><a href="{{_links.cont:documents.href}}">Pages</a></li>
                     {{/if}}
                     {{#if _links.cont:commits}}
                         <li><span class="icon-commits"></span><a href="{{_links.cont:commits.href}}">Revisions</a></li>
@@ -29,7 +29,7 @@
                 <h2>{{filename}}</h2>
                 <ul>
                     {{#if _links.cont:document}}
-                        <li><span class="icon-document"></span><a href="{{_links.cont:document.href}}">Document</a></li>
+                        <li><span class="icon-page"></span><a href="{{_links.cont:document.href}}">View</a></li>
                     {{/if}}
                     {{#if _links.cont:edit}}
                         <li><span class="icon-edit"></span><a href="{{_links.cont:edit.href}}">Edit</a></li>

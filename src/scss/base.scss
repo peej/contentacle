@@ -49,25 +49,10 @@ textarea:focus {
 }
 
 section {
-    position: absolute;
     background: #fff;
-    overflow: hidden;
-    width: 100%;
-    min-height: 100%;
-    transition: margin-left 0.2s;
     background: #fff url(/img/cthulhu-bg.png) no-repeat 50% 0;
+    overflow: hidden;
     outline: none;
-    -webkit-box-shadow: -10px 0px 15px -5px rgba(0,0,0,0.5);
-    -moz-box-shadow: -10px 0px 15px -5px rgba(0,0,0,0.5);
-    box-shadow: -10px 0px 15px -5px rgba(0,0,0,0.5);
-}
-
-body.js section {
-    margin-left: 1px;
-}
-
-body.menu nav + section {
-    margin-left: 200px;
 }
 
 section > div {
@@ -75,29 +60,29 @@ section > div {
     width: 700px;
 }
 
-section h1,
-section h2,
-section h3,
-section h4,
-section ul,
-section ol,
-section p,
-section blockquote,
-section pre,
-section form {
+h1,
+h2,
+h3,
+h4,
+ul,
+ol,
+p,
+blockquote,
+pre,
+form {
     margin: 1em 20px;
 }
 
-section h1,
-section h2,
-section h3,
-section h4 {
+h1,
+h2,
+h3,
+h4 {
     font-family: "Roboto", sans-serif;
     font-weight: normal;
 }
 
-section h2 {
-    color: #e25440;
+h2 {
+    color: $red-colour;
 }
 
 h1 { font-size: 2em; }

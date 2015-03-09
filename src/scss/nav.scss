@@ -1,5 +1,16 @@
-.show-nav section {
-    -webkit-transform: translateX(200px);
+body.js section {
+    position: absolute;
+    width: 100%;
+    min-height: 100%;
+    -webkit-box-shadow: -10px 0px 15px -5px rgba(0,0,0,0.5);
+    -moz-box-shadow: -10px 0px 15px -5px rgba(0,0,0,0.5);
+    box-shadow: -10px 0px 15px -5px rgba(0,0,0,0.5);
+    margin-left: 1px;
+    transition: margin-left ease-in 0.2s;
+}
+
+body.menu section {
+    margin-left: 200px;
 }
 
 nav#large {
@@ -23,11 +34,26 @@ nav#small {
     z-index: 1;
 }
 
-nav > h1,
+#nav-toggle {
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 20px;
+    background: $green-colour;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    margin: 0;
+    width: 20px;
+    height: 20px;
+    padding: 4px;
+}
+
 nav > h2 {
     display: block;
-    font-size: 100%;
     margin: 20px;
+    color: #fff;
+    font-size: 100%;
     font-weight: normal;
 }
 
