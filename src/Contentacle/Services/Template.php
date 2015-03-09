@@ -45,7 +45,10 @@ class Template extends \LightnCandy
                         }
                         return date('M j, \'y', $args[0]);
                     },
-                    'since' => '\Contentacle\Services\Template::since'
+                    'since' => '\Contentacle\Services\Template::since',
+                    'markdown' => function ($args) {
+                        return \Michelf\Markdown::defaultTransform($args[0]);
+                    }
                 ),
                 'blockhelpers' => array(
                     'showDay' => function ($cs, $args) {
