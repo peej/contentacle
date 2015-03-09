@@ -1,24 +1,23 @@
 #edit,
 #preview {
-    position: absolute;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     width: 50%;
     height: 50%;
     margin: 0;
-    padding: 20px;
     border: none;
 }
 
 #edit {
-    right: 0;
+    float: right;
     font-size: 16px;
     overflow-y: scroll;
+    padding: 20px;
 }
 
 #preview {
-    left: 0;
+    float: left;
     overflow-y: scroll;
 }
 
@@ -67,4 +66,48 @@
 #preview blockquote {
     font-size: 120%;
     margin: 1em 0;
+}
+
+#commit-toggle {
+    position: absolute;
+    display: block;
+    top: 0;
+    right: 20px;
+    background: $red-colour;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    margin: 0;
+    width: 20px;
+    height: 20px;
+    padding: 4px;
+}
+
+body.commit section {
+    margin-left: -398px;
+    -webkit-box-shadow: 10px 0px 15px -5px rgba(0,0,0,0.5);
+    -moz-box-shadow: 10px 0px 15px -5px rgba(0,0,0,0.5);
+    box-shadow: 10px 0px 15px -5px rgba(0,0,0,0.5);
+}
+
+#commit-form {
+    margin: 0;
+}
+
+#commit {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 400px;
+    background: $red-colour;
+
+    textarea {
+        width: 360px;
+        margin: 20px;
+    }
+
+    button {
+        display: block;
+        margin: 20px auto;
+    }
 }

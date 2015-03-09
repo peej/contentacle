@@ -1,5 +1,14 @@
 $(function () {
 
+    var $body = $("body"),
+        $section = $("body > section"),
+        $edit = $("#edit"),
+        $preview = $("#preview"),
+        $commit = $("#commit"),
+        updateTimeout = null,
+        scrollTimeout = null,
+        currentScroller = null;
+
     function getSelectionStart() {
         var node = document.getSelection().anchorNode,
             startNode = (node && node.nodeType === 3 ? node.parentNode : node);
@@ -14,18 +23,16 @@ $(function () {
       return $('<div/>').html(value).text();
     }
 
-    var updateTimeout = null;
-
-    $("#edit").bind("keyup", function (e) {
+    $edit.bind("keyup", function (e) {
         var textarea = this;
 
         window.clearTimeout(updateTimeout);
         updateTimeout = window.setTimeout(function () {
-            $("#preview").html(marked(htmlEncode(textarea.value)));
+            $preview.html(marked(htmlEncode(textarea.value)));
         }, 300);
     });
 
-    $("#preview").attr("contenteditable", true).bind("keyup", function (e) {
+    $preview.attr("contenteditable", true).bind("keyup", function (e) {
 
         var nodes = this,
             node = getSelectionStart(),
@@ -46,35 +53,67 @@ $(function () {
 
         window.clearTimeout(updateTimeout);
         updateTimeout = window.setTimeout(function () {
-            $("#edit").val(htmlDecode(toMarkdown(nodes.innerHTML.replace(/&nbsp;/g, " "))));
-        }, 1000);
+            $edit.val(htmlDecode(toMarkdown(nodes.innerHTML.replace(/&nbsp;/g, " "))));
+        }, 300);
         
     });
 
-    $("#preview").html(marked(htmlEncode($("#edit").val())));
+    $preview.html(marked(htmlEncode($edit.val())));
 
-    $("#edit, #preview").height($(window).height() - $("#edit").position().top - 40);
+    function resize() {
+        $section.width($(document).width() - 2);
+        $edit.height($(window).height() - $edit.position().top - 40);
+        $preview.height($(window).height() - $preview.position().top);
+        $commit.height($(window).height());
+    }
+    $body.css("overflow", "hidden");
+    $(window).bind("resize", resize).load(resize);
 
-    $("#edit").bind("scroll", function () {
-        var $textarea = $(this);
-        if ($textarea.is(":focus")) {
-            var $preview = $("#preview");
-            var height = $textarea.outerHeight();
-            var scrollTop = $textarea[0].scrollTop;
-            var ratio = scrollTop / ($textarea[0].scrollHeight - height);
+    $edit.bind("scroll", function () {
+        if (!currentScroller || currentScroller == 'edit') {
+            currentScroller = 'edit';
+            window.clearTimeout(scrollTimeout);
+            scrollTimeout = window.setTimeout(function () {
+                currentScroller = null;
+            }, 100);
+
+            var height = $edit.outerHeight(),
+                scrollTop = $edit[0].scrollTop,
+                ratio = scrollTop / ($edit[0].scrollHeight - height);
+
             $preview[0].scrollTop = ($preview[0].scrollHeight - height) * ratio;
         }
     });
 
-    $("#preview").bind("scroll", function () {
-        var $preview = $(this);
-        if ($preview.is(":focus")) {
-            var $textarea = $("#edit");
-            var height = $textarea.outerHeight();
-            var scrollTop = $preview[0].scrollTop;
-            var ratio = scrollTop / ($preview[0].scrollHeight - height);
-            $textarea[0].scrollTop = ($textarea[0].scrollHeight - height) * ratio;
+    $preview.bind("scroll", function () {
+        if (!currentScroller || currentScroller == 'preview') {
+            currentScroller = 'preview';
+            window.clearTimeout(scrollTimeout);
+            scrollTimeout = window.setTimeout(function () {
+                currentScroller = null;
+            }, 100);
+
+            var height = $edit.outerHeight(),
+                scrollTop = $preview[0].scrollTop,
+                ratio = scrollTop / ($preview[0].scrollHeight - height);
+
+            $edit[0].scrollTop = ($edit[0].scrollHeight - height) * ratio;
         }
+    });
+
+    $edit.detach();
+    $preview.detach();
+    $section.append($edit).append($preview).append("<div id=\"commit-toggle\"></div>");
+    $body.prepend($("#commit-form").detach());
+
+    $commit.hover(function () {
+        $body.addClass("commit");
+    }, function () {
+        $body.removeClass("commit");
+    });
+
+    $("#commit-toggle").click(function () {
+        $body.addClass("commit");
     });
 
 });

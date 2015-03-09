@@ -5,12 +5,23 @@
             <a href="{{_links.cont:repo.href}}">{{repo}}</a> /
             <a href="{{_links.cont:branch.href}}">{{branch}}</a> /
             {{#if dir}}<a href="{{_links.cont:documents.href}}/{{dir}}">{{dir}}</a> /{{/if}}
-            {{filename}}
+            <a href="{{_links.cont:document.href}}">{{filename}}</a>
         </h1>
         <div class="commit-metadata">
             <a href="{{_embedded.cont:commit.0._links.cont:user.href}}">{{_embedded.cont:commit.0.username}}</a> wrote {{since _embedded.cont:commit.0.date}} - <a href="{{_embedded.cont:commit.0._links.self.href}}">{{_embedded.cont:commit.0.message}}</a>
         </div>
     </div>
 </header>
-<textarea id="edit">{{content}}</textarea>
-<div id="preview"></div>
+<form method="post" id="commit-form">
+    <textarea name="content" id="edit">{{content}}</textarea>
+    <div id="preview"></div>
+    <div id="commit">
+        <h1>Commit</h1>
+        <p>Some words about how to save your changes.</p>
+        <textarea name="message" placeholder="Describe your changes"></textarea>
+        <button type="submit">Commit changes</button>
+    </div>
+</form>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script type="text/javascript" src="/edit.js"></script>

@@ -56,6 +56,9 @@
         </nav>
     {{/if}}
     <section class="{{section}}">
+        {{#if var.nav}}
+            <div id="nav-toggle"></div>
+        {{/if}}
         {{{_main}}}
         {{#if var.footer}}
             <footer>
@@ -69,7 +72,7 @@ window.onload = function () {
     var menu = document.getElementsByTagName("nav")[0],
         body = document.getElementsByTagName("body")[0];
     body.className = "js";
-    menu.onmouseover = function () {
+    menu.onmouseover = document.getElementById("nav-toggle").onclick = function () {
         body.className = "js menu";
     };
     menu.onmouseout = function () {
@@ -77,10 +80,6 @@ window.onload = function () {
     };
 };
         </script>
-    {{/if}}
-    {{#if section == 'edit'}}
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-        <script type="text/javascript" src="/edit.js"></script>
     {{/if}}
 </body>
 </html>
