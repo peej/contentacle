@@ -190,9 +190,9 @@ class Repo extends Model
         $commit = $this->git->commit($sha);
         $diffs = array();
 
-        foreach ($commit->diff->diff as $filename => $diff) {
-            $diffs[$filename] = array();
-            foreach ($diff as $line) {
+        foreach ($commit->diff->diff as $filename => $lines) {
+            $diff = array();
+            foreach ($lines as $line) {
                 preg_match('/^([0-9]+)([ +-])(.*)$/', $line, $match);
                 if ($match) {
                     $item = array(
@@ -204,9 +204,10 @@ class Repo extends Model
                     } elseif ($match[2] == '-') {
                         $item['minus'] = true;
                     }
-                    $diffs[$filename][] = $item;
+                    $diff[] = $item;
                 }
             }
+            $diffs[$filename] = $diff;
         }
 
         return array(
@@ -218,7 +219,7 @@ class Repo extends Model
             'author' => $commit->user,
             'email' => $commit->email,
             'files' => $commit->getFiles(),
-            'diff' => $diffs
+            'diffs' => $diffs
         );
     }
 

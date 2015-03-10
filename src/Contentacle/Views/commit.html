@@ -2,24 +2,26 @@
     <h1>
         <a href="{{_links.cont:user.href}}">{{username}}</a> /
         <a href="{{_links.cont:repo.href}}">{{repo}}</a> /
-        {{branch}}
+        <a href="{{_links.cont:branch.href}}">{{branch}}</a> /
+        revision
     </h1>
 
     <h2 class="commit-metadata">{{message}}</h2>
     <div class="commit-metadata">
-        <a href="{{_links.cont:user.href}}">{{username}}</a> wrote {{since date}}
+        <a href="{{_links.cont:user.href}}">{{author}}</a> wrote <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time>
     </div>
-    {{#if diff}}
+    {{#if diffs}}
         <ul>
-            {{#each diff}}
+            {{#each diffs}}
                 <li>
-                    <h3><a href="">{{@key}}</a></h3>
+                    <h3>{{@key}}</h3>
                     <table>
                         {{#each this}}
                             {{#if this.add}}
                                 <tr class="add">
                                     <td>{{this.line}}</td>
                                     <td></td>
+                                    <td>+</td>
                                     <td>{{this.text}}</td>
                                 </tr>
                             {{else}}
@@ -27,12 +29,14 @@
                                     <tr class="remove">
                                         <td></td>
                                         <td>{{this.line}}</td>
+                                        <td>-</td>
                                         <td>{{this.text}}</td>
                                     </tr>
                                 {{else}}
                                     <tr>
                                         <td>{{this.line}}</td>
                                         <td>{{this.line}}</td>
+                                        <td></td>
                                         <td>{{this.text}}</td>
                                     </tr>
                                 {{/if}}
