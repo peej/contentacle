@@ -113,7 +113,8 @@ class Template extends \LightnCandy
             $denomination = $diff / 31536000;
             $division = 'year';
         }
-        return floor($denomination).' '.$division.($division == 1 ? '' : 's').' ago';
+        $value = floor($denomination);
+        return $value.' '.$division.($value == 1 ? '' : 's').' ago';
     }
 
 }
