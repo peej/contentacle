@@ -75,7 +75,7 @@ class Branch extends Resource
     function redirectToDocuments($username, $repoName, $branchName)
     {
         return new \Tonic\Response(302, null, array(
-            'Location' => '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents'
+            'Location' => $this->buildUrlWithFormat($username, $repoName, $branchName, 'documents')
         ));
     }
 
