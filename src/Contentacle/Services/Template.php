@@ -36,6 +36,13 @@ class Template extends \LightnCandy
                     'default' => function ($args) {
                         return $args[0] ? $args[0] : $args[1];
                     },
+                    'truncate' => function ($args) {
+                        $length = isset($args[1]) ? $args[1] : 30;
+                        if (strlen($args[0]) - 3 > $length) {
+                            return substr($args[0], 0, $length).'...';
+                        }
+                        return $args[0];
+                    },
                     'date' => function ($args) {
                         if (isset($args[1])) {
                             return date($args[1], $args[0]);
@@ -44,6 +51,9 @@ class Template extends \LightnCandy
                             return date('M j', $args[0]);
                         }
                         return date('M j, \'y', $args[0]);
+                    },
+                    'isodate' => function ($args) {
+                        return date('d-m-Y h:i:s', $args[0]);
                     },
                     'since' => '\Contentacle\Services\Template::since',
                     'markdown' => function ($args) {
