@@ -8,8 +8,10 @@ namespace Contentacle\Resources;
  */
 class Document extends Resource
 {
-    protected function documentResponse($response, $username, $repoName, $branchName, $document)
+    protected function documentResponse($type, $username, $repoName, $branchName, $document)
     {
+        $response = $this->response(200, $type);
+
         $response->addVar('nav', true);
 
         $response->addData(array(
@@ -19,7 +21,14 @@ class Document extends Resource
         ));
         $response->addData($document);
 
-        $selfUrl = $this->buildUrl($username, $repoName, $branchName, 'documents', $document['path']);
+        $documentUrl = $this->buildUrl($username, $repoName, $branchName, 'documents', $document['path']);
+        $editUrl = $this->buildUrl($username, $repoName, $branchName, 'edit', $document['path']);
+
+        if ($type == 'edit') {
+            $selfUrl = $editUrl;
+        } else {
+            $selfUrl = $documentUrl;
+        }
 
         $response->addLink('self', $selfUrl);
         $response->addLink('cont:doc', '/rels/document');
@@ -29,11 +38,10 @@ class Document extends Resource
         $response->addLink('cont:history', $this->buildUrl($username, $repoName, $branchName, 'history', $document['path']));
         $response->addLink('cont:raw', $this->buildUrl($username, $repoName, $branchName, 'raw', $document['path']));
         $response->addLink('cont:documents', $this->buildUrl($username, $repoName, $branchName, 'documents'));
-        $response->addLink('cont:document', $selfUrl);
+        $response->addLink('cont:document', $documentUrl);
+        $response->addLink('cont:edit', $editUrl);
         $response->addLink('cont:commits', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits'));
         $response->addLink('cont:commit', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits', $document['commit']));
-        $response->addLink('cont:edit', $this->buildUrl($username, $repoName, $branchName, 'edit', $document['path']));
-        $response->addLink('cont:properties', $this->buildUrl($username, $repoName, $branchName, 'props', $document['path']));
 
         $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $document['commit'])));
 
@@ -128,9 +136,7 @@ class Document extends Resource
         } catch (\Contentacle\Exceptions\RepoException $e) {
             try {
                 $document = $repo->document($branchName, $path);
-                $response = $this->response(200, 'document');
-                $response = $this->documentResponse($response, $username, $repoName, $branchName, $document);
-                return $response;
+                return $this->documentResponse('document', $username, $repoName, $branchName, $document);
 
             } catch (\Contentacle\Exceptions\RepoException $e) {}
         }

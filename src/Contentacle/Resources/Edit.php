@@ -8,7 +8,7 @@ namespace Contentacle\Resources;
 class Edit extends Document
 {
     /**
-     * Get a repository
+     * Get the document edit form
      *
      * @method get
      * @response 200 OK
@@ -20,8 +20,7 @@ class Edit extends Document
         try {
             $path = $this->fixPath($path, $username, $repoName, $branchName, 'edit');
             $document = $repo->document($branchName, $path);
-            $response = $this->response(200, 'edit');
-            $response = $this->documentResponse($response, $username, $repoName, $branchName, $document);
+            $response = $this->documentResponse('edit', $username, $repoName, $branchName, $document);
 
             $response->addVar('footer', false);
 
