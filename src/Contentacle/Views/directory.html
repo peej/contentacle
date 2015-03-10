@@ -18,7 +18,7 @@
     {{#each _embedded.cont:commit}}
         <h2 class="commit-metadata">{{message}}</h2>
         <div class="commit-metadata">
-            <a href="{{_links.cont:user.href}}">{{username}}</a> wrote <a href="{{_links.self.href}}">{{since date}}</a>
+            <a href="{{_links.cont:user.href}}">{{author}}</a> wrote <a href="{{_links.self.href}}">{{since date}}</a>
         </div>
     {{/each}}
 
@@ -27,13 +27,19 @@
             {{#each _embedded.cont:document}}
                 <tr>
                     {{#if dir}}
-                        <td><span class="icon-folder"></span></td>
-                        <td><a href="{{_links.self.href}}">{{filename}}</a></td>
+                        <td>
+                            <span class="icon-folder"></span>
+                            <a href="{{_links.self.href}}">{{filename}}</a>
+                        </td>
+                        <td></td>
                         <td></td>
                     {{else}}
-                        <td><span class="icon-page"></span></td>
-                        <td><a href="{{_links.self.href}}">{{filename}}</a></td>
-                        <td><a href="{{_links.cont:user.href}}">{{username}}</a> wrote <a href="{{_links.cont:commit.href}}">{{since date}}</a></td>
+                        <td>
+                            <span class="icon-page"></span>
+                            <a href="{{_links.self.href}}">{{filename}}</a>
+                        </td>
+                        <td><a href="{{_links.cont:commit.href}}">{{truncate _embedded.cont:commit.0.message 60}}</a></td>
+                        <td><a href="{{_links.cont:user.href}}">{{author}}</a> wrote <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time></td>
                     {{/if}}
                 </tr>
             {{/each}}
