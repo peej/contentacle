@@ -123,7 +123,7 @@ class Repo extends Model
                     'author' => $document->user,
                     'date' => $document->date,
                     'branch' => $branch,
-                    'commit' => array_pop($this->git->log($path)),
+                    'commit' => $this->git->log($path)[0],
                     'content' => $document->getContent()
                 );
             }
