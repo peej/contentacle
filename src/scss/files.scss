@@ -6,14 +6,11 @@
 .directory table {
     margin: 0 20px;
 
-    td:nth-child(1) {
-        width: 17px;
-        padding-right: 0;
-        text-align: center;
-        color: $dark-colour;
+    td span {
+        padding: 0 4px;
     }
 
-    td:nth-child(3) a {
-        color: $grey-colour;
+    td:nth-child(3) {
+        text-align: right;
     }
 }

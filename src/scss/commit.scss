@@ -39,9 +39,9 @@ div.commit-metadata a,
 }
 
 .commit h3 {
-    background-color: $grey-colour-dark;
+    background-color: $grey-colour-medium;
     padding: 6px 12px;
-    color: #eee;
+    color: $dark-colour;
     font-size: 80%;
     font-weight: normal;
     margin: 0 20px;
@@ -76,7 +76,7 @@ div.commit-metadata a,
     border-bottom-style: solid;
     border-color: $grey-colour-medium;
     background: $grey-colour-light;
-    padding: 4px 8px;
+    padding: 8px 8px 4px;
     font-family: Consolas, "Liberation Mono", Courier, monospace;
     font-size: 70%;
     color: $dark-colour;
@@ -84,6 +84,7 @@ div.commit-metadata a,
 
 .commit td:nth-child(1),
 .commit td:nth-child(2) {
+    width: 20px;
     text-align: right;
     border-right-width: 1px;
     border-right-style: solid;
