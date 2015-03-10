@@ -104,7 +104,7 @@ $(function () {
     $edit.detach();
     $preview.detach();
     $section.append($edit).append($preview).append("<div id=\"commit-toggle\"></div>");
-    $body.prepend($("#commit-form").detach());
+    $body.prepend($("#commit-form").detach().append("<input type=\"hidden\" name=\"content\">"));
 
     $commit.hover(function () {
         $body.addClass("commit");
@@ -114,6 +114,10 @@ $(function () {
 
     $("#commit-toggle").click(function () {
         $body.addClass("commit");
+    });
+
+    $("#commit-form").submit(function () {
+        $(this).find("input[name='content']").val($edit.val());
     });
 
 });

@@ -31,4 +31,32 @@ class Edit extends Document
         }
     }
 
+    /**
+     * Commit the changes
+     *
+     * @method post
+     * @response 302 Found
+     * @response 400 Bad Request
+     * @provides text/html
+     */
+    function commit($username, $repoName, $branchName, $path = null)
+    {
+        if (!isset($_POST['content'])) {
+            return new \Tonic\Response(400);
+        }
+
+        if (!isset($_POST['message'])) {
+            $_POST['message'] = 'Update to '.$path;
+        }
+
+        $repo = $this->repoRepository->getRepo($username, $repoName);
+        $path = $this->fixPath($path, $username, $repoName, $branchName, 'edit');
+
+        $repo->updateDocument($branchName, $path, $_POST['content'], $_POST['message']);
+
+        return new \Tonic\Response(302, null, array(
+            'Location' => $this->buildUrlWithFormat($username, $repoName, $branchName, 'documents', $path)
+        ));
+    }
+
 }

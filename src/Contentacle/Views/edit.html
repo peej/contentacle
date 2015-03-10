@@ -4,21 +4,20 @@
             <a href="{{_links.cont:user.href}}">{{username}}</a> /
             <a href="{{_links.cont:repo.href}}">{{repo}}</a> /
             <a href="{{_links.cont:branch.href}}">{{branch}}</a> /
-            {{#if dir}}<a href="{{_links.cont:documents.href}}/{{dir}}">{{dir}}</a> /{{/if}}
-            <a href="{{_links.cont:document.href}}">{{filename}}</a>
+            <a href="{{_links.cont:document.href}}">{{path}}</a>
         </h1>
         <div class="commit-metadata">
             <a href="{{_embedded.cont:commit.0._links.cont:user.href}}">{{_embedded.cont:commit.0.username}}</a> wrote {{since _embedded.cont:commit.0.date}} - <a href="{{_embedded.cont:commit.0._links.self.href}}">{{_embedded.cont:commit.0.message}}</a>
         </div>
     </div>
 </header>
-<form method="post" id="commit-form">
+<form action="{{_links.self.href}}" method="post" id="commit-form">
     <textarea name="content" id="edit">{{content}}</textarea>
     <div id="preview"></div>
     <div id="commit">
         <h1>Commit</h1>
         <p>Some words about how to save your changes.</p>
-        <textarea name="message" placeholder="Describe your changes"></textarea>
+        <textarea name="message" placeholder="Update to {{path}}"></textarea>
         <button type="submit">Commit changes</button>
     </div>
 </form>
