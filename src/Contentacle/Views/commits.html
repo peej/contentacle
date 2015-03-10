@@ -8,18 +8,18 @@
     {{#if _embedded.cont:commit}}
         {{#each _embedded.cont:commit}}
             {{#showDayEnd date}}
-                </table>
+                </ol>
             {{/showDayEnd}}
             {{#showDay date}}
                 <h2>Commits on {{date date 'M j, Y'}}</h2>
-                <table>
+                <ol>
             {{/showDay}}
-            <tr>
-                <td><a href="{{_links.self.href}}">{{message}}</a></td>
-                <td><a href="{{_links.cont:user.href}}">{{username}}</a> wrote {{since date}}</td>
-            </tr>
+            <li>
+                <a href="{{_links.self.href}}">{{message}}</a>
+                <span><a href="{{_links.cont:user.href}}">{{author}}</a> wrote <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time></span>
+            </li>
         {{/each}}
-        </table>
+        </ol>
     {{else}}
         <p>Nothing has been committed yet.</p>
     {{/if}}
