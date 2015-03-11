@@ -33,6 +33,9 @@ class Template extends \LightnCandy
                     'uppercase' => function ($args) {
                         return strtoupper($args[0]);
                     },
+                    'capitalise' => function ($args) {
+                        return ucwords($args[0]);
+                    },
                     'default' => function ($args) {
                         return $args[0] ? $args[0] : $args[1];
                     },
