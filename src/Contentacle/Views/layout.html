@@ -65,16 +65,14 @@
     </section>
     {{#if var.nav}}
         <script type="text/javascript">
-window.onload = function () {
-    var menu = document.getElementsByTagName("nav")[0],
-        body = document.getElementsByTagName("body")[0];
+var menu = document.getElementsByTagName("nav")[0],
+    body = document.getElementsByTagName("body")[0];
+body.className = "js";
+menu.onmouseover = document.getElementById("nav-toggle").onclick = function () {
+    body.className = "js menu";
+};
+menu.onmouseout = function () {
     body.className = "js";
-    menu.onmouseover = document.getElementById("nav-toggle").onclick = function () {
-        body.className = "js menu";
-    };
-    menu.onmouseout = function () {
-        body.className = "js";
-    };
 };
         </script>
     {{/if}}
