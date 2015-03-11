@@ -11,6 +11,15 @@
             wrote <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time> -
             <a href="{{_embedded.cont:commit.0._links.self.href}}">{{_embedded.cont:commit.0.message}}</a>
         </div>
+        {{#if metadata}}
+            <table class="document-metadata">
+                <caption>Metadata</caption>
+                <tr><th>Name</th><th>Value</th></tr>
+                {{#each metadata}}
+                    <tr><td>{{@key}}</td><td>{{truncate this}}</td></tr>
+                {{/each}}
+            </table>
+        {{/if}}
     </div>
 </header>
 <div class="document">

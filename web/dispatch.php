@@ -68,7 +68,8 @@ $container['resource_factory'] = function ($c) {
             'response' => $c['response'],
             'oauth' => $c['oauth'],
             'userRepository' => $c['user_repository'],
-            'repoRepository' => $c['repo_repository']
+            'repoRepository' => $c['repo_repository'],
+            'yaml' => $c['yaml']
         );
         return new $className($deps);
     };

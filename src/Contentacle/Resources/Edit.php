@@ -49,6 +49,16 @@ class Edit extends Document
             $_POST['message'] = 'Update to '.$path;
         }
 
+        if (isset($_POST['metadata']) && is_array($_POST['metadata'])) {
+            $metadata = array();
+
+            foreach ($_POST['metadata'] as $item) {
+                $metadata[$item['name']] = $item['value'];
+            }
+
+            $_POST['content'] = $this->yaml->encode($metadata)."---\n".$_POST['content'];
+        }
+
         $repo = $this->repoRepository->getRepo($username, $repoName);
         $path = $this->fixPath($path, $username, $repoName, $branchName, 'edit');
 

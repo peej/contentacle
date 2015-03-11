@@ -8,9 +8,26 @@ namespace Contentacle\Resources;
  */
 class Document extends Resource
 {
+    /**
+     * Extract YAML front matter metadata from document content.
+     */
+    private function splitDocumentContent($document)
+    {
+        $document['metadata'] = array();
+
+        if (substr($document['content'], 0, 4) == "---\n") {
+            $parts = preg_split('/\n?-{3}\n/', $document['content'], 3);
+            $document['content'] = $parts[2];
+            $document['metadata'] = $this->yaml->decode($parts[1]);
+        }
+
+        return $document;
+    }
+
     protected function documentResponse($type, $username, $repoName, $branchName, $document)
     {
         $response = $this->response(200, $type);
+        $document = $this->splitDocumentContent($document);
 
         $response->addVar('nav', true);
 

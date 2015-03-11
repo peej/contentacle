@@ -19,6 +19,17 @@
         <p>Some words about how to save your changes.</p>
         <textarea name="message" placeholder="Update to {{path}}"></textarea>
         <button type="submit">Commit changes</button>
+        <h2>Metadata</h2>
+        {{#each metadata}}
+            <label>
+                <input type="text" name="metadata[{{@key}}][name]" value="{{capitalise @key}}" class="metadata-name">
+                <input type="text" name="metadata[{{@key}}][value]" value="{{this}}" class="metadata-value">
+            </label>
+        {{/each}}
+        <label>
+            <input type="text" name="metadata[_new][name]" value="" class="metadata-name" placeholder="New metadata">
+            <input type="text" name="metadata[_new][value]" value="" class="metadata-value">
+        </label>
     </div>
 </form>
 
