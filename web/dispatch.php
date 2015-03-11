@@ -120,7 +120,7 @@ try {
     $response = $resource->exec();
 
 } catch (Tonic\NotFoundException $e) {
-    $response = new Tonic\Response(404, 'Nothing found');
+    $response = $container['response'](404, '404');
 
 } catch (Tonic\UnauthorizedException $e) {
     $response = new Tonic\Response(401, $e->getMessage());
