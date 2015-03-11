@@ -32,9 +32,13 @@ nav#small {
     margin-left: -350px;
     text-align: right;
     z-index: 1;
+
+    a {
+        color: $grey-colour-highlight;
+    }
 }
 
-#nav-toggle {
+body.js #nav-toggle {
     position: absolute;
     display: block;
     top: 0;
@@ -47,6 +51,10 @@ nav#small {
     width: 20px;
     height: 20px;
     padding: 4px;
+}
+
+#nav-toggle {
+    display: none;
 }
 
 nav > h2 {

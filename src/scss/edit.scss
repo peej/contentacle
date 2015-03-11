@@ -68,7 +68,7 @@
     margin: 1em 0;
 }
 
-#commit-toggle {
+body.js #commit-toggle {
     position: absolute;
     display: block;
     top: 0;
@@ -101,7 +101,12 @@ body.commit section {
     width: 400px;
     background: $red-colour;
 
-    textarea {
+    h2 {
+        color: $grey-colour-highlight;
+    }
+
+    textarea,
+    label {
         width: 360px;
         margin: 20px;
     }
@@ -109,5 +114,37 @@ body.commit section {
     button {
         display: block;
         margin: 20px auto;
+    }
+
+    input.metadata-name {
+        border: none;
+        background: none;
+        color: $grey-colour-highlight;
+        font-size: 100%;
+        font-weight: normal;
+        font-family: "Roboto", sans-serif;
+        margin-bottom: 0;
+        padding: 0;
+        outline: none;
+
+        &::-webkit-input-placeholder {
+            color: $grey-colour-highlight;
+            font-style: italic;
+        }
+
+        &:-moz-placeholder {
+           color: $grey-colour-highlight;
+           font-style: italic;
+        }
+
+        &::-moz-placeholder {
+           color: $grey-colour-highlight;
+           font-style: italic;
+        }
+
+        &:-ms-input-placeholder {
+           color: $grey-colour-highlight;
+           font-style: italic;
+        }
     }
 }
