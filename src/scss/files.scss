@@ -6,7 +6,12 @@
 .directory table {
     margin: 0 20px;
 
-    td span {
+    td:first-child {
+        white-space: nowrap;
+
+    }
+    
+    span {
         padding: 0 4px;
     }
 
