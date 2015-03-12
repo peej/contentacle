@@ -8,9 +8,9 @@ Feature:
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "_links->self->href" should be "/users/peej/repos/test/branches/master/commits"
         And response property "_links->cont:doc->href" should be "/rels/commits"
-        And response property "_embedded->cont:commit->0->sha" should be sha 4
-        And response property "_embedded->cont:commit->1->sha" should be sha 2
-        And response property "_embedded->cont:commit->2->sha" should be sha 1
+        And response property "_embedded->cont:commit->0->sha" should be sha 5
+        And response property "_embedded->cont:commit->1->sha" should be sha 4
+        And response property "_embedded->cont:commit->2->sha" should be sha 2
 
     Scenario: View a commit
         Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 1
@@ -47,7 +47,7 @@ Feature:
         And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 2
         Then the response status code should be 201
         And I remember the commit sha from the location header
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 5
+        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
         Then the response status code should be 200
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "message" should be "Undo change {sha}" with sha 2
@@ -61,7 +61,7 @@ Feature:
             """
         Then the response status code should be 201
         And I remember the commit sha from the location header
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 5
+        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
         Then the response status code should be 200
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "message" should be "Custom commit message"
@@ -77,7 +77,7 @@ Feature:
             """
         Then the response status code should be 201
         And I remember the commit sha from the location header
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 5
+        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "message" should be "Custom commit message"
 
@@ -96,7 +96,7 @@ Feature:
         And I follow the 2nd "cont:repo" relation
         And I follow the 2nd "cont:branch" relation
         And I follow the "cont:commits" relation
-        And I follow the 2nd "cont:commit" relation
+        And I follow the 3rd "cont:commit" relation
         Then the response status code should be 200
         And response property "message" should be "2nd commit"
 

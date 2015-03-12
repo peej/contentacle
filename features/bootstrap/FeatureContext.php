@@ -330,6 +330,7 @@ TABLE
         foreach ($data as $item) {
             $repo->add($item['file'], $item['content']);
         }
+
         $this->shas[] = $repo->save($message);
     }
 
@@ -465,6 +466,14 @@ TABLE
     public function iShouldSeeALinkTo($url)
     {
         return new Given('I should see an "a[href=\''.$url.'\']" element');
+    }
+
+    /**
+     * @Given /^print sha (\d+)$/
+     */
+    public function printSha($shaNumber)
+    {
+        echo $this->shas[$shaNumber - 1], "\n";
     }
 
 }

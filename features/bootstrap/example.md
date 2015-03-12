@@ -1,3 +1,7 @@
+---
+title: The Title
+date: 12/03/2015
+---
 # Header 1
 
 Something else
