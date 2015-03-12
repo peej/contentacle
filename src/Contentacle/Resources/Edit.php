@@ -45,6 +45,8 @@ class Edit extends Resource
             $response->addLink('cont:commits', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits'));
             $response->addLink('cont:commit', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits', $document['commit']));
 
+            $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $document['commit'])));
+
             return $response;
 
         } catch (\Contentacle\Exceptions\RepoException $e) {
