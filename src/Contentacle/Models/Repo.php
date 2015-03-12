@@ -4,9 +4,9 @@ namespace Contentacle\Models;
 
 class Repo extends Model
 {
-    private $git, $gitProvider, $repoDir, $userRepo, $fileAccess;
+    private $git, $gitProvider, $repoDir, $userRepo, $fileAccess, $yaml;
 
-    function __construct($data, $gitProvider, $repoDir, $userRepo, $fileAccess)
+    function __construct($data, $gitProvider, $repoDir, $userRepo, $fileAccess, $yaml)
     {
         if (!isset($data['username'])) {
             throw new \Contentacle\Exceptions\RepoException("No username provided when creating repo");
@@ -20,6 +20,7 @@ class Repo extends Model
         $this->repoDir = $repoDir;
         $this->userRepo = $userRepo;
         $this->fileAccess = $fileAccess;
+        $this->yaml = $yaml;
 
         $user = $userRepo->getUser($data['username']);
         $this->git->setUser($user->name, $user->email);
@@ -107,12 +108,35 @@ class Repo extends Model
         throw new \Contentacle\Exceptions\RepoException("Path '$path' does not exist");
     }
 
+    /**
+     * Extract YAML front matter metadata from document content.
+     */
+    private function splitDocumentContent($document)
+    {
+        $metadata = array();
+        $content = $document->getContent();
+
+        if (substr($content, 0, 4) == "---\n") {
+            $parts = preg_split('/\n?-{3}\n/', $content, 3);
+            $content = $parts[2];
+            $metadata = $this->yaml->decode($parts[1]);
+        }
+
+        return array(
+            $content,
+            $metadata
+        );
+    }
+
     public function document($branch = 'master', $path = '')
     {
         $this->git->setBranch($branch);
         try {
             $document = $this->git->file($path);
             if (is_a($document, '\Git\Blob')) {
+                
+                list($content, $metadata) = $this->splitDocumentContent($document);
+                
                 return array(
                     'filename' => basename($document->filename),
                     'path' => $document->filename,
@@ -124,7 +148,8 @@ class Repo extends Model
                     'date' => $document->date,
                     'branch' => $branch,
                     'commit' => $this->git->log($path)[0],
-                    'content' => $document->getContent()
+                    'content' => $content,
+                    'metadata' => $metadata
                 );
             }
         } catch (\Git\Exception $e) {}

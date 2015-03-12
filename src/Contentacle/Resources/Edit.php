@@ -5,7 +5,7 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch/edit/?(.*)$
  */
-class Edit extends Document
+class Edit extends Resource
 {
     /**
      * Get the document edit form
@@ -20,9 +20,30 @@ class Edit extends Document
         try {
             $path = $this->fixPath($path, $username, $repoName, $branchName, 'edit');
             $document = $repo->document($branchName, $path);
-            $response = $this->documentResponse('edit', $username, $repoName, $branchName, $document);
+            $response = $this->response('200', 'edit');
 
+            $response->addVar('nav', true);
             $response->addVar('footer', false);
+
+            $response->addData(array(
+                'username' => $username,
+                'repo' => $repoName,
+                'branch' => $branchName
+            ));
+            $response->addData($document);
+
+            $editUrl = $this->buildUrl($username, $repoName, $branchName, 'edit', $document['path']);
+
+            $response->addLink('self', $editUrl);
+            $response->addLink('cont:user', $this->buildUrlWithFormat($username));
+            $response->addLink('cont:repo', $this->buildUrlWithFormat($username, $repoName));
+            $response->addLink('cont:branch', $this->buildUrlWithFormat($username, $repoName, $branchName));
+            $response->addLink('cont:history', $this->buildUrl($username, $repoName, $branchName, 'history', $document['path']));
+            $response->addLink('cont:documents', $this->buildUrl($username, $repoName, $branchName, 'documents'));
+            $response->addLink('cont:document', $this->buildUrl($username, $repoName, $branchName, 'documents', $document['path']));
+            $response->addLink('cont:edit', $editUrl);
+            $response->addLink('cont:commits', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits'));
+            $response->addLink('cont:commit', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits', $document['commit']));
 
             return $response;
 

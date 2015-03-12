@@ -57,7 +57,7 @@ $container['user'] = function ($c) {
 };
 $container['repo'] = function ($c) {
     return function ($data) use ($c) {
-        return new Contentacle\Models\Repo($data, $c['git'], $c['repo_dir'], $c['user_repository'], $c['file']);
+        return new Contentacle\Models\Repo($data, $c['git'], $c['repo_dir'], $c['user_repository'], $c['file'], $c['yaml']);
     };
 };
 $container['resource_factory'] = function ($c) {
@@ -68,8 +68,7 @@ $container['resource_factory'] = function ($c) {
             'response' => $c['response'],
             'oauth' => $c['oauth'],
             'userRepository' => $c['user_repository'],
-            'repoRepository' => $c['repo_repository'],
-            'yaml' => $c['yaml']
+            'repoRepository' => $c['repo_repository']
         );
         return new $className($deps);
     };

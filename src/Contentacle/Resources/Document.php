@@ -8,27 +8,8 @@ namespace Contentacle\Resources;
  */
 class Document extends Resource
 {
-    /**
-     * Extract YAML front matter metadata from document content.
-     */
-    private function splitDocumentContent($document)
+    protected function documentResponse($response, $username, $repoName, $branchName, $document)
     {
-        $document['metadata'] = array();
-
-        if (substr($document['content'], 0, 4) == "---\n") {
-            $parts = preg_split('/\n?-{3}\n/', $document['content'], 3);
-            $document['content'] = $parts[2];
-            $document['metadata'] = $this->yaml->decode($parts[1]);
-        }
-
-        return $document;
-    }
-
-    protected function documentResponse($type, $username, $repoName, $branchName, $document)
-    {
-        $response = $this->response(200, $type);
-        $document = $this->splitDocumentContent($document);
-
         $response->addVar('nav', true);
 
         $response->addData(array(
@@ -39,15 +20,8 @@ class Document extends Resource
         $response->addData($document);
 
         $documentUrl = $this->buildUrl($username, $repoName, $branchName, 'documents', $document['path']);
-        $editUrl = $this->buildUrl($username, $repoName, $branchName, 'edit', $document['path']);
 
-        if ($type == 'edit') {
-            $selfUrl = $editUrl;
-        } else {
-            $selfUrl = $documentUrl;
-        }
-
-        $response->addLink('self', $selfUrl);
+        $response->addLink('self', $documentUrl);
         $response->addLink('cont:doc', '/rels/document');
         $response->addLink('cont:user', $this->buildUrlWithFormat($username));
         $response->addLink('cont:repo', $this->buildUrlWithFormat($username, $repoName));
@@ -56,7 +30,7 @@ class Document extends Resource
         $response->addLink('cont:raw', $this->buildUrl($username, $repoName, $branchName, 'raw', $document['path']));
         $response->addLink('cont:documents', $this->buildUrl($username, $repoName, $branchName, 'documents'));
         $response->addLink('cont:document', $documentUrl);
-        $response->addLink('cont:edit', $editUrl);
+        $response->addLink('cont:edit', $this->buildUrl($username, $repoName, $branchName, 'edit', $document['path']));
         $response->addLink('cont:commits', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits'));
         $response->addLink('cont:commit', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits', $document['commit']));
 
@@ -153,7 +127,8 @@ class Document extends Resource
         } catch (\Contentacle\Exceptions\RepoException $e) {
             try {
                 $document = $repo->document($branchName, $path);
-                return $this->documentResponse('document', $username, $repoName, $branchName, $document);
+                $response = $this->response('200', 'document');
+                return $this->documentResponse($response, $username, $repoName, $branchName, $document);
 
             } catch (\Contentacle\Exceptions\RepoException $e) {}
         }
