@@ -65,9 +65,9 @@ class RepoSpec extends ObjectBehavior
         
         $response->data['_embedded']['cont:branch']->shouldHaveCount(2);
         $response->data['_embedded']['cont:branch'][0]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master');
-        $response->data['_embedded']['cont:branch'][0]['name']->shouldBe('master');
+        $response->data['_embedded']['cont:branch'][0]['branch']->shouldBe('master');
         $response->data['_embedded']['cont:branch'][1]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/branch');
-        $response->data['_embedded']['cont:branch'][1]['name']->shouldBe('branch');
+        $response->data['_embedded']['cont:branch'][1]['branch']->shouldBe('branch');
         
     }
 

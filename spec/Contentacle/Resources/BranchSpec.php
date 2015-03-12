@@ -50,7 +50,7 @@ class BranchSpec extends ObjectBehavior
     function it_should_link_to_documents()
     {
         $response = $this->get('cobb', 'extraction', 'master');
-        $response->data['_links']['cont:document']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/documents');
+        $response->data['_links']['cont:documents']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/documents');
     }
 
     function it_should_link_to_commits()
@@ -62,7 +62,7 @@ class BranchSpec extends ObjectBehavior
     function it_should_show_master_branch_details()
     {
         $response = $this->get('cobb', 'extraction', 'master');
-        $response->data['name']->shouldBe('master');
+        $response->data['branch']->shouldBe('master');
         $response->data['repo']->shouldBe('extraction');
         $response->data['username']->shouldBe('cobb');
     }
@@ -70,11 +70,11 @@ class BranchSpec extends ObjectBehavior
     function it_should_show_branch_details()
     {
         $response = $this->get('cobb', 'extraction', 'branch');
-        $response->data['name']->shouldBe('branch');
+        $response->data['branch']->shouldBe('branch');
         $response->data['repo']->shouldBe('extraction');
         $response->data['username']->shouldBe('cobb');
         $response->data['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/branch');
-        $response->data['_links']['cont:document']['href']->shouldBe('/users/cobb/repos/extraction/branches/branch/documents');
+        $response->data['_links']['cont:documents']['href']->shouldBe('/users/cobb/repos/extraction/branches/branch/documents');
         $response->data['_links']['cont:commits']['href']->shouldBe('/users/cobb/repos/extraction/branches/branch/commits');
     }
 

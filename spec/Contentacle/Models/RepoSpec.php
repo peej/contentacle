@@ -47,7 +47,7 @@ class RepoSpec extends ObjectBehavior
         $commit->getMetadata('user')->willReturn('cobb');
         $commit->getMetadata('email')->willReturn('cobb@localhost');
         $commit->getFiles()->willReturn(array('totem.txt', 'new-york/the-hotel/mr-charles.txt'));
-        $commit->getMetadata('diff')->willReturn(array(
+        $commit->getMetadata('diff')->willReturn((object)array(
             'diff' => array(
                 'totem.txt' => array(
                     '1+A Totem is an object that is used to test if oneself is in one\'s own reality and not in another person\'s dream.'
