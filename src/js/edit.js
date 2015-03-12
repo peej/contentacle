@@ -61,9 +61,11 @@ $(function () {
     $preview.html(marked(htmlEncode($edit.val())));
 
     function resize() {
-        $section.width($(document).width() - 2);
+        $section.width($(window).width() - 2);
         $edit.height($(window).height() - $edit.position().top - 40);
+        $edit.width($(window).width() / 2 - 41);
         $preview.height($(window).height() - $preview.position().top);
+        $preview.width($(window).width() / 2 - 1);
         $commit.height($(window).height());
     }
     $body.css("overflow", "hidden");
