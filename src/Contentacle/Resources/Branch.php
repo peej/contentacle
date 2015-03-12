@@ -19,7 +19,7 @@ class Branch extends Resource
 
         $response->addData('username', $username);
         $response->addData('repo', $repoName);
-        $response->addData('branch', $branchName);
+        $response->addData('name', $branchName);
 
         $response->addVar('nav', true);
 
