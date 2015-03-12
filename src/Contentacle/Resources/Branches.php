@@ -30,8 +30,10 @@ class Branches extends Resource
             $response->addData('username', $repo->username);
             $response->addData('repo', $repo->name);
 
-            $response->addLink('self', $this->buildUrl($username, $repoName, true));
+            $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, true));
             $response->addLink('cont:doc', '/rels/branches');
+            $response->addLink('cont:user', $this->buildUrlWithFormat($username));
+            $response->addLink('cont:repo', $this->buildUrlWithFormat($username, $repoName));
 
             if ($this->embed) {
                 foreach ($repo->branches() as $branchName) {
