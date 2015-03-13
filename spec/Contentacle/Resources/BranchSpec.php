@@ -62,7 +62,7 @@ class BranchSpec extends ObjectBehavior
     function it_should_show_master_branch_details()
     {
         $response = $this->get('cobb', 'extraction', 'master');
-        $response->data['branch']->shouldBe('master');
+        $response->data['name']->shouldBe('master');
         $response->data['repo']->shouldBe('extraction');
         $response->data['username']->shouldBe('cobb');
     }
@@ -70,7 +70,7 @@ class BranchSpec extends ObjectBehavior
     function it_should_show_branch_details()
     {
         $response = $this->get('cobb', 'extraction', 'branch');
-        $response->data['branch']->shouldBe('branch');
+        $response->data['name']->shouldBe('branch');
         $response->data['repo']->shouldBe('extraction');
         $response->data['username']->shouldBe('cobb');
         $response->data['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/branch');

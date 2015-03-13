@@ -48,8 +48,8 @@ class BranchesSpec extends ObjectBehavior
     {
         $response = $this->get('cobb', 'extraction');
         $response->data['_embedded']['cont:branch']->shouldHaveCount(2);
-        $response->data['_embedded']['cont:branch'][0]['branch']->shouldBe('master');
-        $response->data['_embedded']['cont:branch'][1]['branch']->shouldBe('branch');
+        $response->data['_embedded']['cont:branch'][0]['name']->shouldBe('master');
+        $response->data['_embedded']['cont:branch'][1]['name']->shouldBe('branch');
     }
 
     function it_should_error_for_unknown_repo()
