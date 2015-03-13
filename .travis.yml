@@ -8,5 +8,5 @@ before_script:
   - php -S localhost:8080 -t web web/dispatch.php & # start a Web server
   - sleep 3 # give Web server some time to bind to sockets, etc
 script:
-  - php vendor/behat/behat/bin/behat
-  - php vendor/phpspec/phpspec/scripts/phpspec.php spec
+  - php vendor/bin/behat
+  - php vendor/bin/phpspec run
