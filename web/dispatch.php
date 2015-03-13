@@ -138,4 +138,8 @@ if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
     $response->setHeader('Access-Control-Allow-Headers', $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
 }
 
-$response->output($request);
+if (method_exists($response, 'render')) {
+    $response->render($request);
+} else {
+    $response->output();
+}

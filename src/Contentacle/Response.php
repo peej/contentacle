@@ -151,7 +151,7 @@ class Response extends \Tonic\Response
         }
     }
 
-    public function output($request)
+    public function render($request)
     {
         $this->contentType = $this->calculateContentType($request->accept);
 
