@@ -263,7 +263,7 @@ TABLE
     public function theDirectoryShouldExist($filename)
     {
         if (!is_dir(realpath(dirname(__FILE__).'/../../repos/'.$filename))) {
-            throw new Exception('"'.realpath(dirname(__FILE__).'/../../repos/'.$filename.'" is not a directory');
+            throw new Exception('"'.realpath(dirname(__FILE__).'/../../repos/'.$filename.'" is not a directory'));
         }
     }
 
@@ -273,7 +273,7 @@ TABLE
     public function theDirectoryShouldNotExist($filename)
     {
         if (is_dir(realpath(dirname(__FILE__).'/../../repos/'.$filename))) {
-            throw new Exception('"'.realpath(dirname(__FILE__).'/../../repos/'.$filename.'" is a directory');
+            throw new Exception('"'.realpath(dirname(__FILE__).'/../../repos/'.$filename.'" is a directory'));
         }
     }
 
