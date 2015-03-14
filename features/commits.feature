@@ -66,20 +66,20 @@ Feature:
         And the header "Content-Type" should be equal to "application/hal+yaml"
         And response property "message" should be "Custom commit message"
 
-    # Scenario: Revert a single commit with a custom commit message in JSON
-    #     Given I add "Content-Type" header equal to "application/json"
-    #     And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
-    #     And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 2 and body:
-    #         """
-    #         {
-    #             'message': 'Custom commit message'
-    #         }
-    #         """
-    #     Then the response status code should be 201
-    #     And I remember the commit sha from the location header
-    #     Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
-    #     And the header "Content-Type" should be equal to "application/hal+yaml"
-    #     And response property "message" should be "Custom commit message"
+    Scenario: Revert a single commit with a custom commit message in JSON
+        Given I add "Content-Type" header equal to "application/json"
+        And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 2 and body:
+            """
+            {
+                "message": "Custom commit message"
+            }
+            """
+        Then the response status code should be 201
+        And I remember the commit sha from the location header
+        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
+        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And response property "message" should be "Custom commit message"
 
     Scenario: Fail to revert a commit that can't be reverted since it conflicts with a newer commit
         Given I have a commit in "peej/test" with message "Conflict":
