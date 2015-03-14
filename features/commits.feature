@@ -5,7 +5,7 @@ Feature:
     Scenario: View a list of commits
         Given I send a GET request on "/users/peej/repos/test/branches/master/commits"
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "_links->self->href" should be "/users/peej/repos/test/branches/master/commits"
         And response property "_links->cont:doc->href" should be "/rels/commits"
         And response property "_embedded->cont:commit->0->sha" should be sha 5
@@ -15,7 +15,7 @@ Feature:
     Scenario: View a commit
         Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 1
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "_links->cont:doc->href" should be "/rels/commit"
         And response property "_links->cont:user->href" should be "/users/peej"
         And response property "sha" should be sha 1
@@ -49,7 +49,7 @@ Feature:
         And I remember the commit sha from the location header
         Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "message" should be "Undo change {sha}" with sha 2
 
     Scenario: Revert a single commit with a custom commit message
@@ -63,7 +63,7 @@ Feature:
         And I remember the commit sha from the location header
         Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "message" should be "Custom commit message"
 
     Scenario: Revert a single commit with a custom commit message in JSON
@@ -78,7 +78,7 @@ Feature:
         Then the response status code should be 201
         And I remember the commit sha from the location header
         Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "message" should be "Custom commit message"
 
     Scenario: Fail to revert a commit that can't be reverted since it conflicts with a newer commit

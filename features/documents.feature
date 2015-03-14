@@ -5,7 +5,7 @@ Feature:
     Scenario: View a list of documents
         Given I send a GET request on "/users/peej/repos/test/branches/master/documents"
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "filename" should be ""
         And response property "_links->self->href" should be "/users/peej/repos/test/branches/master/documents"
         And response property "_embedded->cont:document->0->filename" should be "adir"
@@ -16,7 +16,7 @@ Feature:
     Scenario: View a list of documents within a directory
         Given I send a GET request on "/users/peej/repos/test/branches/master/documents/adir"
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "filename" should be "adir"
         And response property "dir" should be "true"
         And response property "path" should be "adir"
@@ -35,7 +35,7 @@ Feature:
     Scenario: View a documents details
         Given I send a GET request on "/users/peej/repos/test/branches/master/documents/afile.txt"
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "_links->self->href" should be "/users/peej/repos/test/branches/master/documents/afile.txt"
         And response property "filename" should be "afile.txt"
         And response property "dir" should be "false"
@@ -46,13 +46,13 @@ Feature:
 
     Scenario: View a documents raw content
         Given I send a GET request on "/users/peej/repos/test/branches/master/raw/afile.txt"
-        Then the header "Content-Type" should be equal to "text/plain"
+        Then the content-type response header should be "text/plain"
         And the response should contain "Some content"
 
     Scenario: View a documents history
         Given I send a GET request on "/users/peej/repos/test/branches/master/history/afile.txt"
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "_embedded->cont:commit->0->_links->self->href" should be "/users/peej/repos/test/branches/master/commits/{sha}" with sha 1
         And response property "_embedded->cont:commit->0->message" should be "1st commit"
         And response property "_embedded->cont:commit->0->username" should be "peej"
@@ -67,11 +67,11 @@ Feature:
             New document
             """
         Then the response status code should be 201
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "filename" should be "new.txt"
         When I send a GET request to "/users/peej/repos/test/branches/master/documents/new.txt"
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "filename" should be "new.txt"
         And response property "dir" should be "false"
         And response property "path" should be "new.txt"
@@ -92,11 +92,11 @@ Feature:
             }
             """
         Then the response status code should be 201
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "filename" should be "new.txt"
         When I send a GET request to "/users/peej/repos/test/branches/master/documents/new.txt"
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "filename" should be "new.txt"
         And response property "dir" should be "false"
         And response property "path" should be "new.txt"
@@ -114,7 +114,7 @@ Feature:
             Updated document
             """
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "filename" should be "afile.txt"
         And response property "dir" should be "false"
         And response property "path" should be "afile.txt"
@@ -135,7 +135,7 @@ Feature:
             }
             """
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "filename" should be "afile.txt"
         And response property "dir" should be "false"
         And response property "path" should be "afile.txt"

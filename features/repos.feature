@@ -4,7 +4,7 @@ Feature:
 
     Scenario: View a list of repos
         When I send a GET request on "/users/peej/repos"
-        Then the header "Content-Type" should be equal to "application/hal+yaml"
+        Then the content-type response header should be "application/hal+yaml"
         And response property "_embedded->cont:repo->1->_links->self->href" should be "/users/peej/repos/test"
         And response property "_embedded->cont:repo->1->username" should be "peej"
         And response property "_embedded->cont:repo->1->name" should be "test"
@@ -32,7 +32,7 @@ Feature:
     Scenario: View a repos details
         When I send a GET request on "/users/peej/repos/test"
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "_links->self->href" should be "/users/peej/repos/test"
         And response property "_links->cont:doc->href" should be "/rels/repo"
         And response property "username" should be "peej"
@@ -78,7 +78,7 @@ Feature:
         And the header "Location" should be equal to "/users/peej/repos/another"
         When I send a GET request to "/users/peej/repos/another"
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "name" should be "another"
         And response property "description" should be "This is a test repo"
 
@@ -92,7 +92,7 @@ Feature:
             }
             """
         Then the response status code should be 400
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "_embedded->errors->0->logref" should be "name"
 
     Scenario: Fail to provide correct auth credentials for user when creating a repo
@@ -119,12 +119,12 @@ Feature:
             }]
             """
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "username" should be "peej"
         And response property "description" should be "Not a test"
         When I send a GET request to "/users/peej/repos/test"
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "test"
         And response property "description" should be "Not a test"
@@ -141,12 +141,12 @@ Feature:
             }]
             """
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "not-a-test"
         When I send a GET request to "/users/peej/repos/not-a-test"
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "not-a-test"
 
@@ -162,14 +162,14 @@ Feature:
             }]
             """
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "username" should be "empty"
         And response property "name" should be "test"
         When I send a GET request to "/users/peej/repos/test"
         Then the response status code should be 404
         When I send a GET request to "/users/empty/repos/test"
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "username" should be "empty"
         And response property "name" should be "test"
 
@@ -185,7 +185,7 @@ Feature:
             }
             """
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "test"
         And response property "description" should be "This is an updated description"

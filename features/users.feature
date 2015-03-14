@@ -4,7 +4,7 @@ Feature:
 
     Scenario: Link to itself
         When I send a GET request to "/users.yaml"
-        Then the header "Content-Type" should be equal to "application/hal+yaml"
+        Then the content-type response header should be "application/hal+yaml"
         And response property "_links->self->href" should be "/users.yaml"
 
     Scenario: Link to documentation
@@ -19,7 +19,7 @@ Feature:
 
     Scenario: View a list of users
         When I send a GET request to "/users.yaml"
-        Then the header "Content-Type" should be equal to "application/hal+yaml"
+        Then the content-type response header should be "application/hal+yaml"
         And response property "_embedded->cont:user->1->username" should be "peej"
         And response property "_embedded->cont:user->1->name" should be "Paul James"
         And response property "_embedded->cont:user->1->_links->self->href" should be "/users/peej.yaml"
@@ -68,7 +68,7 @@ Feature:
     Scenario: View a users details
         When I send a GET request to "/users/peej.yaml"
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "Paul James"
         And response property "email" should be "paul@peej.co.uk"
@@ -100,7 +100,7 @@ Feature:
         And the header "Location" should be equal to "/users/test1"
         When I send a GET request to "/users/test1"
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "username" should be "test1"
         And response property "password" should be ""
         And response property "email" should be "test1@localhost"
@@ -115,7 +115,7 @@ Feature:
             }
             """
         Then the response status code should be 400
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "_embedded->cont:error->0->logref" should be "username"
         And response property "_embedded->cont:error->1->logref" should be "name"
 
@@ -141,7 +141,7 @@ Feature:
             }]
             """
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "username" should be "peej"
         And response property "name" should be "PJ"
         When I send a GET request to "/users/peej"

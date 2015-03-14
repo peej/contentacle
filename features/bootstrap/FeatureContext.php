@@ -146,8 +146,21 @@ TABLE
         $headers = $this->getSession()->getResponseHeaders();
         if (!isset($headers[$header])) {
             throw new Exception($header.' is not present');
-        } elseif ($headers[$header] != array($value)) {
-            throw new Exception('"'.$headers[$header].'" is not the expected value');
+        } elseif ($headers[$header][0] != $value) {
+            throw new Exception('"'.$headers[$header][0].'" is not the expected value');
+        }
+    }
+
+    /**
+     * @Then /^the content-type response header should be "([^"]*)"$/
+     */
+    public function theContentTypeResponseHeaderShouldBe($value)
+    {
+        $headers = $this->getSession()->getResponseHeaders();
+        if (!isset($headers['Content-Type'])) {
+            throw new Exception('Content-Type header is not present');
+        } elseif (substr($headers['Content-Type'][0], 0, strlen($value)) != $value) {
+            throw new Exception('"'.$headers['Content-Type'][0].'" is not the expected value');
         }
     }
 

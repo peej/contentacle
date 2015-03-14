@@ -5,7 +5,7 @@ Feature:
     Scenario: View a list of branches
         Given I send a GET request on "/users/peej/repos/test/branches"
         Then response property "_links->self->href" should be "/users/peej/repos/test/branches"
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "_links->cont:doc->href" should be "/rels/branches"
         And response property "_embedded->cont:branch->0->_links->self->href" should be "/users/peej/repos/test/branches/branch"
         And response property "_embedded->cont:branch->0->name" should be "branch"
@@ -15,7 +15,7 @@ Feature:
     Scenario: View a branches details
         Given I send a GET request on "/users/peej/repos/test/branches/master"
         Then response property "_links->self->href" should be "/users/peej/repos/test/branches/master"
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "name" should be "master"
         And response property "repo" should be "test"
         And response property "username" should be "peej"
@@ -65,7 +65,7 @@ Feature:
         And the header "Location" should be equal to "/users/peej/repos/test/branches/another"
         When I send a GET request to "/users/peej/repos/test/branches/another"
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "name" should be "another"
 
     Scenario: Try to create an invalid branch
@@ -78,7 +78,7 @@ Feature:
             }
             """
         Then the response status code should be 400
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "_embedded->cont:error->0->logref" should be "name"
 
     Scenario: Rename a branch
@@ -93,10 +93,10 @@ Feature:
             }]
             """
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "name" should be "renamed-branch"
         When I send a GET request to "/users/peej/repos/test/branches/renamed-branch"
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "name" should be "renamed-branch"
 
     Scenario: Rename master branch
@@ -111,10 +111,10 @@ Feature:
             }]
             """
         Then the response status code should be 200
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "name" should be "not-master"
         When I send a GET request to "/users/peej/repos/test/branches/not-master"
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "name" should be "not-master"
 
     Scenario: Can not rename another branch to same name as another branch
@@ -129,7 +129,7 @@ Feature:
             }]
             """
         Then the response status code should be 400
-        And the header "Content-Type" should be equal to "application/hal+yaml"
+        And the content-type response header should be "application/hal+yaml"
         And response property "_embedded->cont:error->0->logref" should be "name"
         And response property "_embedded->cont:error->0->message" should be "A branch named 'master' already exists"
     
