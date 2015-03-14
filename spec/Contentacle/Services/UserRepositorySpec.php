@@ -88,7 +88,7 @@ class UserRepositorySpec extends ObjectBehavior
             'email' => 'eames@forger.com'
         ));
         $user->username->shouldBe('eames');
-        $user->password->shouldMatch('/^[a-zA-Z0-9.$\/]{60}$/');
+        $user->password->shouldMatch('/^[a-zA-Z0-9.$\/]{32}/');
         $user->email->shouldBe('eames@forger.com');
     }
 
