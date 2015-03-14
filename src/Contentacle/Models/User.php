@@ -25,11 +25,22 @@ class User extends Model
 
     public function setPassword($password)
     {
-        $this->setProp('password', password_hash($this->prop('username').':'.$password, PASSWORD_DEFAULT));
+        $this->setProp('password', $this->hashPassword($password));
+    }
+
+    private function hashPassword($password)
+    {
+        if (function_exists('password_hash')) {
+            return password_hash($this->prop('username').':'.$password, PASSWORD_DEFAULT);
+        }
+        return sha1($this->prop('username').':'.$password);
     }
 
     public function verifyPassword($password)
     {
-        return password_verify($this->prop('username').':'.$password, $this->prop('password'));
+        if (function_exists('password_verify')) {
+            return password_verify($this->prop('username').':'.$password, $this->prop('password'));
+        }
+        return $this->hashPassword($password) === $this->prop('password');
     }
 }
