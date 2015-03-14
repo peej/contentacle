@@ -144,8 +144,10 @@ TABLE
     public function theResponseHeaderShouldBe($header, $value)
     {
         $headers = $this->getSession()->getResponseHeaders();
-        if (!isset($headers[$header]) || $headers[$header] != array($value)) {
-            throw new Exception;
+        if (!isset($headers[$header])) {
+            throw new Exception($header.' is not present');
+        } elseif ($headers[$header] != array($value)) {
+            throw new Exception('"'.$headers[$header].'" is not the expected value');
         }
     }
 
@@ -197,8 +199,10 @@ TABLE
     {
         $data = $this->getResponseProperty($name);
 
-        if (!is_array($data) || !in_array($value, $data)) {
-            throw new Exception;
+        if (!is_array($data)) {
+            throw new Exception('The property does not exist');
+        } elseif (!in_array($value, $data)) {
+            throw new Exception('The value is not one of "'.join('", "', $data).'"');
         }
     }
 
@@ -259,7 +263,7 @@ TABLE
     public function theDirectoryShouldExist($filename)
     {
         if (!is_dir(realpath(dirname(__FILE__).'/../../repos/'.$filename))) {
-            throw new Exception;
+            throw new Exception('"'.realpath(dirname(__FILE__).'/../../repos/'.$filename.'" is not a directory');
         }
     }
 
@@ -269,7 +273,7 @@ TABLE
     public function theDirectoryShouldNotExist($filename)
     {
         if (is_dir(realpath(dirname(__FILE__).'/../../repos/'.$filename))) {
-            throw new Exception;
+            throw new Exception('"'.realpath(dirname(__FILE__).'/../../repos/'.$filename.'" is a directory');
         }
     }
 
