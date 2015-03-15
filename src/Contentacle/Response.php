@@ -178,12 +178,14 @@ class Response extends \Tonic\Response
         case 'text/json':
             $this->sendFriendlyMimetypeIfBrowser();
             $this->addCuries();
+            ksort($this->data);
             echo json_encode($this->data, JSON_PRETTY_PRINT);
             break;
 
         default:
             $this->sendFriendlyMimetypeIfBrowser();
             $this->addCuries();
+            ksort($this->data);
 
             if ($this->yaml) {
                 $yaml = new $this->yaml;
