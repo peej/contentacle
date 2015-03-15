@@ -2,7 +2,7 @@
 
 namespace Contentacle\Resources;
 
-class Resource extends \Tonic\Resource
+abstract class Resource extends \Tonic\Resource
 {
     private $deps;
     private $extension = '';
@@ -58,16 +58,6 @@ class Resource extends \Tonic\Resource
 
             return count($this->request->getAccept()) - $match;
         }
-    }
-
-    protected function fixPath($path, $username, $repoName, $branchName, $pathType = 'documents')
-    {
-        if ($path === true) {
-            $path = '';
-        } elseif (isset($_SERVER['REQUEST_URI'])) {
-            return substr($_SERVER['REQUEST_URI'], strlen('/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/'.$pathType.'/'));
-        }
-        return $path;
     }
 
     protected function getChildResource($resourceName, $parameters, $embedChildren = false)

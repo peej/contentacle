@@ -5,7 +5,7 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch/edit/?(.*)$
  */
-class Edit extends Resource
+class Edit extends WithinDocument
 {
     /**
      * Get the document edit form
@@ -22,30 +22,11 @@ class Edit extends Resource
             $document = $repo->document($branchName, $path);
             $response = $this->response('200', 'edit');
 
-            $response->addVar('nav', true);
+            $this->configureResponseWithDocument($response, $repo, $branchName, $document);
+
             $response->addVar('footer', false);
 
-            $response->addData(array(
-                'username' => $username,
-                'repo' => $repoName,
-                'branch' => $branchName
-            ));
-            $response->addData($document);
-
-            $editUrl = $this->buildUrl($username, $repoName, $branchName, 'edit', $document['path']);
-
-            $response->addLink('self', $editUrl);
-            $response->addLink('cont:user', $this->buildUrlWithFormat($username));
-            $response->addLink('cont:repo', $this->buildUrlWithFormat($username, $repoName));
-            $response->addLink('cont:branch', $this->buildUrlWithFormat($username, $repoName, $branchName));
-            $response->addLink('cont:history', $this->buildUrl($username, $repoName, $branchName, 'history', $document['path']));
-            $response->addLink('cont:documents', $this->buildUrl($username, $repoName, $branchName, 'documents'));
-            $response->addLink('cont:document', $this->buildUrl($username, $repoName, $branchName, 'documents', $document['path']));
-            $response->addLink('cont:edit', $editUrl);
-            $response->addLink('cont:commits', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits'));
-            $response->addLink('cont:commit', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits', $document['commit']));
-
-            $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $document['commit'])));
+            $response->addLink('self', $this->buildUrl($username, $repoName, $branchName, 'edit', $document['path']));
 
             return $response;
 

@@ -5,7 +5,7 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch/merges
  */
-class Merges extends Resource
+class Merges extends WithinBranch
 {
     /**
      * Get a list of merges that can be performed on this branch.
@@ -29,7 +29,9 @@ class Merges extends Resource
             throw new \Tonic\NotFoundException;
         }
         
-        $response = $this->response();
+        $response = $this->response(200, 'merges');
+
+        $this->configureResponse($response, $repo, $branchName);
 
         $response->addLink('self', $this->buildUrl($username, $repoName, $branchName, 'merges'));
         $response->addLink('cont:doc', '/rels/merges');

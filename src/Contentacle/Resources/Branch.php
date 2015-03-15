@@ -5,31 +5,25 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch
  */
-class Branch extends Resource
+class Branch extends WithinBranch
 {
     /**
-     * Generate a successful response.
+     * Add user, repo and branch data to the response.
      */
-    private function buildResponse($repo, $branchName)
+    protected function configureResponse($response, $repo, $branchName)
     {
-        $response = $this->response(200, 'branch');
+        parent::configureResponse($response, $repo, $branchName);
 
         $username = $repo->username;
         $repoName = $repo->name;
 
-        $response->addData('username', $username);
-        $response->addData('repo', $repoName);
         $response->addData('name', $branchName);
 
         $response->addVar('nav', true);
 
         $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName));
         $response->addLink('cont:doc', '/rels/branch');
-        $response->addLink('cont:commits', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits'));
-        $response->addLink('cont:documents', $this->buildUrlWithFormat($username, $repoName, $branchName, 'documents'));
         $response->addLink('cont:merges', $this->buildUrlWithFormat($username, $repoName, $branchName, 'merges'));
-
-        return $response;
     }
 
     /**
@@ -55,7 +49,12 @@ class Branch extends Resource
             if (!$repo->hasBranch($branchName)) {
                 throw new \Tonic\NotFoundException;
             }
-            return $this->buildResponse($repo, $branchName);
+
+            $response = $this->response(200, 'branch');
+
+            $this->configureResponse($response, $repo, $branchName);
+
+            return $response;
 
         } catch (\Contentacle\Exceptions\RepoException $e) {
             throw new \Tonic\NotFoundException;
@@ -111,7 +110,9 @@ class Branch extends Resource
                 }
             }
 
-            $response = $this->buildResponse($repo, $item['value']);
+            $response = $this->response(200, 'branch');
+
+            $this->configureResponse($response, $repo, $item['value']);
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
             $response = $this->response(400, 'branch');

@@ -5,7 +5,7 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch/commits
  */
-class Commits extends Resource {
+class Commits extends WithinBranch {
 
     const PAGESIZE = 25;
 
@@ -36,20 +36,10 @@ class Commits extends Resource {
 
             $response = $this->response(200, 'commits');
 
-            $response->addData('username', $repo->username);
-            $response->addData('repo', $repo->name);
-            $response->addData('branch', $branchName);
-            
-            $response->addVar('nav', true);
+            $this->configureResponse($response, $repo, $branchName);
 
-            $commitsUrl = $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits');
-
-            $response->addLink('self', $commitsUrl);
+            $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits'));
             $response->addLink('cont:doc', '/rels/commits');
-            $response->addLink('cont:user', $this->buildUrlWithFormat($username));
-            $response->addLink('cont:repo', $this->buildUrlWithFormat($username, $repoName));
-            $response->addLink('cont:documents', $this->buildUrlWithFormat($username, $repoName, $branchName, 'documents'));
-            $response->addLink('cont:commits', $commitsUrl);
 
             if ($this->embed) {
                 $commits = $repo->commits($branchName, $start, $end);

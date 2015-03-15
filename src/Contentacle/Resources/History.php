@@ -5,7 +5,7 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch/history/(.+)$
  */
-class History extends Resource {
+class History extends WithinDocument {
 
     /**
      * Get the history of a document
@@ -33,21 +33,15 @@ class History extends Resource {
 
             $response = $this->response(200, 'history');
 
-            $response->addVar('nav', true);
+            $this->configureResponse($response, $repo, $branchName);
 
             $response->addData(array(
-                'username' => $username,
-                'repo' => $repoName,
-                'branch' => $branchName,
                 'filename' => basename($path),
                 'path' => $path
             ));
 
             $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/history/'.$path);
             $response->addLink('cont:doc', '/rels/history');
-            $response->addLink('cont:user', $this->buildUrl($username));
-            $response->addLink('cont:repo', $this->buildUrl($username, $repoName));
-            $response->addLink('cont:documents', $this->buildUrl($username, $repoName, $branchName, 'documents'));
             $response->addLink('cont:document', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$path);
             $response->addLink('cont:raw', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$path);
 

@@ -5,7 +5,7 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch/raw/(.+)$
  */
-class Raw extends Resource
+class Raw extends WithinDocument
 {
     /**
      * Get the raw contents of a document.
@@ -23,7 +23,17 @@ class Raw extends Resource
             $document = $repo->document($branch, $path);
             if ($document) {
                 $response = new \Tonic\Response(200, $document['content']);
-                $response->contentType = 'text/plain';
+
+                if (isset($document['metadata']['content-type'])) {
+                    $response->contentType = $document['metadata']['content-type'];
+                } elseif (class_exists('finfo')) {
+                    $finfo = new \finfo(FILEINFO_MIME_TYPE);
+                    $response->contentType = $finfo->buffer($document['content']);
+                }
+                if (!$response->contentType) {
+                    $response->contentType = 'text/plain';
+                }
+
                 return $response;
             }
         

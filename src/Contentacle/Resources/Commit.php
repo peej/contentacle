@@ -5,7 +5,7 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch/commits/([0-9a-f]{40})
  */
-class Commit extends Resource
+class Commit extends WithinBranch
 {
     /**
      * Get a commit.
@@ -36,21 +36,13 @@ class Commit extends Resource
             $commit = $repo->commit($branchName, $sha);
 
             $response = $this->response(200, 'commit');
-            $response->addData($commit);
 
-            $response->addData('username', $repo->username);
-            $response->addData('repo', $repo->name);
-            $response->addData('branch', $branchName);
-            
-            $response->addVar('nav', true);
+            $this->configureResponse($response, $repo, $branchName);
+
+            $response->addData($commit);
 
             $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits', $sha));
             $response->addLink('cont:doc', '/rels/commit');
-            $response->addLink('cont:user', $this->buildUrlWithFormat($commit['username']));
-            $response->addLink('cont:repo', $this->buildUrlWithFormat($commit['username'], $repoName));
-            $response->addLink('cont:branch', $this->buildUrlWithFormat($commit['username'], $repoName, $branchName));
-            $response->addLink('cont:documents', $this->buildUrlWithFormat($commit['username'], $repoName, $branchName, 'documents'));
-            $response->addLink('cont:commits', $this->buildUrlWithFormat($commit['username'], $repoName, $branchName, 'commits'));
 
             if (isset($commit['files'])) {
                 foreach ($commit['files'] as $filename) {

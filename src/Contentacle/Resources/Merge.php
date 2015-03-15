@@ -5,7 +5,7 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch/merges/:merge
  */
-class Merge extends Resource
+class Merge extends WithinBranch
 {
     /**
      * Get details of a merge that can be performed on this branch.
@@ -29,8 +29,10 @@ class Merge extends Resource
         } catch (\Git\Exception $e) {
             throw new \Tonic\NotFoundException;
         }
-        
-        $response = $this->response();
+
+        $response = $this->response(200, 'merges');
+
+        $this->configureResponse($response, $repo, $branchName);
 
         $response->addLink('self', $this->buildUrl($username, $repoName, $branch1, 'merges', $branch2));
         $response->addLink('cont:doc', '/rels/merge');
