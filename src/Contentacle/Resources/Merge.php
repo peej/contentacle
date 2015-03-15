@@ -32,7 +32,7 @@ class Merge extends WithinBranch
 
         $response = $this->response(200, 'merges');
 
-        $this->configureResponse($response, $repo, $branchName);
+        $this->configureResponse($response, $repo, $branch1);
 
         $response->addLink('self', $this->buildUrl($username, $repoName, $branch1, 'merges', $branch2));
         $response->addLink('cont:doc', '/rels/merge');
