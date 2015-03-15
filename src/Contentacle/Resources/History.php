@@ -40,10 +40,10 @@ class History extends WithinDocument {
                 'path' => $path
             ));
 
-            $response->addLink('self', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/history/'.$path);
+            $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName, 'history', $path));
             $response->addLink('cont:doc', '/rels/history');
-            $response->addLink('cont:document', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$path);
-            $response->addLink('cont:raw', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/raw/'.$path);
+            $response->addLink('cont:document', $this->buildUrlWithFormat($username, $repoName, $branchName, 'documents', $path));
+            $response->addLink('cont:raw', $this->buildUrlWithFormat($username, $repoName, $branchName, 'raw', $path));
 
             foreach ($history as $item) {
                 $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $item['sha'])));
