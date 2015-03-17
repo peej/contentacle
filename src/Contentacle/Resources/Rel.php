@@ -5,7 +5,7 @@ namespace Contentacle\Resources;
 /**
  * @uri /rels/{rel}
  */
-class Doc extends Resource {
+class Rel extends Resource {
 
     private function parseDocComment($docComment)
     {
