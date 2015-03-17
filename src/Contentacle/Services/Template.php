@@ -61,6 +61,12 @@ class Template extends \LightnCandy
                     'since' => '\Contentacle\Services\Template::since',
                     'markdown' => function ($args) {
                         return \Michelf\Markdown::defaultTransform($args[0]);
+                    },
+                    'size' => function ($args) {
+                        return round(strlen($args[0]) / 1024, 3);
+                    },
+                    'wordcount' => function ($args) {
+                        return str_word_count($args[0]);
                     }
                 ),
                 'blockhelpers' => array(

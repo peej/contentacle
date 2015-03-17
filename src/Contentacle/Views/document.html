@@ -11,15 +11,25 @@
             wrote <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time> -
             <a href="{{_embedded.cont:commit.0._links.self.href}}">{{_embedded.cont:commit.0.message}}</a>
         </div>
-        {{#if metadata}}
+        <div class="document-info">
+            <a href="{{_links.cont:raw.href}}" class="button"><span class="icon-page"></span> Raw</a>
+            <a href="{{_links.cont:history.href}}" class="button"><span class="icon-history"></span> History</a>
             <table class="document-metadata">
-                <caption>Metadata</caption>
-                <tr><th>Name</th><th>Value</th></tr>
-                {{#each metadata}}
-                    <tr><td>{{@key}}</td><td>{{truncate this}}</td></tr>
-                {{/each}}
+                <caption>Info</caption>
+                <tr><th>author</th><td><a href="{{_links.cont:user.href}}">{{author}}</a></td></tr>
+                <tr><th>created</th><td>{{date date}}</td></tr>
+                <tr><th>size</th><td>{{size content}}kb</td></tr>
+                <tr><th>words</th><td>{{wordcount content}}</td></tr>
             </table>
-        {{/if}}
+            {{#if metadata}}
+                <table class="document-metadata">
+                    <caption>Metadata</caption>
+                    {{#each metadata}}
+                        <tr><th>{{@key}}</th><td>{{truncate this}}</td></tr>
+                    {{/each}}
+                </table>
+            {{/if}}
+        </div>
     </div>
 </header>
 <div class="document">

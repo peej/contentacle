@@ -46,3 +46,18 @@ section blockquote {
 section code {
     font-family: monospace;
 }
+
+.document-info {
+    width: 200px;
+    margin: 20px;
+    float: right;
+
+    .button {
+        display: inline-block;
+    }
+
+    table {
+        width: 200px;
+        margin: 10px 0;
+    }
+}
