@@ -8,9 +8,10 @@ Feature:
         And the content-type response header should be "application/hal+yaml"
         And response property "_links->self->href" should be "/users/peej/repos/test/branches/master/commits"
         And response property "_links->cont:doc->href" should be "/rels/commits"
-        And response property "_embedded->cont:commit->0->sha" should be sha 5
-        And response property "_embedded->cont:commit->1->sha" should be sha 4
-        And response property "_embedded->cont:commit->2->sha" should be sha 2
+        And response property "_embedded->cont:commit->0->sha" should be sha 6
+        And response property "_embedded->cont:commit->1->sha" should be sha 5
+        And response property "_embedded->cont:commit->2->sha" should be sha 4
+        And response property "_embedded->cont:commit->3->sha" should be sha 2
 
     Scenario: View a commit
         Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 1
@@ -96,7 +97,7 @@ Feature:
         And I follow the 2nd "cont:repo" relation
         And I follow the 2nd "cont:branch" relation
         And I follow the "cont:commits" relation
-        And I follow the 3rd "cont:commit" relation
+        And I follow the 4th "cont:commit" relation
         Then the response status code should be 200
         And response property "message" should be "2nd commit"
 

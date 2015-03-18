@@ -37,21 +37,13 @@ class FeatureContext extends MinkContext
         $this->iHaveUser(new TableNode(<<<TABLE
             | username | password | name       | email           |
             | peej     | test     | Paul James | paul@peej.co.uk |
-TABLE
-        ));
-        $this->iHaveUser(new TableNode(<<<TABLE
-            | username | password | name       | email |
             | empty    | test     | Empty user |       |
 TABLE
         ));
         $this->iHaveARepo(new TableNode(<<<TABLE
-            | username | name | title | description    |
-            | peej     | test | Test  | No description |
-TABLE
-        ));
-        $this->iHaveARepo(new TableNode(<<<TABLE
-            | username | name  | title | description |
-            | peej     | empty | Empty |             |
+            | username | name  | description    |
+            | peej     | test  | No description |
+            | peej     | empty |                |
 TABLE
         ));
         $this->iHaveACommitWithMessage("peej", "test", "1st commit", new TableNode(<<<TABLE
@@ -82,6 +74,7 @@ TABLE
             | adir/and/another/file.txt | Deeply nested directory |
 TABLE
         ));
+        $this->addACommit("peej", "test", "Another", "another@gmail.com", "anotherFile.txt", "More\n\nAnd more", "Another commit");
         $this->iHaveACommitedFile("example.md", "peej", "test", "Adding some Markdown.");
     }
 
@@ -91,6 +84,14 @@ TABLE
     public function tearDownRepo()
     {
         $this->iHaveAnEmptyDataStore();
+    }
+
+    private function addACommit($username, $repoName, $name, $email, $filename, $content, $message)
+    {
+        $git = new \Git\Repo($this->repoDir.'/'.$username.'/'.$repoName.'.git');
+        $git->setBranch();
+        $git->setUser($name, $email);
+        $this->shas[] = $git->add($filename, $content, $message);
     }
 
     /**
@@ -332,11 +333,12 @@ TABLE
      */
     public function iHaveARepo(TableNode $repoData)
     {
-        $data = $repoData->getHash()[0];
-        $repo = $this->getRepo($data['username'], $data['name']);
-        $repoPath = $this->repoDir.'/'.$data['username'].'/'.$data['name'].'.git/description';
+        foreach ($repoData->getHash() as $data) {
+            $repo = $this->getRepo($data['username'], $data['name']);
+            $repoPath = $this->repoDir.'/'.$data['username'].'/'.$data['name'].'.git/description';
 
-        file_put_contents($repoPath, $data['description']."\n");
+            file_put_contents($repoPath, $data['description']."\n");
+        }
     }
 
     /**
