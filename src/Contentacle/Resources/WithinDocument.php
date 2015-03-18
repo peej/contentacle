@@ -9,6 +9,8 @@ class WithinDocument extends WithinBranch
         $username = $repo->username;
         $repoName = strtolower($repo->name);
 
+        $this->configureResponse($response, $repo, $branchName);
+
         $response->addData($document);
 
         $response->addLink('cont:history', $this->buildUrl($username, $repoName, $branchName, 'history', $document['path']));
@@ -17,9 +19,11 @@ class WithinDocument extends WithinBranch
         $response->addLink('cont:edit', $this->buildUrl($username, $repoName, $branchName, 'edit', $document['path']));
         $response->addLink('cont:commit', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits', $document['commit']));
 
-        $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $document['commit'])));
+        if ($document['username']) {
+            $response->addLink('cont:author', $this->buildUrlWithFormat($document['username']));
+        }
 
-        $this->configureResponse($response, $repo, $branchName);
+        $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $document['commit'])));
     }
 
     protected function fixPath($path, $username, $repoName, $branchName, $pathType = 'documents')

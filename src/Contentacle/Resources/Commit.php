@@ -26,7 +26,12 @@ class Commit extends WithinBranch
      * @provides text/html
      * @links self Link to itself
      * @links cont:doc Link to this documentation.
-     * @links cont:user Link to the creator of this commit.
+     * @links cont:user Link to the owner of the repository.
+     * @links cont:repo Link to the repository.
+     * @links cont:branch Link to the branch within the repository.
+     * @links cont:documents Link to the documents within the branch.
+     * @links cont:commits Link to the commits within the branch.
+     * @links cont:author Link to the author of this version of this document.
      * @links cont:document Link to documents within this commit.
      */
     function get($username, $repoName, $branchName, $sha)
@@ -43,6 +48,10 @@ class Commit extends WithinBranch
 
             $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits', $sha));
             $response->addLink('cont:doc', '/rels/commit');
+
+            if ($commit['username']) {
+                $response->addLink('cont:author', $this->buildUrlWithFormat($commit['username']));
+            }
 
             if (isset($commit['files'])) {
                 foreach ($commit['files'] as $filename) {

@@ -8,7 +8,12 @@
 
     <h2 class="commit-metadata">{{message}}</h2>
     <div class="commit-metadata">
-        <a href="{{_links.cont:user.href}}">{{author}}</a> wrote <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time>
+        {{#if _links.cont:author.href}}
+            <a href="{{_links.cont:author.href}}" title="{{email}}">{{author}}</a>
+        {{else}}
+            <span title="{{email}}">{{author}}</span>
+        {{/if}}
+        wrote <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time>
     </div>
     {{#if diffs}}
         <ul>

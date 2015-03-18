@@ -37,10 +37,17 @@ class Document extends WithinDocument
      * @field content The content of the document
      * @links self Link to itself
      * @links cont:doc Link to this documentation.
-     * @links cont:user Link to creator of the document.
+     * @links cont:user Link to the owner of the repository.
+     * @links cont:repo Link to the repository.
+     * @links cont:branch Link to the branch within the repository.
+     * @links cont:documents Link to the documents within the branch.
+     * @links cont:commits Link to the commits within the branch.
      * @links cont:history Link to the history of the document.
      * @links cont:raw Link to the raw content of the document.
-     * @links cont:commit Link to the commit this document was a part of.
+     * @links cont:document Link to itself.
+     * @links cont:edit Link to the form to edit itself.
+     * @links cont:commit Link to the commit of this version of this document.
+     * @links cont:author Link to the author of this version of this document.
      * @embeds cont:document Documents within this document (if it is a directory).
      */
     function get($username, $repoName, $branchName, $path = null, $fixPath = true)
