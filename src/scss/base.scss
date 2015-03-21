@@ -31,6 +31,7 @@ body {
 @import 'article';
 @import 'commit';
 @import 'commits';
+@import 'diff';
 @import 'edit';
 @import 'files';
 @import 'home';
@@ -136,12 +137,7 @@ th {
 }
 
 tr:nth-child(even) td {
-    background: $grey-colour-medium;
-    border-bottom-color: $grey-colour-dark;
-
-    &:first-child {
-        border-left: 1px solid $grey-colour-dark;
-    }
+    background: $grey-colour-light-even;
 }
 
 label {

@@ -1,9 +1,12 @@
-h2.commit-metadata {
-    padding: 4px 8px;
+h2.commit-metadata,
+h3.commit-metadata {
+    padding: 8px 8px 4px;
     font-size: 180%;
     margin: 0 20px;
     font-style: italic;
     font-family: "Satisfy", cursive;
+    border: 1px solid $grey-colour-medium;
+    background: #fff;
     
     &:before {
         content: '“';
@@ -14,15 +17,14 @@ h2.commit-metadata {
 }
 
 div.commit-metadata {
-    margin: 20px;
+    margin: 0 20px;
     background-color: $dark-colour;
     padding: 6px 12px;
     color: #fff;
     font-size: 80%;
 }
 
-div.commit-metadata a,
-.commit h3 a {
+div.commit-metadata a {
     color: #fff;
     text-decoration: none;
 
@@ -36,56 +38,4 @@ div.commit-metadata a,
     list-style: none;
     padding: 0;
     margin: 0;
-}
-
-.commit h3 {
-    background-color: $grey-colour-medium;
-    padding: 6px 12px;
-    color: $dark-colour;
-    font-size: 80%;
-    font-weight: normal;
-    margin: 0 20px;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-}
-
-.commit h3 a,
-.commit h3 a:hover {
-    color: $dark-colour;
-}
-
-.commit table {
-    border-collapse: collapse;
-    margin: 0 20px 20px;
-    width: 660px;
-    box-sizing: border-box;
-}
-
-.commit tr.add td {
-    background: $green-colour;
-    border-color: $green-colour-highlight;
-}
-
-.commit tr.remove td {
-    background: $red-colour;
-    border-color: $red-colour-highlight;
-}
-
-.commit td {
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    border-color: $grey-colour-medium;
-    background: $grey-colour-light;
-    padding: 8px 8px 4px;
-    font-family: Consolas, "Liberation Mono", Courier, monospace;
-    font-size: 70%;
-    color: $dark-colour;
-}
-
-.commit td:nth-child(1),
-.commit td:nth-child(2) {
-    width: 20px;
-    text-align: right;
-    border-right-width: 1px;
-    border-right-style: solid;
 }
