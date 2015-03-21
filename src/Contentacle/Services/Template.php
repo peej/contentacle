@@ -70,6 +70,11 @@ class Template extends \LightnCandy
                     }
                 ),
                 'blockhelpers' => array(
+                    'equal' => function ($cs, $args) {
+                        if ($args[0] == $args[1]) {
+                            return $cs;
+                        }
+                    },
                     'showDay' => function ($cs, $args) {
                         $date = date('dmY', $args[0]);
                         if ($this->currentDay != $date) {

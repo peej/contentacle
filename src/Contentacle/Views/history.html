@@ -3,23 +3,55 @@
         <a href="{{_links.cont:user.href}}">{{username}}</a> /
         <a href="{{_links.cont:repo.href}}">{{repo}}</a> /
         <a href="{{_links.cont:branch.href}}">{{branch}}</a> /
-        {{#if dir}}<a href="{{_links.cont:documents.href}}/{{dir}}">{{dir}}</a> /{{/if}}
-        {{filename}}
+        {{path}}
     </h1>
 
     {{#if _embedded.cont:commit}}
         {{#each _embedded.cont:commit}}
-            {{#showDayEnd date}}
-                </table>
-            {{/showDayEnd}}
             {{#showDay date}}
                 <h2>Commits on {{date date 'M j, Y'}}</h2>
-                <table>
             {{/showDay}}
-            <tr>
-                <td><a href="{{_links.self.href}}">{{message}}</a></td>
-                <td><a href="{{_links.cont:user.href}}">{{username}}</a> wrote {{since date}}</td>
-            </tr>
+
+            <h3 class="commit-metadata">{{message}}</h3>
+            <div class="commit-metadata">
+                {{#if _links.cont:author.href}}
+                    <a href="{{_links.cont:author.href}}" title="{{email}}">{{author}}</a>
+                {{else}}
+                    <span title="{{email}}">{{author}}</span>
+                {{/if}}
+                wrote <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time>
+            </div>
+
+            {{#each diffs}}
+                {{#equal @key @root.path}}
+                    <table class="diff">
+                        {{#each this}}
+                            {{#if this.add}}
+                                <tr class="add">
+                                    <td>{{this.line}}</td>
+                                    <td></td>
+                                    <td>{{this.text}}</td>
+                                </tr>
+                            {{else}}
+                                {{#if this.minus}}
+                                    <tr class="remove">
+                                        <td></td>
+                                        <td>{{this.line}}</td>
+                                        <td>{{this.text}}</td>
+                                    </tr>
+                                {{else}}
+                                    <tr>
+                                        <td>{{this.line}}</td>
+                                        <td>{{this.line}}</td>
+                                        <td>{{this.text}}</td>
+                                    </tr>
+                                {{/if}}
+                            {{/if}}
+                        {{/each}}
+                    </table>
+                {{/equal}}
+            {{/each}}
+
         {{/each}}
         </table>
     {{else}}
