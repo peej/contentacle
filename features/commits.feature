@@ -48,7 +48,7 @@ Feature:
         And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 2
         Then the response status code should be 201
         And I remember the commit sha from the location header
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
+        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 7
         Then the response status code should be 200
         And the content-type response header should be "application/hal+yaml"
         And response property "message" should be "Undo change {sha}" with sha 2
@@ -62,7 +62,7 @@ Feature:
             """
         Then the response status code should be 201
         And I remember the commit sha from the location header
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
+        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 7
         Then the response status code should be 200
         And the content-type response header should be "application/hal+yaml"
         And response property "message" should be "Custom commit message"
@@ -78,7 +78,7 @@ Feature:
             """
         Then the response status code should be 201
         And I remember the commit sha from the location header
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 6
+        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 7
         And the content-type response header should be "application/hal+yaml"
         And response property "message" should be "Custom commit message"
 
