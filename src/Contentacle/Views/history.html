@@ -8,50 +8,29 @@
 
     {{#if _embedded.cont:commit}}
         {{#each _embedded.cont:commit}}
-            {{#showDay date}}
-                <h2>Commits on {{date date 'M j, Y'}}</h2>
-            {{/showDay}}
+            {{#contains diffs @root.path}}
+                {{#showDay date}}
+                    <h2>Commits on {{date date 'M j, Y'}}</h2>
+                {{/showDay}}
 
-            <h3 class="commit-metadata">{{message}}</h3>
-            <div class="commit-metadata">
-                {{#if _links.cont:author.href}}
-                    <a href="{{_links.cont:author.href}}" title="{{email}}">{{author}}</a>
-                {{else}}
-                    <span title="{{email}}">{{author}}</span>
-                {{/if}}
-                wrote <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time>
-            </div>
+                <h3 class="commit-metadata">{{message}}</h3>
+                <div class="commit-metadata">
+                    {{#if _links.cont:author.href}}
+                        <a href="{{_links.cont:author.href}}" title="{{email}}">{{author}}</a>
+                    {{else}}
+                        <span title="{{email}}">{{author}}</span>
+                    {{/if}}
+                    wrote <a href="{{_links.self.href}}">
+                        <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time>
+                    </a>
+                </div>
 
-            {{#each diffs}}
-                {{#equal @key @root.path}}
-                    <table class="diff">
-                        {{#each this}}
-                            {{#if this.add}}
-                                <tr class="add">
-                                    <td>{{this.line}}</td>
-                                    <td></td>
-                                    <td>{{this.text}}</td>
-                                </tr>
-                            {{else}}
-                                {{#if this.minus}}
-                                    <tr class="remove">
-                                        <td></td>
-                                        <td>{{this.line}}</td>
-                                        <td>{{this.text}}</td>
-                                    </tr>
-                                {{else}}
-                                    <tr>
-                                        <td>{{this.line}}</td>
-                                        <td>{{this.line}}</td>
-                                        <td>{{this.text}}</td>
-                                    </tr>
-                                {{/if}}
-                            {{/if}}
-                        {{/each}}
-                    </table>
-                {{/equal}}
-            {{/each}}
-
+                {{#each diffs}}
+                    {{#equal @key @root.path}}
+                        {{>diff this}}
+                    {{/equal}}
+                {{/each}}
+            {{/contains}}
         {{/each}}
         </table>
     {{else}}

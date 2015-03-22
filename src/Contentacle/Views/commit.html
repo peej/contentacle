@@ -12,31 +12,7 @@
             {{#each diffs}}
                 <li>
                     <h3><a href="{{@root._links.cont:documents.href}}/{{@key}}">{{@key}}</a></h3>
-                    <table class="diff">
-                        {{#each this}}
-                            {{#if this.add}}
-                                <tr class="add">
-                                    <td>{{this.line}}</td>
-                                    <td></td>
-                                    <td>{{this.text}}</td>
-                                </tr>
-                            {{else}}
-                                {{#if this.minus}}
-                                    <tr class="remove">
-                                        <td></td>
-                                        <td>{{this.line}}</td>
-                                        <td>{{this.text}}</td>
-                                    </tr>
-                                {{else}}
-                                    <tr>
-                                        <td>{{this.line}}</td>
-                                        <td>{{this.line}}</td>
-                                        <td>{{this.text}}</td>
-                                    </tr>
-                                {{/if}}
-                            {{/if}}
-                        {{/each}}
-                    </table>
+                    {{>diff}}
                 </li>
             {{/each}}
         </ul>

@@ -1,0 +1,12 @@
+<table class="diff">
+    {{#each this}}
+        <tr
+            {{#equal add "+"}}class="add"{{/equal}}
+            {{#equal minus "-"}}class="remove"{{/equal}}
+        >
+            <td>{{add}}</td>
+            <td>{{minus}}</td>
+            <td>{{text}}</td>
+        </tr>
+    {{/each}}
+</table>

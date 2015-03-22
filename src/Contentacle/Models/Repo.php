@@ -218,17 +218,13 @@ class Repo extends Model
         foreach ($commit->diff->diff as $filename => $lines) {
             $diff = array();
             foreach ($lines as $line) {
-                preg_match('/^([0-9]+)([ +-])(.*)$/', $line, $match);
+                preg_match('/^([0-9-]+),([0-9+]) (.*)$/', $line, $match);
                 if ($match) {
                     $item = array(
-                        'line' => $match[1],
+                        'add' => $match[2],
+                        'minus' => $match[1],
                         'text' => $match[3]
                     );
-                    if ($match[2] == '+') {
-                        $item['add'] = true;
-                    } elseif ($match[2] == '-') {
-                        $item['minus'] = true;
-                    }
                     $diff[] = $item;
                 }
             }

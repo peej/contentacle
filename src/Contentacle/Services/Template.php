@@ -81,6 +81,11 @@ class Template extends \LightnCandy
                             return $cs;
                         }
                     },
+                    'contains' => function ($cs, $args) {
+                        if (is_array($args[0]) && isset($args[0][$args[1]])) {
+                            return $cs;
+                        }
+                    },
                     'showDay' => function ($cs, $args) {
                         $date = date('dmY', $args[0]);
                         if ($this->currentDay != $date) {
