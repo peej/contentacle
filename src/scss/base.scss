@@ -79,6 +79,10 @@ form {
     margin: 1em 20px;
 }
 
+li {
+    margin: 0.5em 0;
+}
+
 h1,
 h2,
 h3,
@@ -88,7 +92,7 @@ h4 {
 }
 
 h2 {
-    color: $red-colour;
+    color: $yellow-colour;
 }
 
 h1 { font-size: 2em; }
@@ -107,7 +111,7 @@ table {
 }
 
 caption {
-    color: $red-colour;
+    color: $yellow-colour;
     margin: 10px;
     font-size: 1.3em;
 }
@@ -116,7 +120,7 @@ th,
 td {
     border-bottom: 1px solid $grey-colour-medium;
     background: $grey-colour-light;
-    padding: 8px 8px 4px;
+    padding: 12px 8px 8px;
     font-size: 80%;
     color: #210;
 }
@@ -128,11 +132,11 @@ td:first-child {
 th {
     font-weight: normal;
     text-align: left;
-    background: $red-colour;
-    border-bottom-color: $red-colour-highlight;
+    background: $yellow-colour;
+    border-bottom-color: $yellow-colour-highlight;
 
     &:first-child {
-        border-left: 1px solid $red-colour-highlight;
+        border-left: 1px solid $yellow-colour-highlight;
     }
 }
 

@@ -5,12 +5,30 @@ table.diff {
     box-sizing: border-box;
 }
 
-.diff tr.add td:nth-child(1) {
-    border-left-color: $green-colour;
+.diff tr.add td {
+    background-color: $green-background;
+    border-color: $green-colour-highlight;
+
+    &:nth-child(1) {
+        border-left-color: $green-colour;
+    }
 }
 
-.diff tr.remove td:nth-child(1) {
-    border-left-color: $red-colour;
+.diff tr.add:nth-child(even) td {
+    background-color: $green-background-even;
+}
+
+.diff tr.remove td {
+    background-color: $red-background;
+    border-color: $red-colour-highlight;
+
+    &:nth-child(1) {
+        border-left-color: $red-colour;
+    }
+}
+
+.diff tr.remove:nth-child(even) td {
+    background-color: $red-background-even;
 }
 
 .diff tr td {
