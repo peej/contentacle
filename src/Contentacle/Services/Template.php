@@ -22,6 +22,12 @@ class Template extends \LightnCandy
         ) {
             $compiled = self::compile(file_get_contents($templatePath), array(
                 'flags' => self::FLAG_SPVARS | self::FLAG_THIS | self::FLAG_ERROR_EXCEPTION | self::FLAG_ADVARNAME,
+                'basedir' => array(
+                    'src/Contentacle/Views'
+                ),
+                'fileext' => array(
+                    '.html'
+                ),
                 'helpers' => array(
                     'rel' => function ($args) {
                         if (substr($args[0], 0, 5) == 'cont:') {

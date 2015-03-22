@@ -1,0 +1,11 @@
+<h2 class="commit-metadata">{{message}}</h2>
+<div class="commit-metadata">
+    {{#if _links.cont:author.href}}
+        <a href="{{_links.cont:author.href}}" title="{{email}}">{{author}}</a>
+    {{else}}
+        <span title="{{email}}">{{author}}</span>
+    {{/if}}
+    wrote <a href="{{_links.self.href}}">
+        <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time>
+    </a>
+</div>
