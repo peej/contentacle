@@ -38,8 +38,20 @@
                             <span class="icon-page"></span>
                             <a href="{{_links.self.href}}">{{filename}}</a>
                         </td>
-                        <td><a href="{{_links.cont:commit.href}}">{{truncate _embedded.cont:commit.0.message 80}}</a></td>
-                        <td><a href="{{_links.cont:user.href}}">{{author}}</a> wrote <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time></td>
+                        <td>
+                            <a href="{{_links.cont:commit.href}}">{{truncate _embedded.cont:commit.0.message 80}}</a>
+                        </td>
+                        <td>
+                            {{#if _links.cont:author.href}}
+                                <a href="{{_links.cont:author.href}}">{{author}}</a>
+                            {{else}}
+                                {{author}}
+                            {{/if}}
+                            wrote
+                            <a href="{{_links.cont:commit.href}}">
+                                <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time>
+                            </a>
+                        </td>
                     {{/if}}
                 </tr>
             {{/each}}
