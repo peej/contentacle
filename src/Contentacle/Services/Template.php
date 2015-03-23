@@ -82,7 +82,16 @@ class Template extends \LightnCandy
                         }
                     },
                     'contains' => function ($cs, $args) {
-                        if (is_array($args[0]) && isset($args[0][$args[1]])) {
+                        if (!is_array($args[0])) {
+                            return;
+                        }
+                        if (isset($args[2])) {
+                            foreach ($args[0] as $item) {
+                                if (isset($item[$args[1]]) && $item[$args[1]] == $args[2]) {
+                                    return $item;
+                                }
+                            }
+                        } elseif (isset($args[0][$args[1]])) {
                             return $cs;
                         }
                     },
