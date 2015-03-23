@@ -44,10 +44,6 @@ class Commits extends WithinBranch {
             if ($this->embed) {
                 $commits = $repo->commits($branchName, $start, $end);
 
-                usort($commits, function ($a, $b) {
-                    return $a['date'] < $b['date'];
-                });
-                
                 foreach ($commits as $commit) {
                     $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $commit['sha'])));
                 }
