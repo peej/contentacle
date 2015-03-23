@@ -33,8 +33,8 @@ Feature:
         Then response property "_links->self->href" should be "/users/peej/repos/test/branches/master/merges/unmergable"
         And the content-type response header should be "application/hal+yaml"
         And response property "canMerge" should be "false"
-        And response property "conflicts->clash.txt->0" should be "1-Clash all over the place"
-        And response property "conflicts->clash.txt->1" should be "1+This will clash"
+        And response property "conflicts->clash.txt->0" should be "-,1 Clash all over the place"
+        And response property "conflicts->clash.txt->1" should be "1,+ This will clash"
 
     Scenario: Branch can not be merged with itself
         Given I send a GET request on "/users/peej/repos/test/branches/master/merges/master"
