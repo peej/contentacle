@@ -5,6 +5,10 @@
         <a href="{{_links.cont:branch.href}}">{{branch}}</a>
     </h1>
 
+    {{#if var.description}}
+        {{{markdown var.description}}}
+    {{/if}}
+
     <div class="path">
         <a href="{{_links.cont:branch.href}}">{{branch}}</a> /
         {{#if var.breadcrumb}}
@@ -59,4 +63,8 @@
     {{else}}
         <p>There are no documents yet.</p>
     {{/if}}
+
+    {{#contains _embedded.cont:document "filename" "README.md"}}
+        {{{markdown this.content}}}
+    {{/contains}}
 </div>

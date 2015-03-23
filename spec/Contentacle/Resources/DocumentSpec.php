@@ -10,6 +10,7 @@ class DocumentSpec extends ObjectBehavior
     function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
     {
         $repo->prop('name')->willReturn('Extraction');
+        $repo->prop('description')->willReturn('Extraction is the art of infiltrating the mind of any person to steal their secrets.');
         $repo->prop('username')->willReturn('cobb');
         $repo->documents('master', null)->willReturn(array('new-york'));
         $repo->documents('master', 'new-york')->willReturn(array('new-york/the-hotel'));
