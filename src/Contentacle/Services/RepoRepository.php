@@ -53,12 +53,22 @@ class RepoRepository
     {
         $data['username'] = $user->username;
 
+        if (!isset($data['name']) || $data['name'] == '') {
+            throw new \Contentacle\Exceptions\RepoException('Can not create a repo without a name');
+        }
+
         if (!isset($data['description']) || $data['description'] == '') {
             $data['description'] = 'No description';
         }
 
+        $readme = $data['name']."\n".
+            str_repeat('=', strlen($data['name']))."\n".
+            "\n".
+            $data['description']."\n";
+
         $repo = $this->repoProvider->__invoke($data);
         $repo->writeMetadata();
+        $repo->createDocument('master', 'README.md', $readme, 'Initial commit');
 
         return $repo;
     }
