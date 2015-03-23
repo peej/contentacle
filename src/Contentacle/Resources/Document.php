@@ -67,35 +67,40 @@ class Document extends WithinDocument
                 'dir' => true
             ));
 
-            $breadcrumb = array();
-            $breadcrumbUrl = '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents';
-            foreach (explode('/', $path) as $part) {
-                if ($part) {
-                    $breadcrumbUrl .= '/'.$part;
-                    $breadcrumb[$breadcrumbUrl] = $part;
-                }
-            }
-            $response->addVar('breadcrumb', $breadcrumb);
-
             $response->addLink('self', $this->buildUrl($username, $repoName, $branchName, 'documents', $path));
             $response->addLink('cont:doc', '/rels/document');
 
             $documents = $repo->documents($branchName, $path);
-            $commits = $repo->commits($branchName, null, 1);
 
-            foreach ($documents as $filename) {
-                if ($this->embed) {
-                    $response->embed('cont:document', $this->getChildResource('\Contentacle\Resources\Document', array($username, $repoName, $branchName, $filename, false)));
-                } else {
-                    $response->addLink('cont:document', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$filename);
-                }
-            }
+            if ($this->embed) {
+                $commits = $repo->commits($branchName, null, 1);
 
-            foreach ($commits as $commit) {
-                if ($this->embed) {
-                    $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $commit['sha'])));
+                $breadcrumb = array();
+                $breadcrumbUrl = '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents';
+                foreach (explode('/', $path) as $part) {
+                    if ($part) {
+                        $breadcrumbUrl .= '/'.$part;
+                        $breadcrumb[$breadcrumbUrl] = $part;
+                    }
                 }
-                $response->addLink('cont:commit', $this->buildUrl($username, $repoName, $branchName, 'commits', $commit['sha']));
+
+                $response->addVar('breadcrumb', $breadcrumb);
+                $response->addVar('description', $repo->description);
+
+                foreach ($documents as $filename) {
+                    if ($this->embed) {
+                        $response->embed('cont:document', $this->getChildResource('\Contentacle\Resources\Document', array($username, $repoName, $branchName, $filename, false)));
+                    } else {
+                        $response->addLink('cont:document', '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/documents/'.$filename);
+                    }
+                }
+
+                foreach ($commits as $commit) {
+                    if ($this->embed) {
+                        $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $commit['sha'])));
+                    }
+                    $response->addLink('cont:commit', $this->buildUrl($username, $repoName, $branchName, 'commits', $commit['sha']));
+                }
             }
 
             return $response;
@@ -110,6 +115,8 @@ class Document extends WithinDocument
                 return $response;
 
             } catch (\Contentacle\Exceptions\RepoException $e) {}
+        } catch (\Git\Exception $e) {
+            return $response;
         }
         throw new \Tonic\NotFoundException;
     }
