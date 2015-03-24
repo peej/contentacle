@@ -11,9 +11,13 @@
     {{#if parents}}
         <span class="parents">
             {{count parents "parent"}}
-            {{#each _links.cont:parent}}
-                <a href="{{href}}">{{truncate title 8}}</a>
-            {{/each}}
+            {{#if _links.cont:parent.href}}
+                <a href="{{_links.cont:parent.href}}">{{truncate _links.cont:parent.title 8}}</a>
+            {{else}}
+                {{#each _links.cont:parent}}
+                    <a href="{{href}}">{{truncate title 8}}</a>
+                {{/each}}
+            {{/if}}
         </span>
     {{/if}}
 </div>
