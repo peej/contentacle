@@ -219,7 +219,7 @@ class Repo extends Model
             $diff = array();
             foreach ($lines as $line) {
                 preg_match('/^([0-9-]+),([0-9+]) (.*)$/', $line, $match);
-                if ($match) {
+                if ($match && $match[1] && $match[2]) {
                     $item = array(
                         'add' => $match[2],
                         'minus' => $match[1],
