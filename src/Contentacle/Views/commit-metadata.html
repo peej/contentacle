@@ -12,7 +12,7 @@
         <span class="parents">
             {{count parents "parent"}}
             {{#each _links.cont:parent}}
-                <a href="{{href}}">{{truncate (index @root.parents @key) 8}}</a>
+                <a href="{{href}}">{{truncate title 8}}</a>
             {{/each}}
         </span>
     {{/if}}

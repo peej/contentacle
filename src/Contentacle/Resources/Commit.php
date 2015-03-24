@@ -61,7 +61,12 @@ class Commit extends WithinBranch
 
             if (isset($commit['parents'])) {
                 foreach ($commit['parents'] as $parent) {
-                    $response->addLink('cont:parent', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits', $parent));
+                    $response->addLink(
+                        'cont:parent',
+                        $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits', $parent),
+                        false,
+                        $parent
+                    );
                 }
             }
 
