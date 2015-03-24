@@ -42,6 +42,13 @@ class Template extends \LightnCandy
                     'capitalise' => function ($args) {
                         return ucwords($args[0]);
                     },
+                    'count' => function ($args) {
+                        $count = count($args[0]);
+                        if (isset($args[1])) {
+                            return $count.' '.$args[1].($count == 0 || $count > 1 ? 's' : '');
+                        }
+                        return $count;
+                    },
                     'default' => function ($args) {
                         return $args[0] ? $args[0] : $args[1];
                     },

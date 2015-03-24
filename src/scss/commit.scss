@@ -22,15 +22,19 @@ div.commit-metadata {
     padding: 6px 12px;
     color: #fff;
     font-size: 80%;
-}
 
-div.commit-metadata a {
-    color: #fff;
-    text-decoration: none;
-
-    &:hover {
+    a {
         color: #fff;
-        text-decoration: underline;
+        text-decoration: none;
+
+        &:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+    }
+
+    span.parents {
+        float: right;
     }
 }
 
