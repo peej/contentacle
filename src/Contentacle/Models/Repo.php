@@ -217,14 +217,35 @@ class Repo extends Model
 
         foreach ($commit->diff->diff as $filename => $lines) {
             $diff = array();
+            $lastItem = null;
             foreach ($lines as $line) {
-                preg_match('/^([0-9-]+),([0-9+]) (.*)$/', $line, $match);
+                preg_match('/^([0-9-]+),([0-9+]+) (.*)$/', $line, $match);
+                
                 if ($match && $match[1] && $match[2]) {
                     $item = array(
                         'add' => $match[2],
                         'minus' => $match[1],
                         'text' => $match[3]
                     );
+
+                    if (
+                        $lastItem &&
+                        $item['add'] == '+' &&
+                        $lastItem['minus'] == '-' &&
+                        similar_text($lastItem['text'], $item['text']) > strlen($item['text']) / 1.5
+                    ) {
+                        array_pop($diff);
+                        $fineDiff = new \cogpowered\FineDiff\Diff;
+                        $diffString = $fineDiff->render($lastItem['text'], $match[3]);
+                        $lastItem['text'] = preg_replace('#<ins>.*?</ins>#', '', $diffString);
+                        $diff[] = $lastItem;
+                        $item['text'] = preg_replace('#<del>.*?</del>#', '', $diffString);
+                        $lastItem = null;
+                    } else {
+                        $lastItem = $item;
+                        $item['text'] = htmlspecialchars($item['text']);
+                    }
+
                     $diff[] = $item;
                 }
             }

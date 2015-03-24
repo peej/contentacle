@@ -49,4 +49,14 @@ table.diff {
         width: 20px;
         text-align: right;
     }
+
+    ins {
+        background-color: $green-colour;
+        text-decoration: none;
+    }
+
+    del {
+        background-color: $red-colour;
+        text-decoration: none;
+    }
 }
