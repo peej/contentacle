@@ -49,8 +49,8 @@ class Commit extends WithinBranch
             $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits', $sha));
             $response->addLink('cont:doc', '/rels/commit');
 
-            if (isset($commit['username'])) {
-                $response->addLink('cont:author', $this->buildUrlWithFormat($commit['username']));
+            if (isset($commit['authorname'])) {
+                $response->addLink('cont:author', $this->buildUrlWithFormat($commit['authorname']));
             }
 
             if (isset($commit['files'])) {

@@ -236,7 +236,7 @@ class Repo extends Model
             'parents' => $commit->parents,
             'message' => $commit->message,
             'date' => $commit->date,
-            'username' => $this->userRepo->getUsernameFromEmail($commit->email),
+            'authorname' => $this->userRepo->getUsernameFromEmail($commit->email),
             'author' => $commit->user,
             'email' => $commit->email,
             'files' => $commit->getFiles(),

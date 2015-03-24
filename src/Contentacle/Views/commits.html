@@ -16,7 +16,14 @@
             {{/showDay}}
             <li>
                 <a href="{{_links.self.href}}">{{message}}</a>
-                <span><a href="{{_links.cont:user.href}}">{{author}}</a> wrote <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time></span>
+                <span>
+                    {{#if _links.cont:author.href}}
+                        <a href="{{_links.cont:author.href}}" title="{{email}}">{{author}}</a>
+                    {{else}}
+                        <span title="{{email}}">{{author}}</span>
+                    {{/if}}
+                    wrote <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time>
+                </span>
             </li>
         {{/each}}
         </ol>
