@@ -4,9 +4,9 @@ namespace Contentacle\Models;
 
 class Repo extends Model
 {
-    private $git, $gitProvider, $repoDir, $userRepo, $fileAccess, $yaml;
+    private $git, $gitProvider, $repoDir, $userRepo, $fileAccess, $yaml, $diffCalculator;
 
-    function __construct($data, $gitProvider, $repoDir, $userRepo, $fileAccess, $yaml)
+    function __construct($data, $gitProvider, $repoDir, $userRepo, $fileAccess, $yaml, $diffCalculator)
     {
         if (!isset($data['username'])) {
             throw new \Contentacle\Exceptions\RepoException("No username provided when creating repo");
@@ -21,6 +21,7 @@ class Repo extends Model
         $this->userRepo = $userRepo;
         $this->fileAccess = $fileAccess;
         $this->yaml = $yaml;
+        $this->diffCalculator = $diffCalculator;
 
         $user = $userRepo->getUser($data['username']);
         $this->git->setUser($user->name, $user->email);
@@ -216,40 +217,7 @@ class Repo extends Model
         $diffs = array();
 
         foreach ($commit->diff->diff as $filename => $lines) {
-            $diff = array();
-            $lastItem = null;
-            foreach ($lines as $line) {
-                preg_match('/^([0-9-]+),([0-9+]+) (.*)$/', $line, $match);
-                
-                if ($match && $match[1] && $match[2]) {
-                    $item = array(
-                        'add' => $match[2],
-                        'minus' => $match[1],
-                        'text' => $match[3]
-                    );
-
-                    if (
-                        $lastItem &&
-                        $item['add'] == '+' &&
-                        $lastItem['minus'] == '-' &&
-                        similar_text($lastItem['text'], $item['text']) > strlen($item['text']) / 1.5
-                    ) {
-                        array_pop($diff);
-                        $fineDiff = new \cogpowered\FineDiff\Diff;
-                        $diffString = $fineDiff->render($lastItem['text'], $match[3]);
-                        $lastItem['text'] = preg_replace('#<ins>.*?</ins>#', '', $diffString);
-                        $diff[] = $lastItem;
-                        $item['text'] = preg_replace('#<del>.*?</del>#', '', $diffString);
-                        $lastItem = null;
-                    } else {
-                        $lastItem = $item;
-                        $item['text'] = htmlspecialchars($item['text']);
-                    }
-
-                    $diff[] = $item;
-                }
-            }
-            $diffs[$filename] = $diff;
+            $diffs[$filename] = $this->diffCalculator->calculate($lines);
         }
 
         return array(
