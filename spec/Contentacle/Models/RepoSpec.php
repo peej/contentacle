@@ -44,7 +44,7 @@ class RepoSpec extends ObjectBehavior
         $commit->getMetadata('parents')->willReturn(array('654321'));
         $commit->getMetadata('message')->willReturn('Added information about forever spinning totems');
         $commit->getMetadata('date')->willReturn('1392493822');
-        $commit->getMetadata('user')->willReturn('cobb');
+        $commit->getMetadata('user')->willReturn('Dominick Cobb');
         $commit->getMetadata('email')->willReturn('cobb@localhost');
         $commit->getFiles()->willReturn(array('totem.txt', 'new-york/the-hotel/mr-charles.txt'));
         $commit->getMetadata('diff')->willReturn((object)array(
@@ -128,7 +128,8 @@ class RepoSpec extends ObjectBehavior
         $history[0]['sha']->shouldBe('123456');
         $history[0]['message']->shouldBe('Added information about forever spinning totems');
         $history[0]['date']->shouldBe('1392493822');
-        $history[0]['username']->shouldBe('cobb');
+        $history[0]['author']->shouldBe('Dominick Cobb');
+        $history[0]['authorname']->shouldBe('cobb');
         $history[0]['email']->shouldBe('cobb@localhost');
     }
 
@@ -138,7 +139,8 @@ class RepoSpec extends ObjectBehavior
         $commits[0]['sha']->shouldBe('123456');
         $commits[0]['message']->shouldBe('Added information about forever spinning totems');
         $commits[0]['date']->shouldBe('1392493822');
-        $commits[0]['username']->shouldBe('cobb');
+        $commits[0]['author']->shouldBe('Dominick Cobb');
+        $commits[0]['authorname']->shouldBe('cobb');
         $commits[0]['email']->shouldBe('cobb@localhost');
     }
 
@@ -149,7 +151,8 @@ class RepoSpec extends ObjectBehavior
         $commit['parents']->shouldBe(array('654321'));
         $commit['message']->shouldBe('Added information about forever spinning totems');
         $commit['date']->shouldBe('1392493822');
-        $commit['username']->shouldBe('cobb');
+        $commit['author']->shouldBe('Dominick Cobb');
+        $commit['authorname']->shouldBe('cobb');
         $commit['email']->shouldBe('cobb@localhost');
         $commit['files']->shouldBe(array(
             'totem.txt', 'new-york/the-hotel/mr-charles.txt'

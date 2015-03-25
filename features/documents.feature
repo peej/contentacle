@@ -55,7 +55,7 @@ Feature:
         And the content-type response header should be "application/hal+yaml"
         And response property "_embedded->cont:commit->0->_links->self->href" should be "/users/peej/repos/test/branches/master/commits/{sha}" with sha 1
         And response property "_embedded->cont:commit->0->message" should be "1st commit"
-        And response property "_embedded->cont:commit->0->username" should be "peej"
+        And response property "_embedded->cont:commit->0->authorname" should be "peej"
         And response property "_embedded->cont:commit->0->author" should be "Paul James"
         And response property "_embedded->cont:commit->0->sha" should be sha 1
 

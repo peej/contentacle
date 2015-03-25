@@ -21,7 +21,7 @@ Feature:
         And response property "_links->cont:user->href" should be "/users/peej"
         And response property "sha" should be sha 1
         And response property "email" should be "paul@peej.co.uk"
-        And response property "username" should be "peej"
+        And response property "authorname" should be "peej"
         And response property "author" should be "Paul James"
         And response property "files" should contain "adir/emptyFile.txt"
         And response property "_links->cont:document->0->href" should be "/users/peej/repos/test/branches/master/documents/adir/emptyFile.txt"

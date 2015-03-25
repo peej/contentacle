@@ -142,7 +142,7 @@ class Repo extends Model
                     'path' => $document->filename,
                     'dir' => false,
                     'sha' => $document->sha,
-                    'username' => $this->userRepo->getUsernameFromEmail($document->email),
+                    'authorname' => $this->userRepo->getUsernameFromEmail($document->email),
                     'email' => $document->email,
                     'author' => $document->user,
                     'date' => $document->date,
@@ -168,7 +168,7 @@ class Repo extends Model
                         'sha' => $commit->sha,
                         'message' => $commit->message,
                         'date' => $commit->date,
-                        'username' => $this->userRepo->getUsernameFromEmail($commit->email),
+                        'authorname' => $this->userRepo->getUsernameFromEmail($commit->email),
                         'author' => $commit->user,
                         'email' => $commit->email
                     );
@@ -196,7 +196,7 @@ class Repo extends Model
                 'sha' => $commit->sha,
                 'message' => $commit->message,
                 'date' => $commit->date,
-                'username' => $this->userRepo->getUsernameFromEmail($commit->email),
+                'authorname' => $this->userRepo->getUsernameFromEmail($commit->email),
                 'author' => $commit->user,
                 'email' => $commit->email
             );
