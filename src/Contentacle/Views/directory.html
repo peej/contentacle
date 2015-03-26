@@ -10,13 +10,13 @@
     {{/if}}
 
     <div class="path">
-        <a href="{{_links.cont:branch.href}}">{{branch}}</a> /
+        {{>branch-select}}
         {{#if var.breadcrumb}}
             {{#each var.breadcrumb}}
                 <a href="{{@key}}">{{this}}</a> /
             {{/each}}
         {{/if}}
-        <a href="new.html" class="icon-plus" title="Create a new page"></a>
+        <a href="new.html" class="icon-plus" title="Create a new document"></a>
     </div>
 
     {{#each _embedded.cont:commit}}
