@@ -10,7 +10,7 @@
     {{/if}}
 
     <div class="path">
-        <a href="{{_links.cont:branch.href}}">{{branch}}</a> /
+        {{>branch-select}}
         {{#if var.breadcrumb}}
             {{#each var.breadcrumb}}
                 <a href="{{@key}}">{{this}}</a> /

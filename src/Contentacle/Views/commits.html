@@ -5,6 +5,8 @@
         {{branch}}
     </h1>
 
+    {{>branch-select}}
+
     {{#if _embedded.cont:commit}}
         {{#each _embedded.cont:commit}}
             {{#showDayEnd date}}
