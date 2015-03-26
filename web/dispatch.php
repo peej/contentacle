@@ -32,6 +32,10 @@ $container['temp_dir'] = sys_get_temp_dir();
 $container['yaml'] = function () {
     return new Contentacle\Services\Yaml;
 };
+$container['diff'] = function () {
+    $granularity = new cogpowered\FineDiff\Granularity\Word;
+    return new Contentacle\Services\Diff($granularity);
+};
 $container['template'] = function ($c) {
     return new Contentacle\Services\Template($c['temp_dir']);
 };
@@ -57,7 +61,7 @@ $container['user'] = function ($c) {
 };
 $container['repo'] = function ($c) {
     return function ($data) use ($c) {
-        return new Contentacle\Models\Repo($data, $c['git'], $c['repo_dir'], $c['user_repository'], $c['file'], $c['yaml']);
+        return new Contentacle\Models\Repo($data, $c['git'], $c['repo_dir'], $c['user_repository'], $c['file'], $c['yaml'], $c['diff']);
     };
 };
 $container['resource_factory'] = function ($c) {

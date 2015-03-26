@@ -16,7 +16,8 @@ class RepoSpec extends ObjectBehavior
         \Git\Blob $totem,
         \Git\Commit $commit,
         \Contentacle\Services\FileAccess $fileAccess,
-        \Contentacle\Services\Yaml $yaml
+        \Contentacle\Services\Yaml $yaml,
+        \Contentacle\Services\Diff $diff
     )
     {
         $fileAccess->read(Argument::any())->willReturn('Extraction instructions for Ariadne');
@@ -71,7 +72,7 @@ class RepoSpec extends ObjectBehavior
         $gitProvider = function ($username, $repoName) use ($repo) {
             return $repo->getWrappedObject();
         };
-        $this->beConstructedWith($data, $gitProvider, '', $userRepo, $fileAccess, $yaml);
+        $this->beConstructedWith($data, $gitProvider, '', $userRepo, $fileAccess, $yaml, $diff);
     }
 
     function it_is_initializable()
