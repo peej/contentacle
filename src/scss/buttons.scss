@@ -7,8 +7,8 @@
 button,
 a.button {
     display: inline-block;
-    background: #ddd;
-    border: 1px solid #ccc;
+    background: $grey-colour-medium;
+    border: 1px solid $grey-colour-dark;
     border-radius: 4px;
     color: #210;
     padding: 8px 16px;
@@ -23,7 +23,7 @@ a.button {
 
 button:hover,
 a.button:hover {
-    background-color: #eee;
+    background-color: $grey-colour-light;
     text-decoration: none;
 }
 
@@ -35,15 +35,15 @@ a.button:before {
 
 button.cancel,
 a.button.cancel {
-    color: #900;
+    color: $grey-colour;
 }
 
 button.okay,
 a.button.okay {
-    background-color: #5ca941;
+    background-color: $green-colour;
 }
 
 button.okay:hover,
 a.button.okay:hover {
-    background-color: #488632;
+    background-color: $green-colour-highlight;
 }
