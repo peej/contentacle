@@ -13,7 +13,7 @@ class CommitSpec extends ObjectBehavior
         $repo->prop('username')->willReturn('cobb');
         $repo->commit('master', '123456')->willReturn(array(
             'sha' => '123456',
-            'username' => 'cobb',
+            'authorname' => 'cobb',
             'files' => array('new-york/the-hotel/totem.txt')
         ));
         $repo->commit(Argument::cetera())->willThrow(new \Git\Exception);
@@ -25,6 +25,9 @@ class CommitSpec extends ObjectBehavior
             'username' => 'cobb',
             'sha' => '654321',
             'commit' => '123456'
+        ));
+        $repo->branches()->willReturn(array(
+            'master', 'branch'
         ));
 
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);

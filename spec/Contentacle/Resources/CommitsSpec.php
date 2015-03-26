@@ -14,6 +14,9 @@ class CommitsSpec extends ObjectBehavior
         $repo->commits(Argument::cetera())->willThrow(new \Tonic\NotFoundException);
         $repo->hasBranch('master')->willReturn(true);
         $repo->hasBranch(Argument::cetera())->willReturn(false);
+        $repo->branches()->willReturn(array(
+            'master', 'branch'
+        ));
         
         $repo->commit('master', '123456')->willReturn(array(
             'sha' => '123456',

@@ -12,6 +12,9 @@ class BranchSpec extends ObjectBehavior
         $repo->prop('name')->willReturn('extraction');
         $repo->prop('username')->willReturn('cobb');
         $repo->prop('description')->willReturn('Extraction instructions for Ariadne');
+        $repo->branches()->willReturn(array(
+            'master', 'branch'
+        ));
         
         $repo->hasBranch('master')->willReturn(true);
         $repo->hasBranch('branch')->willReturn(true);

@@ -18,6 +18,9 @@ class HistorySpec extends ObjectBehavior
             'sha' => '123456',
             'username' => 'cobb'
         ));
+        $repo->branches()->willReturn(array(
+            'master', 'branch'
+        ));
 
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
 

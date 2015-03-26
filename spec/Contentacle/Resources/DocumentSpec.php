@@ -12,6 +12,9 @@ class DocumentSpec extends ObjectBehavior
         $repo->prop('name')->willReturn('Extraction');
         $repo->prop('description')->willReturn('Extraction is the art of infiltrating the mind of any person to steal their secrets.');
         $repo->prop('username')->willReturn('cobb');
+        $repo->branches()->willReturn(array(
+            'master', 'branch'
+        ));
         $repo->documents('master', null)->willReturn(array('new-york'));
         $repo->documents('master', 'new-york')->willReturn(array('new-york/the-hotel'));
         $repo->documents('master', 'new-york/the-hotel')->willReturn(array('new-york/the-hotel/totem.txt'));
