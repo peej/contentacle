@@ -11,6 +11,7 @@
 
     <div class="path">
         {{>branch-select}}
+        <a href="{{_links.cont:documents.href}}">{{repo}}</a> /
         {{#if var.breadcrumb}}
             {{#each var.breadcrumb}}
                 <a href="{{@key}}">{{this}}</a> /
