@@ -23,12 +23,16 @@ $(function () {
       return $('<div/>').html(value).text();
     }
 
+    function updatePreview(value) {
+        $preview.html(marked(htmlEncode(value)));
+    }
+
     $edit.bind("keyup", function (e) {
         var textarea = this;
 
         window.clearTimeout(updateTimeout);
         updateTimeout = window.setTimeout(function () {
-            $preview.html(marked(htmlEncode(textarea.value)));
+            updatePreview(textarea.value);
         }, 300);
     });
 
@@ -58,7 +62,7 @@ $(function () {
         
     });
 
-    $preview.html(marked(htmlEncode($edit.val())));
+    updatePreview($edit.val());
 
     function resize() {
         $section.width($(window).width() - 2);

@@ -10,14 +10,14 @@
 }
 
 #edit {
-    float: right;
+    float: left;
     font-size: 16px;
     overflow-y: scroll;
     padding: 20px;
 }
 
 #preview {
-    float: left;
+    float: right;
     overflow-y: scroll;
 }
 
@@ -79,6 +79,7 @@ body.js #commit-toggle {
     cursor: pointer;
     margin: 0;
     width: 20px;
+    min-width: 0;
     height: 20px;
     padding: 4px;
 }

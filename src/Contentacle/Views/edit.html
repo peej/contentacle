@@ -13,7 +13,7 @@
 </header>
 <form action="{{_links.self.href}}" method="post" id="commit-form">
     <textarea name="content" id="edit">{{content}}</textarea>
-    <div id="preview"></div>
+    <div id="preview">{{markdown content}}</div>
     <div id="commit">
         <h1>Commit</h1>
         <p>Some words about how to save your changes.</p>
