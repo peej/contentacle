@@ -41,6 +41,15 @@ class Commits extends WithinBranch {
             $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits'));
             $response->addLink('cont:doc', '/rels/commits');
 
+            foreach ($repo->branches() as $branch) {
+                $response->addLink(
+                    'cont:branches',
+                    $this->buildUrlWithFormat($username, $repoName, $branch),
+                    false,
+                    $branch
+                );
+            }
+
             if ($this->embed) {
                 $commits = $repo->commits($branchName, $start, $end);
 

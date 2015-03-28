@@ -70,6 +70,15 @@ class Document extends WithinDocument
             $response->addLink('self', $this->buildUrl($username, $repoName, $branchName, 'documents', $path));
             $response->addLink('cont:doc', '/rels/document');
 
+            foreach ($repo->branches() as $branch) {
+                $response->addLink(
+                    'cont:branches',
+                    $this->buildUrlWithFormat($username, $repoName, $branch),
+                    false,
+                    $branch
+                );
+            }
+
             $documents = $repo->documents($branchName, $path);
 
             if ($this->embed) {
