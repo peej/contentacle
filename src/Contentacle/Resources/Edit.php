@@ -25,7 +25,7 @@ class Edit extends Resource
             $this->configureResponseWithDocument($response, $repo, $branchName, $document);
 
             $response->addVar('footer', false);
-
+            $response->addData($document);
             $response->addLink('self', $this->buildUrl($username, $repoName, $branchName, 'edit', $document['path']));
 
             return $response;
