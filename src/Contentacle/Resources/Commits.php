@@ -5,7 +5,7 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch/commits
  */
-class Commits extends WithinBranch {
+class Commits extends Resource {
 
     const PAGESIZE = 25;
 

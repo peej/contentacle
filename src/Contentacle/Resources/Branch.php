@@ -5,7 +5,7 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch
  */
-class Branch extends WithinBranch
+class Branch extends Resource
 {
     /**
      * Add user, repo and branch data to the response.

@@ -5,7 +5,7 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch/raw/(.+)$
  */
-class Raw extends WithinDocument
+class Raw extends Resource
 {
     /**
      * Get the raw contents of a document.

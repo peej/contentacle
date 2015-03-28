@@ -5,7 +5,7 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch/commits/([0-9a-f]{40})
  */
-class Commit extends WithinBranch
+class Commit extends Resource
 {
     /**
      * Get a commit.

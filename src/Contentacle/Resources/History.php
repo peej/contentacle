@@ -5,7 +5,7 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch/history/(.+)$
  */
-class History extends WithinDocument {
+class History extends Resource {
 
     /**
      * Get the history of a document
@@ -42,8 +42,10 @@ class History extends WithinDocument {
 
             $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName, 'history', $path));
             $response->addLink('cont:doc', '/rels/history');
-            $response->addLink('cont:document', $this->buildUrlWithFormat($username, $repoName, $branchName, 'documents', $path));
-            $response->addLink('cont:raw', $this->buildUrlWithFormat($username, $repoName, $branchName, 'raw', $path));
+            $response->addLink('cont:history', $this->buildUrl($username, $repoName, $branchName, 'history', $path));
+            $response->addLink('cont:raw', $this->buildUrl($username, $repoName, $branchName, 'raw', $path));
+            $response->addLink('cont:document', $this->buildUrl($username, $repoName, $branchName, 'documents', $path));
+            $response->addLink('cont:edit', $this->buildUrl($username, $repoName, $branchName, 'edit', $path));
 
             foreach ($history as $item) {
                 $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $item['sha'])));

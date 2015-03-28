@@ -6,10 +6,12 @@ namespace Contentacle\Resources;
  * @uri /users/:username/repos/:repo/branches/:branch/documents
  * @uri /users/:username/repos/:repo/branches/:branch/documents/?(.*)$
  */
-class Document extends WithinDocument
+class Document extends Resource
 {
     protected function configureResponseWithDocument($response, $repo, $branchName, $document)
     {
+        $response->addData($document);
+
         $response->addLink('self', $this->buildUrl($repo->username, strtolower($repo->name), $branchName, 'documents', $document['path']));
         $response->addLink('cont:doc', '/rels/document');
 

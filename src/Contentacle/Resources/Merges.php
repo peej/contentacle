@@ -5,7 +5,7 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch/merges
  */
-class Merges extends WithinBranch
+class Merges extends Resource
 {
     /**
      * Get a list of merges that can be performed on this branch.

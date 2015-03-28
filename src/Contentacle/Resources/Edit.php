@@ -5,7 +5,7 @@ namespace Contentacle\Resources;
 /**
  * @uri /users/:username/repos/:repo/branches/:branch/edit/?(.*)$
  */
-class Edit extends WithinDocument
+class Edit extends Resource
 {
     /**
      * Get the document edit form
