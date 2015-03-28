@@ -57,10 +57,14 @@ class Edit extends Resource
             $metadata = array();
 
             foreach ($_POST['metadata'] as $item) {
-                $metadata[$item['name']] = $item['value'];
+                if (isset($item['name']) && $item['name'] && isset($item['value']) && $item['value']) {
+                    $metadata[$item['name']] = $item['value'];
+                }
             }
 
-            $_POST['content'] = $this->yaml->encode($metadata)."---\n".$_POST['content'];
+            if ($metadata) {
+                $_POST['content'] = $this->yaml->encode($metadata)."---\n".$_POST['content'];
+            }
         }
 
         $repo = $this->repoRepository->getRepo($username, $repoName);

@@ -70,6 +70,7 @@ $container['resource_factory'] = function ($c) {
             'app' => $c['app'],
             'request' => $c['request'],
             'response' => $c['response'],
+            'yaml' => $c['yaml'],
             'oauth' => $c['oauth'],
             'userRepository' => $c['user_repository'],
             'repoRepository' => $c['repo_repository']
