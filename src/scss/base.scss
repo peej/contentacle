@@ -39,7 +39,8 @@ body {
 @import 'stage';
 @import 'footer';
 
-$site-width: 900px;
+$width-small: 700px;
+$width-smaller: 400px;
 
 body,
 a {
@@ -66,7 +67,8 @@ section {
 
 section > div {
     margin: 100px auto;
-    width: $site-width;
+    min-width: $width-smaller - 40px;
+    max-width: 900px;
 }
 
 h1,
@@ -109,8 +111,10 @@ h1.cthulhu:before {
 
 table {
     border-collapse: collapse;
+    box-sizing: border-box;
     margin: 20px 20px 0;
-    width: $site-width - 40px;
+    max-width: 860px;
+    width: calc(100% - 40px);
 }
 
 caption {
@@ -130,6 +134,22 @@ td {
 
 td:first-child {
     border-left: 1px solid $grey-colour-medium;
+}
+
+@media (max-width: $width-smaller) {
+    td {
+        display: none;
+    }
+
+    td:first-child {
+        display: block;
+    }
+}
+
+@media (max-width: $width-small) {
+    td:nth-child(2) {
+        display: none;
+    }
 }
 
 th {

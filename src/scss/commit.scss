@@ -7,6 +7,7 @@ h3.commit-metadata {
     font-family: "Satisfy", cursive;
     border: 1px solid $grey-colour-medium;
     background: #fff;
+    overflow: hidden;
     
     &:before {
         content: '“';
