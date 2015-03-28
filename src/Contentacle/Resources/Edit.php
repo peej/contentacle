@@ -26,7 +26,9 @@ class Edit extends Resource
 
             $response->addVar('footer', false);
             $response->addData($document);
+
             $response->addLink('self', $this->buildUrl($username, $repoName, $branchName, 'edit', $document['path']));
+            $response->addLink('cont:doc', '/rels/edit');
 
             return $response;
 
@@ -45,32 +47,32 @@ class Edit extends Resource
      */
     function commit($username, $repoName, $branchName, $path = null)
     {
-        if (!isset($_POST['content'])) {
+        if (!isset($this->request->data['content'])) {
             return new \Tonic\Response(400);
         }
 
-        if (!isset($_POST['message'])) {
-            $_POST['message'] = 'Update to '.$path;
+        if (!isset($this->request->data['message'])) {
+            $this->request->data['message'] = 'Update to '.$path;
         }
 
-        if (isset($_POST['metadata']) && is_array($_POST['metadata'])) {
+        if (isset($this->request->data['metadata']) && is_array($this->request->data['metadata'])) {
             $metadata = array();
 
-            foreach ($_POST['metadata'] as $item) {
+            foreach ($this->request->data['metadata'] as $item) {
                 if (isset($item['name']) && $item['name'] && isset($item['value']) && $item['value']) {
                     $metadata[$item['name']] = $item['value'];
                 }
             }
 
             if ($metadata) {
-                $_POST['content'] = $this->yaml->encode($metadata)."---\n".$_POST['content'];
+                $this->request->data['content'] = $this->yaml->encode($metadata)."---\n".$this->request->data['content'];
             }
         }
 
         $repo = $this->repoRepository->getRepo($username, $repoName);
         $path = $this->fixPath($path, $username, $repoName, $branchName, 'edit');
 
-        $repo->updateDocument($branchName, $path, $_POST['content'], $_POST['message']);
+        $repo->updateDocument($branchName, $path, $this->request->data['content'], $this->request->data['message']);
 
         return new \Tonic\Response(302, null, array(
             'Location' => $this->buildUrlWithFormat($username, $repoName, $branchName, 'documents', $path)
