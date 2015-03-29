@@ -118,7 +118,8 @@ $(function () {
         $body.removeClass("commit");
     });
 
-    $("#commit-toggle").click(function () {
+    $("#commit-toggle").click(function (e) {
+        e.stopPropagation();
         $body.addClass("commit");
     });
 

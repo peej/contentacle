@@ -68,12 +68,14 @@
     {{#if var.nav}}
         <script type="text/javascript">
 var menu = document.getElementsByTagName("nav")[0],
-    body = document.getElementsByTagName("body")[0];
+    body = document.getElementsByTagName("body")[0],
+    section = body.getElementsByTagName("section")[0];
 body.className = "js";
-menu.onmouseover = document.getElementById("nav-toggle").onclick = function () {
+menu.onmouseover = document.getElementById("nav-toggle").onclick = function (e) {
+    e.stopPropagation();
     body.className = "js menu";
 };
-menu.onmouseout = function () {
+menu.onmouseout = section.onclick = function () {
     body.className = "js";
 };
         </script>
