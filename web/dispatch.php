@@ -28,7 +28,8 @@ $container['request'] = function () {
 $container['repo_dir'] = __DIR__.'/../repos';
 $container['token_dir'] = __DIR__.'/../tokens';
 $container['authcode_dir'] = __DIR__.'/../authcodes';
-$container['temp_dir'] = sys_get_temp_dir();
+$container['template_dir'] = 'src/Contentacle/Views/';
+$container['complied_dir'] = sys_get_temp_dir();
 $container['yaml'] = function () {
     return new Contentacle\Services\Yaml;
 };
@@ -36,8 +37,11 @@ $container['diff'] = function () {
     $granularity = new cogpowered\FineDiff\Granularity\Word;
     return new Contentacle\Services\Diff($granularity);
 };
+$container['markdown'] = function ($c) {
+    return new \Michelf\Markdown;
+};
 $container['template'] = function ($c) {
-    return new Contentacle\Services\Template($c['temp_dir']);
+    return new Contentacle\Services\Template($c['template_dir'], $c['complied_dir'], $c['markdown']);
 };
 $container['git'] = function ($c) {
     return function ($username, $repoName) use ($c) {
