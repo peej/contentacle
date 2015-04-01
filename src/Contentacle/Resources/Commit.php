@@ -31,7 +31,7 @@ class Commit extends Resource
      * @links cont:branch Link to the branch within the repository.
      * @links cont:documents Link to the documents within the branch.
      * @links cont:commits Link to the commits within the branch.
-     * @links cont:author Link to the author of this version of this document.
+     * @links author Link to the author of this version of this document.
      * @links cont:document Link to documents within this commit.
      */
     function get($username, $repoName, $branchName, $sha)
@@ -50,7 +50,7 @@ class Commit extends Resource
             $response->addLink('cont:doc', '/rels/commit');
 
             if (isset($commit['authorname'])) {
-                $response->addLink('cont:author', $this->buildUrlWithFormat($commit['authorname']));
+                $response->addLink('author', $this->buildUrlWithFormat($commit['authorname']));
             }
 
             if (isset($commit['files'])) {

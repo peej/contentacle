@@ -46,9 +46,10 @@ class Document extends Resource
      * @links cont:history Link to the history of the document.
      * @links cont:raw Link to the raw content of the document.
      * @links cont:document Link to itself.
-     * @links cont:edit Link to the form to edit itself.
+     * @links create-form Link to the form to create a new document.
+     * @links edit-form Link to the form to edit itself.
      * @links cont:commit Link to the commit of this version of this document.
-     * @links cont:author Link to the author of this version of this document.
+     * @links author Link to the author of this version of this document.
      * @embeds cont:document Documents within this document (if it is a directory).
      */
     function get($username, $repoName, $branchName, $path = null, $fixPath = true)
@@ -70,6 +71,7 @@ class Document extends Resource
 
             $response->addLink('self', $this->buildUrl($username, $repoName, $branchName, 'documents', $path));
             $response->addLink('cont:doc', '/rels/document');
+            $response->addLink('create-form', $this->buildUrl($username, $repoName, $branchName, 'new', $path));
 
             foreach ($repo->branches() as $branch) {
                 $response->addLink(

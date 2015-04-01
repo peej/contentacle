@@ -7,8 +7,8 @@
             {{path}}
         </h1>
         <div class="commit-metadata">
-            {{#if _embedded.cont:commit.0._links.cont:author.href}}
-                <a href="{{_embedded.cont:commit.0._links.cont:author.href}}" title="{{_embedded.cont:commit.0.email}}">{{_embedded.cont:commit.0.author}}</a>
+            {{#if _embedded.cont:commit.0._links.author.href}}
+                <a href="{{_embedded.cont:commit.0._links.author.href}}" title="{{_embedded.cont:commit.0.email}}">{{_embedded.cont:commit.0.author}}</a>
             {{else}}
                 <span title="{{_embedded.cont:commit.0.email}}">{{_embedded.cont:commit.0.author}}</span>
             {{/if}}
@@ -21,8 +21,8 @@
             <table class="document-metadata">
                 <caption>Info</caption>
                 <tr><th>author</th><td>
-                    {{#if _links.cont:author.href}}
-                        <a href="{{_links.cont:author.href}}">{{author}}</a>
+                    {{#if _links.author.href}}
+                        <a href="{{_links.author.href}}">{{author}}</a>
                     {{else}}
                         {{author}}
                     {{/if}}

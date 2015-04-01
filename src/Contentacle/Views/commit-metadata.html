@@ -1,7 +1,7 @@
 <h2 class="commit-metadata">{{message}}</h2>
 <div class="commit-metadata">
-    {{#if _links.cont:author.href}}
-        <a href="{{_links.cont:author.href}}" title="{{email}}">{{author}}</a>
+    {{#if _links.author.href}}
+        <a href="{{_links.author.href}}" title="{{email}}">{{author}}</a>
     {{else}}
         <span title="{{email}}">{{author}}</span>
     {{/if}}

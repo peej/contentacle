@@ -17,7 +17,9 @@
                 <a href="{{@key}}">{{this}}</a> /
             {{/each}}
         {{/if}}
-        <a href="new.html" class="icon-plus" title="Create a new document"></a>
+        {{#if _links.create-form}}
+            <a href="{{_links.create-form.href}}" class="icon-plus" title="Create a new document"></a>
+        {{/if}}
     </div>
 
     {{#each _embedded.cont:commit}}
@@ -47,8 +49,8 @@
                             <a href="{{_links.cont:commit.href}}">{{truncate _embedded.cont:commit.0.message 80}}</a>
                         </td>
                         <td>
-                            {{#if _links.cont:author.href}}
-                                <a href="{{_links.cont:author.href}}">{{author}}</a>
+                            {{#if _links.author.href}}
+                                <a href="{{_links.author.href}}">{{author}}</a>
                             {{else}}
                                 {{author}}
                             {{/if}}

@@ -19,8 +19,8 @@
             <li>
                 <a href="{{_links.self.href}}">{{message}}</a>
                 <span>
-                    {{#if _links.cont:author.href}}
-                        <a href="{{_links.cont:author.href}}" title="{{email}}">{{author}}</a>
+                    {{#if _links.author.href}}
+                        <a href="{{_links.author.href}}" title="{{email}}">{{author}}</a>
                     {{else}}
                         <span title="{{email}}">{{author}}</span>
                     {{/if}}
