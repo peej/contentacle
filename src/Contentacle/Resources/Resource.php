@@ -12,10 +12,15 @@ abstract class Resource extends \Tonic\Resource
         $this->deps = $deps;
 
         parent::__construct($deps['app'], $deps['request']);
-        $this->params['embed'] = true;
 
         foreach ($deps as $depName => $dep) {
             $this->$depName = $dep;
+        }
+
+        if (isset($_GET['noembed'])) {
+            $this->params['embed'] = false;
+        } else {
+            $this->params['embed'] = true;
         }
     }
 
