@@ -163,12 +163,15 @@ abstract class Resource extends \Tonic\Resource
 
     protected function fixPath($path, $username, $repoName, $branchName, $pathType = 'documents')
     {
+        $requestUri = $_SERVER['SCRIPT_NAME'];
+        $pathUri = '/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/'.$pathType.'/';
+
         if ($path === true) {
             $path = '';
-        } elseif (isset($_SERVER['REQUEST_URI'])) {
-            $path = substr($_SERVER['REQUEST_URI'], strlen('/users/'.$username.'/repos/'.$repoName.'/branches/'.$branchName.'/'.$pathType.'/'));
+        } elseif (strpos($requestUri, $pathUri) === 0) {
+            $path = substr($requestUri, strlen($pathUri));
         }
-        if ($path === false) {
+        if ($path == false) {
             $path = '';
         }
         return $path;

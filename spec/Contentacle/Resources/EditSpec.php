@@ -44,6 +44,7 @@ class EditSpec extends ObjectBehavior
 
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
 
+        $request->getUri()->willReturn('/users/cobb/repos/extraction/branches/master/edit/new-york/the-hotel/totem.txt');
         $request->getAccept()->willReturn(array());
         $request->getParams()->willReturn(array());
 
@@ -92,8 +93,9 @@ class EditSpec extends ObjectBehavior
         $this->shouldThrow('\Tonic\NotFoundException')->duringGet('cobb', 'extraction', 'eames');
     }
 
-    function it_should_error_for_unknown_path()
+    function it_should_error_for_unknown_path($request)
     {
+        $request->getUri()->willReturn('/users/cobb/repos/extraction/branches/master/edit/paris');
         $this->shouldThrow('\Tonic\NotFoundException')->duringGet('cobb', 'extraction', 'master', 'paris');
     }
 

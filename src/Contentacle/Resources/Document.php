@@ -3,7 +3,6 @@
 namespace Contentacle\Resources;
 
 /**
- * @uri /users/:username/repos/:repo/branches/:branch/documents
  * @uri /users/:username/repos/:repo/branches/:branch/documents/?(.*)$
  */
 class Document extends Resource

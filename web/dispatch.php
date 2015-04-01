@@ -17,7 +17,7 @@ $container['app'] = function () {
 };
 $container['request'] = function () {
     return new Contentacle\Request(array(
-        'uri' => $_SERVER['PHP_SELF'],
+        'uri' => $_SERVER['SCRIPT_NAME'],
         'mimetypes' => array(
             'yaml' => 'text/yaml',
             'yml' => 'text/yaml',

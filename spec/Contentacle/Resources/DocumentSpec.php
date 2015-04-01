@@ -15,7 +15,7 @@ class DocumentSpec extends ObjectBehavior
         $repo->branches()->willReturn(array(
             'master', 'branch'
         ));
-        $repo->documents('master', null)->willReturn(array('new-york'));
+        $repo->documents('master', '')->willReturn(array('new-york'));
         $repo->documents('master', 'new-york')->willReturn(array('new-york/the-hotel'));
         $repo->documents('master', 'new-york/the-hotel')->willReturn(array('new-york/the-hotel/totem.txt'));
         $repo->documents(Argument::cetera())->willThrow(new \Contentacle\Exceptions\RepoException);
@@ -59,6 +59,7 @@ class DocumentSpec extends ObjectBehavior
         
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
 
+        $request->getUri()->willReturn('/users/cobb/repos/extraction/branches/master/documents');
         $request->getAccept()->willReturn(array());
         $request->getParams()->willReturn(array());
 
@@ -97,8 +98,9 @@ class DocumentSpec extends ObjectBehavior
         $response->data['_embedded']['cont:document'][0]['filename']->shouldBe('new-york');
     }
 
-    function it_should_show_document_listing_within_a_subdirectory($repo)
+    function it_should_show_document_listing_within_a_subdirectory($repo, $request)
     {
+        $request->getUri()->willReturn('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel');
         $repo->documents('master', 'new-york/the-hotel')->shouldBeCalled();
         $response = $this->get('cobb', 'extraction', 'master', 'new-york/the-hotel');
         $response->data['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel');
@@ -108,8 +110,9 @@ class DocumentSpec extends ObjectBehavior
         $response->data['_embedded']['cont:document'][0]['_links']['cont:user']['href']->shouldBe('/users/cobb');
     }
 
-    function it_should_show_a_single_document($repo)
+    function it_should_show_a_single_document($repo, $request)
     {
+        $request->getUri()->willReturn('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel/totem.txt');
         $repo->document('master', 'new-york/the-hotel/totem.txt')->shouldBeCalled();
         $response = $this->get('cobb', 'extraction', 'master', 'new-york/the-hotel/totem.txt');
         $response->data['filename']->shouldBe('totem.txt');
@@ -133,6 +136,7 @@ class DocumentSpec extends ObjectBehavior
 
     function it_should_create_a_document($request)
     {
+        $request->getUri()->willReturn('/users/cobb/repos/extraction/branches/master/documents/kick.txt');
         $request->getData()->willReturn(array(
             'content' => 'It\'s that feeling of falling you get that jolts you awake. It snaps you out of a dream.',
             'message' => 'Create a new document about the kick.'
@@ -148,6 +152,7 @@ class DocumentSpec extends ObjectBehavior
 
     function it_should_update_a_document($request)
     {
+        $request->getUri()->willReturn('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel/totem.txt');
         $request->getData()->willReturn(array(
             'content' => 'I can\'t let you touch it, that would defeat the purpose.',
             'message' => 'Update the document about the totem in the New York hotel'
@@ -163,6 +168,7 @@ class DocumentSpec extends ObjectBehavior
 
     function it_should_delete_a_document($request)
     {
+        $request->getUri()->willReturn('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel/totem.txt');
         $request->getData()->willReturn(array(
             'message' => 'Remove totem document.'
         ));
