@@ -6,12 +6,15 @@
             <a href="{{_links.cont:branch.href}}">{{branch}}</a> /
             <a href="{{_links.cont:document.href}}">{{path}}</a>
         </h1>
-        <div class="commit-metadata">
-            <a href="{{_embedded.cont:commit.0._links.cont:user.href}}">{{_embedded.cont:commit.0.author}}</a> wrote {{since _embedded.cont:commit.0.date}} - <a href="{{_embedded.cont:commit.0._links.self.href}}">{{_embedded.cont:commit.0.message}}</a>
-        </div>
+        {{#if _embedded.cont:commit}}
+            <div class="commit-metadata">
+                <a href="{{_embedded.cont:commit.0._links.cont:user.href}}">{{_embedded.cont:commit.0.author}}</a> wrote {{since _embedded.cont:commit.0.date}} - <a href="{{_embedded.cont:commit.0._links.self.href}}">{{_embedded.cont:commit.0.message}}</a>
+            </div>
+        {{/if}}
     </div>
 </header>
 <form action="{{_links.self.href}}" method="post" id="commit-form">
+    {{#unless filename}}<input id="filename" type="text" name="filename" placeholder="filename">{{/unless}}
     <textarea name="content" id="edit">{{content}}</textarea>
     <div id="preview">{{markdown content}}</div>
     <div id="commit">
