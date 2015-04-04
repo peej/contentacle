@@ -27,6 +27,8 @@ class Users extends Resource
     {
         $response = $this->response(200, 'users');
 
+        $this->configureResponse($response);
+
         $response->addVar('title', 'Contentacle users');
         $response->addLink('self', '/users'.$this->formatExtension());
         $response->addLink('cont:doc', '/rels/users');

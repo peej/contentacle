@@ -7,19 +7,14 @@ namespace Contentacle\Resources;
  */
 class Branch extends Resource
 {
-    /**
-     * Add user, repo and branch data to the response.
-     */
-    protected function configureResponse($response, $repo, $branchName)
+    protected function configureResponseWithBranch($response, $repo, $branchName)
     {
-        parent::configureResponse($response, $repo, $branchName);
+        parent::configureResponseWithBranch($response, $repo, $branchName);
 
         $username = $repo->username;
         $repoName = $repo->name;
 
         $response->addData('name', $branchName);
-
-        $response->addVar('nav', true);
 
         $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName));
         $response->addLink('cont:doc', '/rels/branch');
@@ -52,7 +47,7 @@ class Branch extends Resource
 
             $response = $this->response(200, 'branch');
 
-            $this->configureResponse($response, $repo, $branchName);
+            $this->configureResponseWithBranch($response, $repo, $branchName);
 
             return $response;
 
@@ -112,7 +107,7 @@ class Branch extends Resource
 
             $response = $this->response(200, 'branch');
 
-            $this->configureResponse($response, $repo, $item['value']);
+            $this->configureResponseWithBranch($response, $repo, $item['value']);
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
             $response = $this->response(400, 'branch');

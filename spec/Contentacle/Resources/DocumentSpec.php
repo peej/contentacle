@@ -23,7 +23,7 @@ class DocumentSpec extends ObjectBehavior
             'path' => 'new-york/the-hotel/totem.txt',
             'filename' => 'totem.txt',
             'content' => 'An elegant solution for keeping track of reality.',
-            'username' => 'cobb',
+            'authorname' => 'cobb',
             'sha' => '123456',
             'commit' => '111111'
         ));
@@ -34,7 +34,7 @@ class DocumentSpec extends ObjectBehavior
                 'path' => $args[1],
                 'filename' => basename($args[1]),
                 'content' => $args[2],
-                'username' => 'cobb',
+                'authorname' => 'cobb',
                 'sha' => '654321',
                 'commit' => '111111'
             ));
@@ -44,7 +44,7 @@ class DocumentSpec extends ObjectBehavior
                 'path' => $args[1],
                 'filename' => basename($args[1]),
                 'content' => $args[2],
-                'username' => 'cobb',
+                'authorname' => 'cobb',
                 'sha' => '654321',
                 'commit' => '111111'
             ));
@@ -54,7 +54,7 @@ class DocumentSpec extends ObjectBehavior
             'sha' => '111111'
         )));
         $repo->commit('master', 111111)->willReturn(array(
-            'username' => 'cobb'
+            'authorname' => 'cobb'
         ));
         
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
@@ -106,8 +106,8 @@ class DocumentSpec extends ObjectBehavior
         $response->data['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel');
         $response->data['_embedded']['cont:document'][0]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel/totem.txt');
         $response->data['_embedded']['cont:document'][0]['filename']->shouldBe('totem.txt');
-        $response->data['_embedded']['cont:document'][0]['username']->shouldBe('cobb');
-        $response->data['_embedded']['cont:document'][0]['_links']['cont:user']['href']->shouldBe('/users/cobb');
+        $response->data['_embedded']['cont:document'][0]['authorname']->shouldBe('cobb');
+        $response->data['_embedded']['cont:document'][0]['_links']['author']['href']->shouldBe('/users/cobb');
     }
 
     function it_should_show_a_single_document($repo, $request)

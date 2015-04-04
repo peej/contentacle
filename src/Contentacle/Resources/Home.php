@@ -18,9 +18,9 @@ class Home extends Resource
     {
         $response = $this->response(200, 'home');
 
-        $response->addVar('nav', false);
+        $this->configureResponse($response);
+
         $response->addLink('self', '/'.$this->formatExtension());
-        $response->addLink('cont:login', '/login'.$this->formatExtension());
         $response->addLink('cont:users', '/users'.$this->formatExtension());
 
         return $response;

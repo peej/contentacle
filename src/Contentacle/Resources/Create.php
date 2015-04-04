@@ -21,7 +21,7 @@ class Create extends Resource
             $path = $this->fixPath($path, $username, $repoName, $branchName, 'new');
             $response = $this->response('200', 'edit');
 
-            $this->configureResponse($response, $repo, $branchName);
+            $this->configureResponseWithBranch($response, $repo, $branchName);
 
             $response->addVar('footer', false);
 

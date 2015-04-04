@@ -7,19 +7,6 @@ namespace Contentacle\Resources;
  */
 class Repos extends Resource
 {
-    protected function buildResponse($code, $templateName = null, $username = null)
-    {
-        $response = $this->response($code, $templateName);
-
-        if ($username) {
-            $response->addData('username', $username);
-            $response->addLink('self', $this->buildUrlWithFormat($username, false, false, 'repos'));
-            $response->addLink('cont:doc', '/rels/repos');
-        }
-
-        return $response;
-    }
-
     /**
      * Get a list of a users repositories.
      *
@@ -37,7 +24,13 @@ class Repos extends Resource
      */
     function get($username)
     {
-        $response = $this->buildResponse(200, 'repos', $username);
+        $response = $this->response(200, 'repos');
+
+        $this->configureResponse($response);
+
+        $response->addData('username', $username);
+        $response->addLink('self', $this->buildUrlWithFormat($username, false, false, 'repos'));
+        $response->addLink('cont:doc', '/rels/repos');
 
         try {
             $search = isset($_GET['q']) ? $_GET['q'] : null;
@@ -82,11 +75,11 @@ class Repos extends Resource
         $user = $this->userRepository->getUser($username);
         try {
             $repo = $this->repoRepository->createRepo($user, $this->request->getData());
-            $response = $this->buildResponse(201);
+            $response = $this->response(201);
             $response->location = '/users/'.$user->username.'/repos/'.$repo->name;
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = $this->buildResponse(400, 'repos', $username);
+            $response = $this->response(400);
             foreach ($e->errors as $field) {
                 $response->embed('errors', array(
                     'logref' => $field,

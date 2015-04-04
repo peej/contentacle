@@ -36,7 +36,7 @@ class Commits extends Resource {
 
             $response = $this->response(200, 'commits');
 
-            $this->configureResponse($response, $repo, $branchName);
+            $this->configureResponseWithBranch($response, $repo, $branchName);
 
             $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits'));
             $response->addLink('cont:doc', '/rels/commits');

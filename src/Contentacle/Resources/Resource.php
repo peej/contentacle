@@ -123,13 +123,34 @@ abstract class Resource extends \Tonic\Resource
         return $this->extension;
     }
 
+
+    /**
+     * Add base data to the response.
+     */
+    protected function configureResponse($response)
+    {
+        $response->addVar('nav', false);
+
+        if ($this->user && $this->user->username) {
+            $response->addData(array(
+                'profile' => $this->user->username
+            ));
+            $response->addLink('cont:profile', $this->buildUrlWithFormat($this->user->username));
+        } else {
+            $response->addLink('cont:login', '/login'.$this->formatExtension());
+            $response->addLink('cont:join', '/join'.$this->formatExtension());
+        }
+    }
+
     /**
      * Add user, repo and branch data to the response.
      */
-    protected function configureResponse($response, $repo, $branchName)
+    protected function configureResponseWithBranch($response, $repo, $branchName)
     {
         $username = $repo->username;
         $repoName = strtolower($repo->name);
+
+        $this->configureResponse($response);
 
         $response->addVar('nav', true);
 
@@ -151,7 +172,7 @@ abstract class Resource extends \Tonic\Resource
         $username = $repo->username;
         $repoName = strtolower($repo->name);
 
-        $this->configureResponse($response, $repo, $branchName);
+        $this->configureResponseWithBranch($response, $repo, $branchName);
 
         $response->addLink('cont:history', $this->buildUrl($username, $repoName, $branchName, 'history', $document['path']));
         $response->addLink('cont:raw', $this->buildUrl($username, $repoName, $branchName, 'raw', $document['path']));

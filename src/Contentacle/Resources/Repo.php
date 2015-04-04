@@ -14,6 +14,8 @@ class Repo extends Resource
     {
         $response = $this->response(200, 'repo');
 
+        $this->configureResponse($response);
+
         $response->addData($repo);
         $response->addLink('self', $this->buildUrlWithFormat($repo->username, $repo->name));
         $response->addLink('cont:doc', '/rels/repo');

@@ -18,7 +18,8 @@ class Login extends Resource
     {
         $response = $this->response(200, 'login');
 
-        $response->addVar('nav', false);
+        $this->configureResponse($response);
+
         $response->addLink('self', '/login'.$this->formatExtension());
         $response->addLink('oauth2-token', '/token'.$this->formatExtension());
 

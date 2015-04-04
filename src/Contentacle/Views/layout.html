@@ -41,17 +41,28 @@
                     {{/if}}
                 </ul>
             {{/if}}
-            <h2>{{username}}</h2>
-            <ul>
-                <li><span class="icon-user"></span><a href="/users/{{username}}">Profile</a></li>
-                <li><span class="icon-settings"></span><a href="/settings">Settings</a></li>
-                <li><span class="icon-signout"></span><a href="/logout">Sign out</a></li>
-            </ul>
+            {{#if profile}}
+                <h2>{{profile}}</h2>
+                <ul>
+                    <li><span class="icon-user"></span><a href="{{_links.cont:profile.href}}" rel="cont:profile">Profile</a></li>
+                    <li><span class="icon-settings"></span><a href="/settings" rel="cont:settings">Settings</a></li>
+                    <li><span class="icon-signout"></span><a href="/logout" rel="cont:logout">Sign out</a></li>
+                </ul>
+            {{else}}
+                <ul>
+                    <li><span class="icon-signin"></span><a href="{{_link.cont:login.href}}" rel="cont:login">Login</a></li>
+                    <li><span class="icon-join"></span><a href="{{_link.cont:join.href}}" rel="cont:join">Sign up</a></li>
+                </ul>
+            {{/if}}
         </nav>
     {{else}}
         <nav id="small">
             <span class="cthulhu"></span>
-            <a href="/login">Login</a>
+            {{#if profile}}
+                <a href="{{_links.cont:profile.href}}" rel="cont:profile">{{profile}}</a>
+            {{else}}
+                <a href="{{_link.cont:login.href}}" rel="cont:login">Login</a>
+            {{/if}}
         </nav>
     {{/if}}
     <section class="{{section}}">
@@ -61,7 +72,7 @@
         {{{_main}}}
         {{#if var.footer}}
             <footer>
-                <a href="/about.html">About</a> <span class="cthulhu"></span> <a href="">Totherthing</a>
+                <a href="/about.html">About</a> <span class="cthulhu"></span> <a href="/legal.html">Legal</a>
             </footer>
         {{/if}}
     </section>

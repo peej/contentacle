@@ -61,7 +61,7 @@ class Document extends Resource
         try {
             $response = $this->response(200, 'directory');
 
-            $this->configureResponse($response, $repo, $branchName);
+            $this->configureResponseWithBranch($response, $repo, $branchName);
 
             $response->addData(array(
                 'path' => $path,

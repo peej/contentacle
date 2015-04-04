@@ -31,7 +31,7 @@ class Merges extends Resource
         
         $response = $this->response(200, 'merges');
 
-        $this->configureResponse($response, $repo, $branchName);
+        $this->configureResponseWithBranch($response, $repo, $branchName);
 
         $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName, 'merges'));
         $response->addLink('cont:doc', '/rels/merges');

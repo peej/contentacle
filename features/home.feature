@@ -47,8 +47,8 @@ Feature:
 
     Scenario: HTML homepage links to login page
         When I send a GET request to "/.html"
-        Then I should see a link to "/login"
+        Then I should see a link with relation "cont:login" to "/login"
 
     Scenario: HTML homepage links to join page
         When I send a GET request to "/.html"
-        Then I should see a link to "/join"
+        Then I should see a link with relation "cont:join" to "/join"

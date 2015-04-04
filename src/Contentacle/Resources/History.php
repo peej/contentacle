@@ -33,7 +33,7 @@ class History extends Resource {
 
             $response = $this->response(200, 'history');
 
-            $this->configureResponse($response, $repo, $branchName);
+            $this->configureResponseWithBranch($response, $repo, $branchName);
 
             $response->addData(array(
                 'filename' => basename($path),

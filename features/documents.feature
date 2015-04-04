@@ -76,10 +76,10 @@ Feature:
         And response property "dir" should be "false"
         And response property "path" should be "new.txt"
         And response property "content" should be "New document"
-        And response property "username" should be "peej"
+        And response property "authorname" should be "peej"
         When I send a GET request to "/users/peej/repos/test/branches/master/commits"
         Then response property "_embedded->cont:commit->0->message" should be "Create new.txt"
-        And response property "_embedded->cont:commit->0->username" should be "peej"
+        And response property "_embedded->cont:commit->0->authorname" should be "peej"
     
     Scenario: Create a new document from JSON document
         Given I add "Content-Type" header equal to "application/json"
@@ -101,10 +101,10 @@ Feature:
         And response property "dir" should be "false"
         And response property "path" should be "new.txt"
         And response property "content" should be "New document"
-        And response property "username" should be "peej"
+        And response property "authorname" should be "peej"
         When I send a GET request to "/users/peej/repos/test/branches/master/commits"
         Then response property "_embedded->cont:commit->0->message" should be "My commit message"
-        And response property "_embedded->cont:commit->0->username" should be "peej"
+        And response property "_embedded->cont:commit->0->authorname" should be "peej"
 
     Scenario: Update a document raw
         Given I add "Content-Type" header equal to "text/plain"
@@ -119,10 +119,10 @@ Feature:
         And response property "dir" should be "false"
         And response property "path" should be "afile.txt"
         And response property "content" should be "Updated document"
-        And response property "username" should be "peej"
+        And response property "authorname" should be "peej"
         When I send a GET request to "/users/peej/repos/test/branches/master/commits"
         Then response property "_embedded->cont:commit->0->message" should be "Update afile.txt"
-        And response property "_embedded->cont:commit->0->username" should be "peej"
+        And response property "_embedded->cont:commit->0->authorname" should be "peej"
     
     Scenario: Update a document by JSON
         Given I add "Content-Type" header equal to "application/json"
@@ -140,10 +140,10 @@ Feature:
         And response property "dir" should be "false"
         And response property "path" should be "afile.txt"
         And response property "content" should be "Updated document"
-        And response property "username" should be "peej"
+        And response property "authorname" should be "peej"
         When I send a GET request to "/users/peej/repos/test/branches/master/commits"
         Then response property "_embedded->cont:commit->0->message" should be "My commit message"
-        And response property "_embedded->cont:commit->0->username" should be "peej"
+        And response property "_embedded->cont:commit->0->authorname" should be "peej"
     
     Scenario: Delete a document
         Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"

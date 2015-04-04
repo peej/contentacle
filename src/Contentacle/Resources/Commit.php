@@ -42,7 +42,7 @@ class Commit extends Resource
 
             $response = $this->response(200, 'commit');
 
-            $this->configureResponse($response, $repo, $branchName);
+            $this->configureResponseWithBranch($response, $repo, $branchName);
 
             $response->addData($commit);
 

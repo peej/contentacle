@@ -11,6 +11,8 @@ class User extends Resource
     {
         $response = $this->response(200, 'user');
 
+        $this->configureResponse($response);
+
         $user->password = ''; // hide hashed user password from being output.
 
         $response->addData($user);
