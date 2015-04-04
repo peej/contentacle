@@ -13,6 +13,7 @@ class Create extends Resource
      * @method get
      * @response 200 OK
      * @provides text/html
+     * @secure
      */
     function get($username, $repoName, $branchName, $path = null)
     {
@@ -44,6 +45,7 @@ class Create extends Resource
      * @response 302 Found
      * @response 400 Bad Request
      * @provides text/html
+     * @secure
      */
     function commit($username, $repoName, $branchName, $path = null)
     {

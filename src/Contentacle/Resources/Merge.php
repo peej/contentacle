@@ -60,6 +60,7 @@ class Merge extends Resource
      * @response 204 No content
      * @response 400 Bad request
      * @response 404 Not found
+     * @secure
      */
     function post($username, $repoName, $branch1, $branch2)
     {
