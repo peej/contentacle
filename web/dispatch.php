@@ -137,7 +137,7 @@ try {
     $response = $container['response'](404, '404');
 
 } catch (Tonic\UnauthorizedException $e) {
-    $response = new Tonic\Response(401, $e->getMessage());
+    $response = $container['response'](401, '401');
     $response->wwwAuthenticate = 'Basic realm="Contentacle"';
 
 } catch (Tonic\Exception $e) {
