@@ -19,7 +19,18 @@ class OAuthServer extends \OAuth2\Server
             $_GET['access_token'] = $_COOKIE['access_token'];
         }
 
-        return parent::verifyResourceRequest(\OAuth2\Request::createFromGlobals());
+        return $this->verifyResourceRequest(\OAuth2\Request::createFromGlobals());
+    }
+
+    function getUsername()
+    {
+        if (isset($_COOKIE['access_token'])) {
+            $_GET['access_token'] = $_COOKIE['access_token'];
+        }
+
+        $tokenData = $this->getAccessTokenData(\OAuth2\Request::createFromGlobals());
+
+        return $tokenData['client_id'];
     }
 
     function placeTokenIntoCookie($tokenData)

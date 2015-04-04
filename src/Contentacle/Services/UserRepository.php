@@ -57,6 +57,28 @@ class UserRepository
         return null;
     }
 
+    /**
+     * Get the user that is currently signed into the site
+     *
+     * @param Contentacle\Services\OAuthServer oauth
+     * @return Contentacle\Models\User
+     */
+    function getSignedInUser($oauth)
+    {
+        if ($oauth->verifyToken()) {
+            $username = $oauth->getUsername();
+            return $this->getUser($username);
+        } elseif (
+            isset($_SERVER['PHP_AUTH_USER']) && $_SERVER['PHP_AUTH_USER'] != '' &&
+            isset($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_PW'] != ''
+        ) {
+            $user = $this->getUser($_SERVER['PHP_AUTH_USER']);
+            if ($user->verifyPassword($_SERVER['PHP_AUTH_PW'])) {
+                return $user;
+            }
+        }
+    }
+
     private function readProfile($username)
     {
         $profilePath = $this->repoDir.'/'.$username.'/profile.json';

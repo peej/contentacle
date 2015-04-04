@@ -123,7 +123,6 @@ abstract class Resource extends \Tonic\Resource
         return $this->extension;
     }
 
-
     /**
      * Add base data to the response.
      */
@@ -131,11 +130,11 @@ abstract class Resource extends \Tonic\Resource
     {
         $response->addVar('nav', false);
 
-        if ($this->user && $this->user->username) {
+        if (isset($this->app->user) && $this->app->user->username) {
             $response->addData(array(
-                'profile' => $this->user->username
+                'profile' => $this->app->user->username
             ));
-            $response->addLink('cont:profile', $this->buildUrlWithFormat($this->user->username));
+            $response->addLink('cont:profile', $this->buildUrlWithFormat($this->app->user->username));
         } else {
             $response->addLink('cont:login', '/login'.$this->formatExtension());
             $response->addLink('cont:join', '/join'.$this->formatExtension());
@@ -233,20 +232,12 @@ abstract class Resource extends \Tonic\Resource
 
     function secure()
     {
-        if ($this->oauth->verifyToken()) {
-            return;
-        } elseif (
-            isset($_SERVER['PHP_AUTH_USER']) && $_SERVER['PHP_AUTH_USER'] != '' &&
-            isset($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_PW'] != '' &&
-            isset($this->request->getParams()['username'])
+        if (
+            isset($this->app->user) &&
+            isset($this->request->getParams()['username']) &&
+            $this->app->user->username == $this->request->getParams()['username']
         ) {
-            $username = $this->request->getParams()['username'];
-            if ($_SERVER['PHP_AUTH_USER'] == $username) {
-                $user = $this->userRepository->getUser($username);
-                if ($user->verifyPassword($_SERVER['PHP_AUTH_PW'])) {
-                    return;
-                }
-            }
+            return;
         }
         throw new \Tonic\UnauthorizedException;
     }

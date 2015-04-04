@@ -100,6 +100,7 @@ TABLE
     public function setHeaders()
     {
         $this->getSession()->setRequestHeader('Accept', '*/*');
+        $this->getSession()->setRequestHeader('Authorization', null);
     }
 
     private function getResponseBody()
