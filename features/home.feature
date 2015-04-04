@@ -45,10 +45,28 @@ Feature:
         When I send a GET request to "/.html"
         Then I should see a link with relation "cont:users" to "/users"
 
+    Scenario: YAML homepage links to login page
+        When I send a GET request to "/.yaml"
+        Then response property "_links->cont:login->href" should be "/login.yaml"
+
     Scenario: HTML homepage links to login page
         When I send a GET request to "/.html"
         Then I should see a link with relation "cont:login" to "/login"
 
+    Scenario: YAML homepage links to join page
+        When I send a GET request to "/.yaml"
+        Then response property "_links->cont:join->href" should be "/join.yaml"
+
     Scenario: HTML homepage links to join page
         When I send a GET request to "/.html"
         Then I should see a link with relation "cont:join" to "/join"
+
+    Scenario: YAML homepage links to user profile page
+        Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        When I send a GET request to "/.yaml"
+        Then response property "_links->cont:profile->href" should be "/users/peej.yaml"
+
+    Scenario: HTML homepage links to user profile page
+        Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        When I send a GET request to "/.html"
+        Then I should see a link with relation "cont:profile" to "/users/peej"
