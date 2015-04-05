@@ -45,12 +45,14 @@ Feature:
         Then the response status code should be 404
 
     Scenario: Merge a branch
+        Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         When I send a POST request on "/users/peej/repos/test/branches/branch/merges/master"
         Then the response status code should be 204
         When I send a GET request on "/users/peej/repos/test/branches/branch/commits"
         Then response property "_embedded->cont:commit->0->message" should be "Merge master into branch"
 
     Scenario: Fail to merge a merge that conflicts
+        Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         When I send a POST request on "/users/peej/repos/test/branches/master/merges/unmergable"
         Then the response status code should be 400
 
