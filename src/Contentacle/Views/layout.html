@@ -46,7 +46,11 @@
                 <ul>
                     <li><span class="icon-user"></span><a href="{{_links.cont:profile.href}}" rel="cont:profile">Profile</a></li>
                     <li><span class="icon-settings"></span><a href="/settings" rel="cont:settings">Settings</a></li>
-                    <li><span class="icon-signout"></span><a href="/logout" rel="cont:logout">Sign out</a></li>
+                    <li>
+                        <form action="/logout" method="post" rel="cont:logout">
+                            <span class="icon-signout"></span><button>Sign out</button>
+                        </form>
+                    </li>
                 </ul>
             {{else}}
                 <ul>

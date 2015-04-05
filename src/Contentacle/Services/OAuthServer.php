@@ -37,4 +37,9 @@ class OAuthServer extends \OAuth2\Server
     {
         setcookie('access_token', $tokenData['access_token'], time() + $tokenData['expires_in']);
     }
+
+    function removeTokenFromCookie()
+    {
+        setcookie('access_token', '', time() - 3600);
+    }
 }
