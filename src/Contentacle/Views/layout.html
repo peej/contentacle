@@ -24,7 +24,7 @@
                     {{#if _links.cont:commits}}
                         <li><span class="icon-commits"></span><a href="{{_links.cont:commits.href}}">Revisions</a></li>
                     {{/if}}
-                    <li><span class="icon-stage"></span><a href="/stage">Stage</a> <sup>3</sup></li>
+                    {{*<li><span class="icon-stage"></span><a href="/stage">Stage</a> <sup>3</sup></li>*}}
                 </ul>
             {{/if}}
             {{#if filename}}
@@ -50,8 +50,8 @@
                 </ul>
             {{else}}
                 <ul>
-                    <li><span class="icon-signin"></span><a href="{{_link.cont:login.href}}" rel="cont:login">Login</a></li>
-                    <li><span class="icon-join"></span><a href="{{_link.cont:join.href}}" rel="cont:join">Sign up</a></li>
+                    <li><span class="icon-signin"></span><a href="{{_links.cont:login.href}}" rel="cont:login">Login</a></li>
+                    <li><span class="icon-join"></span><a href="{{_links.cont:join.href}}" rel="cont:join">Sign up</a></li>
                 </ul>
             {{/if}}
         </nav>
