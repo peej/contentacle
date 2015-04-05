@@ -1,8 +1,10 @@
+$font-body: "Roboto", sans-serif;
+
 body {
     margin: 0;
     overflow-x: hidden;
     font-size: 18px;
-    font-family: "Roboto", sans-serif;
+    font-family: $font-body;
 
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -92,7 +94,7 @@ h1,
 h2,
 h3,
 h4 {
-    font-family: "Roboto", sans-serif;
+    font-family: $font-body;
     font-weight: normal;
 }
 

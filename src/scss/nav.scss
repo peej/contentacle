@@ -77,15 +77,32 @@ nav li {
     margin: 10px 0;
 }
 
+nav form {
+    margin: 0;
+}
+
 nav li span {
     display: inline-block;
     width: 30px;
 }
 
-nav a {
+nav a,
+nav button {
     font-size: 90%;
-    margin: 1em 0;
+    display: inline;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    border: none;
     color: #fff;
+    text-align: left;
+    text-transform: none;
+    font-family: $font-body;
+
+    &:hover {
+        background: none;
+        text-decoration: underline;
+    }
 }
 
 nav#large a {
