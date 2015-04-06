@@ -62,7 +62,7 @@ class Template extends \LightnCandy
                     return date('M j, \'y', $args[0]);
                 },
                 'isodate' => function ($args) {
-                    return date('d-m-Y h:i:s', $args[0]);
+                    return date('d-m-Y H:i:s', $args[0]);
                 },
                 'since' => '\Contentacle\Services\Template::since',
                 'size' => function ($args) {
@@ -138,6 +138,15 @@ class Template extends \LightnCandy
             '_main' => $main($data),
             'section' => $templateName
         )));
+    }
+
+    public function parse($template, $data = array())
+    {
+        $compliedPath = $this->compiledPath.'/contentacle-test';
+        $compiledTemplate = \LightnCandy::compile($template, $this->options);
+        file_put_contents($compliedPath, $compiledTemplate);
+        $compiled = include($compliedPath);
+        return $compiled($data);
     }
 
     protected function markdown($args) {
