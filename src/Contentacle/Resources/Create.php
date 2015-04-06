@@ -17,9 +17,25 @@ class Create extends Resource
      */
     function get($username, $repoName, $branchName, $path = null)
     {
-        $repo = $this->repoRepository->getRepo($username, $repoName);
         try {
-            $path = $this->fixPath($path, $username, $repoName, $branchName, 'new');
+            $repo = $this->repoRepository->getRepo($username, $repoName);
+        } catch (\Contentacle\Exceptions\RepoException $e) {
+            throw new \Tonic\NotFoundException;
+        }
+        $path = $this->fixPath($path, $username, $repoName, $branchName, 'new');
+        
+        if (!$repo->hasBranch($branchName)) {
+            throw new \Tonic\NotFoundException;
+        }
+
+        try {
+            $document = $repo->document($branchName, $path);
+
+            return new \Tonic\Response(302, null, array(
+                'Location' => $this->buildUrlWithFormat($username, $repoName, $branchName, 'edit', $path)
+            ));
+
+        } catch (\Contentacle\Exceptions\RepoException $e) {
             $response = $this->response('200', 'edit');
 
             $this->configureResponseWithBranch($response, $repo, $branchName);
@@ -32,9 +48,6 @@ class Create extends Resource
             $response->addLink('cont:doc', '/rels/new');
 
             return $response;
-
-        } catch (\Contentacle\Exceptions\RepoException $e) {
-            throw new \Tonic\NotFoundException;
         }
     }
 
@@ -75,7 +88,11 @@ class Create extends Resource
         }
 
         $repo = $this->repoRepository->getRepo($username, $repoName);
-        $path .= '/'.$this->request->data['filename'];
+        if ($path) {
+            $path .= '/'.$this->request->data['filename'];
+        } else {
+            $path = $this->request->data['filename'];
+        }
 
         $repo->createDocument($branchName, $path, $this->request->data['content'], $this->request->data['message']);
 

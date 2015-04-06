@@ -14,7 +14,7 @@
     </div>
 </header>
 <form action="{{_links.self.href}}" method="post" id="commit-form">
-    {{#unless filename}}<input id="filename" type="text" name="filename" placeholder="filename">{{/unless}}
+    <input id="filename" type="text" name="filename" placeholder="filename" value="{{path}}">
     <textarea name="content" id="edit">{{content}}</textarea>
     <div id="preview">{{markdown content}}</div>
     <div id="commit">

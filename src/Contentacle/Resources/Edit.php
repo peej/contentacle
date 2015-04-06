@@ -49,8 +49,16 @@ class Edit extends Resource
      */
     function commit($username, $repoName, $branchName, $path = null)
     {
-        if (!isset($this->request->data['content'])) {
-            return new \Tonic\Response(400);
+        if (isset($this->request->data['filename'])) {
+            $filename = $this->request->data['filename'];
+        } else {
+            $filename = null;
+        }
+
+        if (isset($this->request->data['content'])) {
+            $content = $this->request->data['content'];
+        } else {
+            $content = null;
         }
 
         if (!isset($this->request->data['message'])) {
@@ -67,17 +75,27 @@ class Edit extends Resource
             }
 
             if ($metadata) {
-                $this->request->data['content'] = $this->yaml->encode($metadata)."---\n".$this->request->data['content'];
+                $content = $this->yaml->encode($metadata)."---\n".$content;
             }
         }
 
-        $repo = $this->repoRepository->getRepo($username, $repoName);
-        $path = $this->fixPath($path, $username, $repoName, $branchName, 'edit');
+        if ($filename == null && $content == null) {
+            return new \Tonic\Response(400);
+        }
 
-        $repo->updateDocument($branchName, $path, $this->request->data['content'], $this->request->data['message']);
+        $path = $this->fixPath($path, $username, $repoName, $branchName, 'edit');
+        $newPath = $path;
+
+        if ($filename != null && $path != $filename) {
+            $newPath = $filename;
+        }
+
+        $repo = $this->repoRepository->getRepo($username, $repoName);
+
+        $repo->updateDocument($branchName, $path, $content, $this->request->data['message'], $newPath);
 
         return new \Tonic\Response(302, null, array(
-            'Location' => $this->buildUrlWithFormat($username, $repoName, $branchName, 'documents', $path)
+            'Location' => $this->buildUrlWithFormat($username, $repoName, $branchName, 'documents', $newPath)
         ));
     }
 

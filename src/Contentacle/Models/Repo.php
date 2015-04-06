@@ -291,30 +291,37 @@ class Repo extends Model
         try {
             $this->git->add($path, $content, $commitMessage);
         } catch (\Git\Exception $e) {
+            $this->git->resetIndex();
             throw new \Contentacle\Exceptions\RepoException('Could not create document "'.$path.'"');
         }
     }
 
-    public function updateDocument($branch, $path, $content, $commitMessage = null)
+    public function updateDocument($branch, $path, $content, $commitMessage = null, $updatedPath = null)
     {
         if (!$commitMessage) {
             $commitMessage = 'Update '.$path;
         }
         $this->git->setBranch($branch);
         try {
+            if ($updatedPath) {
+                $this->git->move($path, $updatedPath);
+                $path = $updatedPath;
+            }
             $this->git->update($path, $content, $commitMessage);
         } catch (\Git\Exception $e) {
+            $this->git->resetIndex();
             throw new \Contentacle\Exceptions\RepoException('Could not update document "'.$path.'"');
         }
     }
 
-    public function deleteDocument($branch, $path, $commitMessage)
+    public function deleteDocument($branch, $path, $commitMessage = null)
     {
         if (!$commitMessage) {
             $commitMessage = 'Delete '.$path;
         }
         $this->git->setBranch($branch);
         if (!$this->git->remove($path, $commitMessage)) {
+            $this->git->resetIndex();
             throw new \Contentacle\Exceptions\RepoException('Could not delete document "'.$path.'"');
         }
     }

@@ -111,4 +111,17 @@ class EditSpec extends ObjectBehavior
         $response->code->shouldBe(302);
         $response->Location->shouldBe('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel/totem.txt');
     }
+
+    function it_should_rename_a_document($request)
+    {
+        $request->getData()->willReturn(array(
+            'filename' => 'new-york/the-hotel/wedding-ring.txt',
+            'message' => 'Cobb\'s totem is his wedding ring, not the spinning top, which is Mal\'s'
+        ));
+
+        $response = $this->commit('cobb', 'extraction', 'master', 'new-york/the-hotel/totem.txt');
+
+        $response->code->shouldBe(302);
+        $response->Location->shouldBe('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel/wedding-ring.txt');
+    }
 }
