@@ -1,8 +1,8 @@
 <div>
     <h1>
-        <a href="{{_links.cont:user.href}}">{{username}}</a> /
-        <a href="{{_links.cont:repo.href}}">{{repo}}</a> /
-        <a href="{{_links.cont:branch.href}}">{{branch}}</a> /
+        <a href="{{_links.cont:user.href}}" rel="cont:user">{{username}}</a> /
+        <a href="{{_links.cont:repo.href}}" rel="cont:repo">{{repo}}</a> /
+        <a href="{{_links.cont:branch.href}}" rel="cont:branch">{{branch}}</a> /
         revision
     </h1>
 
@@ -11,7 +11,7 @@
         <ul>
             {{#each diffs}}
                 <li>
-                    <h3><a href="{{@root._links.cont:documents.href}}/{{@key}}">{{@key}}</a></h3>
+                    <h3><a href="{{@root._links.cont:documents.href}}/{{@key}}" rel="cont:documents">{{@key}}</a></h3>
                     {{>diff}}
                 </li>
             {{/each}}

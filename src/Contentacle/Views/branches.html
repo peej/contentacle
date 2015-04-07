@@ -1,13 +1,13 @@
 <div>
     <h1>
-        <a href="{{_links.cont:user.href}}">{{username}}</a> /
-        <a href="{{_links.cont:repo.href}}">{{repo}}</a>
+        <a href="{{_links.cont:user.href}}" rel="cont:user">{{username}}</a> /
+        <a href="{{_links.cont:repo.href}}" rel="cont:repo">{{repo}}</a>
     </h1>
 
     {{#if _embedded.cont:branch}}
         <ul>
             {{#each _embedded.cont:branch}}
-                <li><a href="{{_links.self.href}}">{{name}}</a></li>
+                <li><a href="{{_links.self.href}}" rel="cont:branch">{{name}}</a></li>
             {{/each}}
         </ul>
     {{else}}

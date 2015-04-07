@@ -12,16 +12,16 @@
     {{#if _embedded.cont:user}}
         <ul>
             {{#each _embedded.cont:user}}
-                <li><a href="{{_links.self.href}}">{{name}} ({{username}})</a></li>
+                <li><a href="{{_links.self.href}}" rel="cont:user">{{name}} ({{username}})</a></li>
             {{/each}}
         </ul>
         {{#if nextOrPrev}}
             <nav>
                 {{#if _links.prev}}
-                    <a href="{{_links.prev.href}}">Previous</a>
+                    <a href="{{_links.prev.href}}" rel="prev">Previous</a>
                 {{/if}}
                 {{#if _links.next}}
-                    <a href="{{_links.next.href}}">Next</a>
+                    <a href="{{_links.next.href}}" rel="next">Next</a>
                 {{/if}}
             </nav>
         {{/if}}

@@ -1,8 +1,8 @@
 <div>
     <h1>
-        <a href="{{_links.cont:user.href}}">{{username}}</a> /
-        <a href="{{_links.cont:repo.href}}">{{repo}}</a> /
-        <a href="{{_links.cont:branch.href}}">{{branch}}</a>
+        <a href="{{_links.cont:user.href}}" rel="cont:user">{{username}}</a> /
+        <a href="{{_links.cont:repo.href}}" rel="cont:repo">{{repo}}</a> /
+        <a href="{{_links.cont:branch.href}}" rel="cont:branch">{{branch}}</a>
     </h1>
 
     {{#if var.description}}
@@ -11,22 +11,19 @@
 
     <div class="path">
         {{>branch-select}}
-        <a href="{{_links.cont:documents.href}}">{{repo}}</a> /
+        <a href="{{_links.cont:documents.href}}" rel="cont:documents">{{repo}}</a> /
         {{#if var.breadcrumb}}
             {{#each var.breadcrumb}}
                 <a href="{{@key}}">{{this}}</a> /
             {{/each}}
         {{/if}}
         {{#if _links.create-form}}
-            <a href="{{_links.create-form.href}}" class="icon-plus" title="Create a new document"></a>
+            <a href="{{_links.create-form.href}}" rel="create-form" class="icon-plus" title="Create a new document"></a>
         {{/if}}
     </div>
 
     {{#each _embedded.cont:commit}}
-        <h2 class="commit-metadata">{{message}}</h2>
-        <div class="commit-metadata">
-            <a href="{{_links.cont:user.href}}">{{author}}</a> wrote <a href="{{_links.self.href}}">{{since date}}</a>
-        </div>
+        {{>commit-metadata}}
     {{/each}}
 
     {{#if _embedded.cont:document}}
@@ -36,26 +33,26 @@
                     {{#if dir}}
                         <td>
                             <span class="icon-folder"></span>
-                            <a href="{{_links.self.href}}">{{filename}}</a>
+                            <a href="{{_links.self.href}}" rel="cont:document">{{filename}}</a>
                         </td>
                         <td></td>
                         <td></td>
                     {{else}}
                         <td>
                             <span class="icon-page"></span>
-                            <a href="{{_links.self.href}}">{{filename}}</a>
+                            <a href="{{_links.self.href}}" rel="cont:document">{{filename}}</a>
                         </td>
                         <td>
-                            <a href="{{_links.cont:commit.href}}">{{truncate _embedded.cont:commit.0.message 80}}</a>
+                            <a href="{{_links.cont:commit.href}}" rel="cont:commit">{{truncate _embedded.cont:commit.0.message 80}}</a>
                         </td>
                         <td>
                             {{#if _links.author.href}}
-                                <a href="{{_links.author.href}}">{{author}}</a>
+                                <a href="{{_links.author.href}}" rel="author">{{author}}</a>
                             {{else}}
                                 {{author}}
                             {{/if}}
                             wrote
-                            <a href="{{_links.cont:commit.href}}">
+                            <a href="{{_links.cont:commit.href}}" rel="cont:commit">
                                 <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time>
                             </a>
                         </td>

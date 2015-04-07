@@ -19,10 +19,10 @@
                 <h2>{{repo}}</h2>
                 <ul>
                     {{#if _links.cont:documents}}
-                        <li><span class="icon-pages"></span><a href="{{_links.cont:documents.href}}">Documents</a></li>
+                        <li><span class="icon-pages"></span><a href="{{_links.cont:documents.href}}" rel="cont:documents">Documents</a></li>
                     {{/if}}
                     {{#if _links.cont:commits}}
-                        <li><span class="icon-commits"></span><a href="{{_links.cont:commits.href}}">Revisions</a></li>
+                        <li><span class="icon-commits"></span><a href="{{_links.cont:commits.href}}" rel="cont:commits">Revisions</a></li>
                     {{/if}}
                     {{*<li><span class="icon-stage"></span><a href="/stage">Stage</a> <sup>3</sup></li>*}}
                 </ul>
@@ -31,13 +31,13 @@
                 <h2>{{filename}}</h2>
                 <ul>
                     {{#if _links.cont:document}}
-                        <li><span class="icon-page"></span><a href="{{_links.cont:document.href}}">View</a></li>
+                        <li><span class="icon-page"></span><a href="{{_links.cont:document.href}}" rel="cont:document">View</a></li>
                     {{/if}}
                     {{#if _links.edit-form}}
-                        <li><span class="icon-edit"></span><a href="{{_links.edit-form.href}}">Edit</a></li>
+                        <li><span class="icon-edit"></span><a href="{{_links.edit-form.href}}" rel="edit-form">Edit</a></li>
                     {{/if}}
                     {{#if _links.cont:history}}
-                        <li><span class="icon-history"></span><a href="{{_links.cont:history.href}}">History</a></li>
+                        <li><span class="icon-history"></span><a href="{{_links.cont:history.href}}" rel="cont:history">History</a></li>
                     {{/if}}
                 </ul>
             {{/if}}
