@@ -7,7 +7,7 @@ use Prophecy\Argument;
 
 class EditSpec extends ObjectBehavior
 {
-    function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
+    function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo, \Contentacle\Services\Yaml $yaml)
     {
         $repo->prop('name')->willReturn('Extraction');
         $repo->prop('description')->willReturn('Extraction is the art of infiltrating the mind of any person to steal their secrets.');
@@ -54,7 +54,8 @@ class EditSpec extends ObjectBehavior
             'response' => function($code = null, $templateName = null) {
                 return new \Contentacle\Response($code, '', null, null);
             },
-            'repoRepository' => $repoRepo
+            'repoRepository' => $repoRepo,
+            'yaml' => $yaml
         ));
     }
 
@@ -123,5 +124,37 @@ class EditSpec extends ObjectBehavior
 
         $response->code->shouldBe(302);
         $response->Location->shouldBe('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel/wedding-ring.txt');
+    }
+
+    function it_should_update_document_metadata($request, $repo, $yaml)
+    {
+        $request->getData()->willReturn(array(
+            'metadata' => array(
+                array(
+                    'name' => 'forger',
+                    'value' => 'Eames'
+                ),
+                array(
+                    'name' => 'chemist',
+                    'value' => 'Yusuf'
+                )
+            ),
+            'content' => 'The team.',
+            'message' => 'Add the team'
+        ));
+
+        $yaml->encode(array(
+            'forger' => 'Eames',
+            'chemist' => 'Yusuf'
+        ))->willReturn("---\nforger: Eames\nchemist: Yusuf\n");
+
+        $content = "---\nforger: Eames\nchemist: Yusuf\n---\nThe team.";
+
+        $repo->updateDocument('master', 'team.txt', $content, 'Add the team', 'team.txt')->shouldBeCalled();
+
+        $response = $this->commit('cobb', 'extraction', 'master', 'team.txt');
+
+        $response->code->shouldBe(302);
+        $response->Location->shouldBe('/users/cobb/repos/extraction/branches/master/documents/team.txt');
     }
 }
