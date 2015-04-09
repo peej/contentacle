@@ -43,9 +43,8 @@ class History extends Resource {
             $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName, 'history', $path));
             $response->addLink('cont:doc', '/rels/history');
             $response->addLink('cont:history', $this->buildUrl($username, $repoName, $branchName, 'history', $path));
-            $response->addLink('cont:raw', $this->buildUrl($username, $repoName, $branchName, 'raw', $path));
             $response->addLink('cont:document', $this->buildUrl($username, $repoName, $branchName, 'documents', $path));
-            $response->addLink('edit', $this->buildUrl($username, $repoName, $branchName, 'edit', $path));
+            $response->addLink('edit-form', $this->buildUrl($username, $repoName, $branchName, 'edit', $path));
 
             foreach ($history as $item) {
                 $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $item['sha'])));

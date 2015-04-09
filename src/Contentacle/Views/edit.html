@@ -7,7 +7,7 @@
         </h1>
         {{#if _embedded.cont:commit}}
             <div class="commit-metadata">
-                <a href="{{_embedded.cont:commit.0._links.cont:authoruser.href}}" rel="cont:user">{{_embedded.cont:commit.0.author}}</a> wrote {{since _embedded.cont:commit.0.date}} - <a href="{{_embedded.cont:commit.0._links.self.href}}">{{_embedded.cont:commit.0.message}}</a>
+                <a href="{{_embedded.cont:commit.0._links.author.href}}" rel="author">{{_embedded.cont:commit.0.author}}</a> wrote {{since _embedded.cont:commit.0.date}} - <a href="{{_embedded.cont:commit.0._links.self.href}}" rel="cont:commit">{{_embedded.cont:commit.0.message}}</a>
             </div>
         {{/if}}
     </div>
