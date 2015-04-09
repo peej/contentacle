@@ -24,13 +24,13 @@
         <h2>Metadata</h2>
         {{#each metadata}}
             <label>
-                <input type="text" name="metadata[{{@key}}][name]" value="{{capitalise @key}}" class="metadata-name">
-                <input type="text" name="metadata[{{@key}}][value]" value="{{this}}" class="metadata-value">
+                <input type="text" name="metadata[name][{{@index}}]" value="{{capitalise @key}}" class="metadata-name">
+                <input type="text" name="metadata[value][{{@index}}]" value="{{this}}" class="metadata-value">
             </label>
         {{/each}}
         <label>
-            <input type="text" name="metadata[_new][name]" value="" class="metadata-name" placeholder="New metadata">
-            <input type="text" name="metadata[_new][value]" value="" class="metadata-value">
+            <input type="text" name="metadata[name][]" value="" class="metadata-name" placeholder="New metadata">
+            <input type="text" name="metadata[value][]" value="" class="metadata-value">
         </label>
     </div>
 </form>

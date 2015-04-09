@@ -118,6 +118,16 @@ $(function () {
         "<input type=\"hidden\" name=\"content\">"
     ));
 
+    $("#commit").on("blur", "input[type=text]:last", function () {
+        if (this.value != "") {
+            var $this = $(this);
+            var clone = $this.parent().clone();
+            clone.find("input").val("");
+            $this.parent().after(clone);
+            clone.find("input:first").focus();
+        }
+    });
+
     $commit.hover(function () {
         $body.addClass("commit");
     }, function () {

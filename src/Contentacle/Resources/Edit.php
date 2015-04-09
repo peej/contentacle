@@ -68,9 +68,9 @@ class Edit extends Resource
         if (isset($this->request->data['metadata']) && is_array($this->request->data['metadata'])) {
             $metadata = array();
 
-            foreach ($this->request->data['metadata'] as $item) {
-                if (isset($item['name']) && $item['name'] && isset($item['value']) && $item['value']) {
-                    $metadata[$item['name']] = $item['value'];
+            foreach ($this->request->data['metadata']['name'] as $key => $name) {
+                if ($name != '' && isset($this->request->data['metadata']['value'][$key])) {
+                    $metadata[$name] = $this->request->data['metadata']['value'][$key];
                 }
             }
 

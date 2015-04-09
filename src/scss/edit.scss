@@ -109,6 +109,7 @@ body.commit section {
     right: 0;
     width: 400px;
     background: $yellow-colour;
+    overflow-y: auto;
 
     h2 {
         color: $grey-colour-highlight;
@@ -116,7 +117,7 @@ body.commit section {
 
     textarea,
     label {
-        width: 360px;
+        width: 340px;
         margin: 20px;
     }
 

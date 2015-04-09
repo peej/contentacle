@@ -130,13 +130,13 @@ class EditSpec extends ObjectBehavior
     {
         $request->getData()->willReturn(array(
             'metadata' => array(
-                array(
-                    'name' => 'forger',
-                    'value' => 'Eames'
+                'name' => array(
+                    'forger',
+                    'chemist'
                 ),
-                array(
-                    'name' => 'chemist',
-                    'value' => 'Yusuf'
+                'value' => array(
+                    'Eames',
+                    'Yusuf'
                 )
             ),
             'content' => 'The team.',
