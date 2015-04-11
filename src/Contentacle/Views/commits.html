@@ -1,7 +1,7 @@
 <div>
     <h1>
-        <a href="{{_links.cont:user.href}}">{{username}}</a> /
-        <a href="{{_links.cont:repo.href}}">{{repo}}</a> /
+        <a href="{{_links.cont:user.href}}" rel="cont:user">{{username}}</a> /
+        <a href="{{_links.cont:repo.href}}" rel="cont:repo">{{repo}}</a> /
         {{branch}}
     </h1>
 
@@ -17,15 +17,23 @@
                 <ol>
             {{/showDay}}
             <li>
-                <a href="{{_links.self.href}}">{{message}}</a>
+                <a href="{{_links.self.href}}" rel="cont:commit">{{message}}</a>
                 <span>
                     {{#if _links.author.href}}
-                        <a href="{{_links.author.href}}" title="{{email}}">{{author}}</a>
+                        <a href="{{_links.author.href}}" rel="author" title="{{email}}">{{author}}</a>
                     {{else}}
                         <span title="{{email}}">{{author}}</span>
                     {{/if}}
                     wrote <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time>
                 </span>
+                <div class="actions">
+                    <form action="{{_links.cont:undo.href}}" method="post" rel="cont:undo">
+                        <span class="icon-undo"></span><button title="{{_links.cont:undo.title}}">Undo</button>
+                    </form>
+                    <form action="{{_links.cont:revert.href}}" method="post" rel="cont:revert">
+                        <span class="icon-revert"></span><button title="{{_links.cont:revert.title}}">Revert</button>
+                    </form>
+                </div>
             </li>
         {{/each}}
         </ol>

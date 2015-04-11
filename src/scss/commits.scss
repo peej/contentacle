@@ -5,6 +5,7 @@
 }
 
 .commits li {
+    position: relative;
     background: $grey-colour-light;
     padding: 4px 8px;
     border-bottom: 1px solid $grey-colour-medium;
@@ -27,5 +28,11 @@
         a {
             color: $grey-colour-dark;
         }
+    }
+
+    .actions {
+        position: absolute;
+        top: 0;
+        right: 0;
     }
 }

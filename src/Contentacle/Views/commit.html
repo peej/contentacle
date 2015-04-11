@@ -7,7 +7,16 @@
     </h1>
 
     {{>commit-metadata}}
+
     {{#if diffs}}
+        <div class="actions">
+            <form action="{{_links.cont:undo.href}}" method="post" rel="cont:undo">
+                <span class="icon-undo"></span><button title="{{_links.cont:undo.title}}">Undo</button>
+            </form>
+            <form action="{{_links.cont:revert.href}}" method="post" rel="cont:revert">
+                <span class="icon-revert"></span><button title="{{_links.cont:revert.title}}">Revert</button>
+            </form>
+        </div>
         <ul>
             {{#each diffs}}
                 <li>

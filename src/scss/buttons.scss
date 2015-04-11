@@ -4,6 +4,34 @@
     text-align: center;
 }
 
+.actions {
+    margin: 0 20px;
+    text-align: right;
+
+    form {
+        display: inline-block;
+        margin: 2px 4px;
+
+        span {
+            color: $red-colour;
+            font-size: 13px;
+        }
+
+        button {
+            border: none;
+            background: none;
+            color: $red-colour;
+            display: inline;
+            margin: 0 0 0 2px;
+            padding: 0;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
 button,
 a.button {
     display: inline-block;
