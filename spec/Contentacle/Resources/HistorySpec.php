@@ -51,12 +51,6 @@ class HistorySpec extends ObjectBehavior
         $response->data['_links']['cont:document']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel/totem.txt');
     }
 
-    function it_should_link_to_the_raw_document()
-    {
-        $response = $this->get('cobb', 'extraction', 'master', 'new-york/the-hotel/totem.txt');
-        $response->data['_links']['cont:raw']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/raw/new-york/the-hotel/totem.txt');
-    }
-
     function it_should_show_history_listing($repo)
     {
         $repo->history('master', 'new-york/the-hotel/totem.txt')->shouldBeCalled();
