@@ -47,11 +47,12 @@ Feature:
         And I add "Content-Type" header equal to ""
         And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/undo" with sha 2
         Then the response status code should be 201
+        And a "Location" response header should exist
         And I remember the commit sha from the location header
         Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 7
         Then the response status code should be 200
         And the content-type response header should be "application/hal+yaml"
-        And response property "message" should be "Undo change {sha}" with sha 2
+        And response property "message" should be "Undo change “2nd commit”" with sha 2
 
     Scenario: Undo a single commit with a custom commit message
         Given I add "Content-Type" header equal to "text/plain"
@@ -88,7 +89,7 @@ Feature:
             | afile.txt          | Changed content |
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/undo" with sha 1
-        Then the response status code should be 400
+        Then the response status code should be 409
 
     Scenario: Navigate to a commit
         Given I am on the homepage
