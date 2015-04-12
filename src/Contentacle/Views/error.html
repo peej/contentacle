@@ -1,0 +1,11 @@
+<div>
+    <h1 class="cthulhu">{{var.message}}</h1>
+    {{#each _embedded.cont:error}}
+        <p>{{this.message}}</p>
+    {{/each}}
+    {{#if _links.exit}}
+        <div class="button-bar">
+            <a href="{{_links.exit.href}}" class="button">{{default _links.exit.title "Continue"}}</a>
+        </div>
+    {{/if}}
+</div>
