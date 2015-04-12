@@ -80,7 +80,9 @@ class Edit extends Resource
         }
 
         if ($filename == null && $content == null) {
-            return new \Tonic\Response(400);
+            $error = $this->response(400, 'error');
+            $error->addError('nothing-to-do', 'Either a changed filename, content or metadata must be provided');
+            return $error;
         }
 
         $path = $this->fixPath($path, $username, $repoName, $branchName, 'edit');
