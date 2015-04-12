@@ -5,7 +5,9 @@
         {{branch}}
     </h1>
 
-    {{>branch-select}}
+    <div class="button-bar">
+        {{>branch-select}}
+    </div>
 
     {{#if _embedded.cont:commit}}
         {{#each _embedded.cont:commit}}
