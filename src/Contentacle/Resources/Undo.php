@@ -34,17 +34,20 @@ class Undo extends Resource {
         } elseif (is_string($this->request->data)) {
             $commitMessage = $this->request->data;
         } else {
-            $commitMessage = 'Undo change '.$commit['sha'];
+            $commitMessage = 'Undo change “'.$commit['message'].'”';
         }
 
         if ($revertSha = $repo->revert($commit['sha'], $commitMessage)) {
-            $response = new \Tonic\Response(201);
+            $response = $this->response(201);
             $response->location = $this->buildUrl($username, $repoName, $branchName, 'commits', $revertSha);
-            return $response;
         } else {
-            return new \Tonic\Response(400);
+            $response = $this->response(409, 'error');
+            $response->addVar('message', 'Conflict');
+            $response->addError('conflict', 'Could not undo this commit, it may already be undone or future commits may prevent this commit from being removed.');
+            $response->addLink('exit', $this->buildUrl($username, $repoName, $branchName, 'commits'));
         }
-        
+
+        return $response;
     }
 
 }
