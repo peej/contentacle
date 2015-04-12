@@ -100,12 +100,17 @@ class Response extends \Tonic\Response
         $this->data['_embedded'] = $this->embedded;
     }
 
-    public function addError($field)
+    public function addError($field, $message = null)
     {
         $this->vars['error'][$field] = true;
+
+        if (!$message) {
+            $message = '"'.$field.'" field failed validation';
+        }
+
         $this->embed('cont:error', array(
             'logref' => $field,
-            'message' => '"'.$field.'" field failed validation'
+            'message' => $message
         ));
     }
 
