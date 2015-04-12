@@ -167,6 +167,17 @@ TABLE
     }
 
     /**
+     * @Then /^a "([^"]*)" response header should exist$/
+     */
+    public function theResponseHeaderShouldExist($header)
+    {
+        $headers = $this->getSession()->getResponseHeaders();
+        if (!isset($headers[$header])) {
+            throw new Exception($header.' is not present');
+        }
+    }
+
+    /**
      * @Then /^the response should have the property "([^"]*)" with the value "([^"]*)"$/
      * @Then /^response property "([^"]*)" should be "([^"]*)"$/
      */
