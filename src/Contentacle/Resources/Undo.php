@@ -3,18 +3,19 @@
 namespace Contentacle\Resources;
 
 /**
- * @uri /users/:username/repos/:repo/branches/:branch/commits/([0-9a-f]{40})/revert
+ * @uri /users/:username/repos/:repo/branches/:branch/commits/([0-9a-f]{40})/undo
  */
-class Revert extends Resource {
+class Undo extends Resource {
 
     /**
-     * Revert a commit by creating a new commit that undoes the actions of the first commit.
+     * Undo a commit by creating a new commit that undoes the actions of the first commit.
      *
      * @method post
      * @accepts application/hal+yaml
      * @accepts application/hal+json
      * @accepts application/yaml
      * @accepts application/json
+     * @accepts application/x-www-form-urlencoded
      * @accepts text/plain
      * @accepts
      * @secure

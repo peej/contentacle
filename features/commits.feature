@@ -42,10 +42,10 @@ Feature:
         Given I send a GET request on "/users/peej/repos/test/branches/master/commits/1234567890123546789012345678901234567890"
         Then the response status code should be 404
 
-    Scenario: Revert a single commit
+    Scenario: Undo a single commit
         Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         And I add "Content-Type" header equal to ""
-        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 2
+        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/undo" with sha 2
         Then the response status code should be 201
         And I remember the commit sha from the location header
         Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 7
@@ -53,10 +53,10 @@ Feature:
         And the content-type response header should be "application/hal+yaml"
         And response property "message" should be "Undo change {sha}" with sha 2
 
-    Scenario: Revert a single commit with a custom commit message
+    Scenario: Undo a single commit with a custom commit message
         Given I add "Content-Type" header equal to "text/plain"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
-        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 2 and body:
+        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/undo" with sha 2 and body:
             """
             Custom commit message
             """
@@ -67,10 +67,10 @@ Feature:
         And the content-type response header should be "application/hal+yaml"
         And response property "message" should be "Custom commit message"
 
-    Scenario: Revert a single commit with a custom commit message in JSON
+    Scenario: Undo a single commit with a custom commit message in JSON
         Given I add "Content-Type" header equal to "application/json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
-        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 2 and body:
+        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/undo" with sha 2 and body:
             """
             {
                 "message": "Custom commit message"
@@ -82,12 +82,12 @@ Feature:
         And the content-type response header should be "application/hal+yaml"
         And response property "message" should be "Custom commit message"
 
-    Scenario: Fail to revert a commit that can't be reverted since it conflicts with a newer commit
+    Scenario: Fail to undo a commit that can't be reverted since it conflicts with a newer commit
         Given I have a commit in "peej/test" with message "Conflict":
             | file               | content         |
             | afile.txt          | Changed content |
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
-        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 1
+        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/undo" with sha 1
         Then the response status code should be 400
 
     Scenario: Navigate to a commit
