@@ -234,6 +234,17 @@ class Repo extends Model
     }
 
     /**
+     * Is the given sha the head of the given branch
+     * @param str $branch
+     * @param str $sha
+     * @return bool
+     */
+    public function isHead($branch, $sha)
+    {
+        return $this->git->dereference('refs/heads/'.$branch) == $sha;
+    }
+
+    /**
      * Get the path of the repos .git/description file
      * @return str
      */

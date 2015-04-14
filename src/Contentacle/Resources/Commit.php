@@ -71,7 +71,10 @@ class Commit extends Resource
             }
 
             $response->addLink('cont:undo', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits', $sha, 'undo'), false, 'Undo the changes made by this commit');
-            $response->addLink('cont:revert', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits', $sha, 'revert'), false, 'Revert back to this commit');
+
+            if (!$repo->isHead($branchName, $sha)) {
+                $response->addLink('cont:revert', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits', $sha, 'revert'), false, 'Revert back to this commit');
+            }
 
             return $response;
 

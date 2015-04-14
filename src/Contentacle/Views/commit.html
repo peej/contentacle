@@ -13,9 +13,11 @@
             <form action="{{_links.cont:undo.href}}" method="post" rel="cont:undo">
                 <button title="{{_links.cont:undo.title}}" class="danger"><span class="icon-undo"></span> Undo</button>
             </form>
-            <form action="{{_links.cont:revert.href}}" method="post" rel="cont:revert">
-                <button title="{{_links.cont:revert.title}}" class="danger"><span class="icon-revert"></span> Revert</button>
-            </form>
+            {{#if _links.cont:revert}}
+                <form action="{{_links.cont:revert.href}}" method="post" rel="cont:revert">
+                    <button title="{{_links.cont:revert.title}}" class="danger"><span class="icon-revert"></span> Revert</button>
+                </form>
+            {{/if}}
         </div>
         <ul>
             {{#each diffs}}
