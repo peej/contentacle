@@ -21,6 +21,7 @@ class HistorySpec extends ObjectBehavior
         $repo->branches()->willReturn(array(
             'master', 'branch'
         ));
+        $repo->isHead('master', '123456')->willReturn(true);
 
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
 

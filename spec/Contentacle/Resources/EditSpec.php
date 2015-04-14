@@ -15,6 +15,7 @@ class EditSpec extends ObjectBehavior
         $repo->branches()->willReturn(array(
             'master', 'branch'
         ));
+        $repo->isHead('master', '111111')->willReturn(true);
         $repo->document('master', 'new-york/the-hotel/totem.txt')->willReturn(array(
             'path' => 'new-york/the-hotel/totem.txt',
             'filename' => 'totem.txt',

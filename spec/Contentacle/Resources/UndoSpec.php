@@ -16,7 +16,7 @@ class UndoSpec extends ObjectBehavior
             'files' => array('new-york/the-hotel/totem.txt')
         ));
         $repo->commit(Argument::cetera())->willThrow(new \Git\Exception);
-        $repo->revert('123456', Argument::any())->willReturn('999999');
+        $repo->undo('123456', Argument::any())->willReturn('999999');
 
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
         $repoRepo->getRepo(Argument::cetera())->willThrow(new \Git\Exception);
@@ -45,7 +45,7 @@ class UndoSpec extends ObjectBehavior
 
     function it_should_fail_to_undo_a_conflicting_commit($repo)
     {
-        $repo->revert('123456', Argument::any())->willReturn(false);
+        $repo->undo('123456', Argument::any())->willReturn(false);
         $response = $this->post('cobb', 'extraction', 'master', '123456');
         $response->code->shouldBe(409);
     }

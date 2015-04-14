@@ -16,7 +16,7 @@ class RevertSpec extends ObjectBehavior
             'files' => array('new-york/the-hotel/totem.txt')
         ));
         $repo->commit(Argument::cetera())->willThrow(new \Git\Exception);
-        $repo->undo('123456', Argument::any())->willReturn('999999');
+        $repo->revert('123456', Argument::any())->willReturn('999999');
 
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
         $repoRepo->getRepo(Argument::cetera())->willThrow(new \Git\Exception);
@@ -33,7 +33,7 @@ class RevertSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType('Contentacle\Resources\Undo');
+        $this->shouldHaveType('Contentacle\Resources\Revert');
     }
 
     function it_should_revert_to_a_commit()
@@ -45,7 +45,7 @@ class RevertSpec extends ObjectBehavior
 
     function it_should_fail_to_undo_a_conflicting_commit($repo)
     {
-        $repo->undo('123456', Argument::any())->willReturn(false);
+        $repo->revert('123456', Argument::any())->willReturn(false);
         $response = $this->post('cobb', 'extraction', 'master', '123456');
         $response->code->shouldBe(409);
     }

@@ -17,6 +17,8 @@ class CommitsSpec extends ObjectBehavior
         $repo->branches()->willReturn(array(
             'master', 'branch'
         ));
+        $repo->isHead('master', '123456')->willReturn(true);
+        $repo->isHead('master', '654321')->willReturn(false);
         
         $repo->commit('master', '123456')->willReturn(array(
             'sha' => '123456',

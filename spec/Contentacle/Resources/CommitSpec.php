@@ -29,6 +29,7 @@ class CommitSpec extends ObjectBehavior
         $repo->branches()->willReturn(array(
             'master', 'branch'
         ));
+        $repo->isHead('master', '123456')->willReturn(true);
 
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
         $repoRepo->getRepo(Argument::cetera())->willThrow(new \Git\Exception);

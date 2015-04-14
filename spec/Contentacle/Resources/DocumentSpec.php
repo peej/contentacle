@@ -15,6 +15,7 @@ class DocumentSpec extends ObjectBehavior
         $repo->branches()->willReturn(array(
             'master', 'branch'
         ));
+        $repo->isHead('master', '111111')->willReturn(true);
         $repo->documents('master', '')->willReturn(array('new-york'));
         $repo->documents('master', 'new-york')->willReturn(array('new-york/the-hotel'));
         $repo->documents('master', 'new-york/the-hotel')->willReturn(array('new-york/the-hotel/totem.txt'));
