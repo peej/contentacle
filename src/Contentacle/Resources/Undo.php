@@ -37,7 +37,7 @@ class Undo extends Resource {
             $commitMessage = 'Undo change “'.$commit['message'].'”';
         }
 
-        if ($revertSha = $repo->revert($commit['sha'], $commitMessage)) {
+        if ($revertSha = $repo->undo($commit['sha'], $commitMessage)) {
             $response = $this->response(201);
             $response->location = $this->buildUrl($username, $repoName, $branchName, 'commits', $revertSha);
         } else {

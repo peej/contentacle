@@ -345,9 +345,18 @@ class Repo extends Model
         return $this->git->merge($branch2);
     }
 
-    public function revert($sha, $commitMessage)
+    public function undo($sha, $commitMessage)
     {
         return $this->git->revert($sha, $commitMessage);
+    }
+
+    public function revert($sha, $commitMessage)
+    {
+        try {
+            return $this->git->undo($sha, $commitMessage);
+        } catch (\Git\Exception $e) {
+            return false;
+        }
     }
 
 }
