@@ -91,6 +91,33 @@ Feature:
         And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/undo" with sha 1
         Then the response status code should be 409
 
+    Scenario: Revert to a commit
+        Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        And I add "Content-Type" header equal to ""
+        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 2
+        Then the response status code should be 201
+        And a "Location" response header should exist
+        And I remember the commit sha from the location header
+        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 7
+        Then the response status code should be 200
+        And the content-type response header should be "application/hal+yaml"
+        And response property "message" should be "Revert back to “2nd commit”" with sha 2
+        And response property "files" should contain "adir/and/another/file.txt"
+        And response property "files" should contain "anotherFile.txt"
+        And response property "files" should contain "example.md"
+
+    Scenario: Revert to a commit with a custom commit message
+        Given I add "Content-Type" header equal to "text/plain"
+        And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 2 and body:
+            """
+            Custom commit message
+            """
+        Then the response status code should be 201
+        And I remember the commit sha from the location header
+        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 7
+        Then response property "message" should be "Custom commit message"
+
     Scenario: Navigate to a commit
         Given I am on the homepage
         When I follow the "cont:users" relation
