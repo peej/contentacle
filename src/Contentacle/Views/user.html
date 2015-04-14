@@ -8,7 +8,9 @@
                 <li><a href="{{_links.self.href}}" rel="cont:repo">{{name}} - {{default description "No description"}}</a></li>
             {{/each}}
         </ul>
-        <a href="{{_links.cont:repos.href}}" rel="cont:repos" class="button">View all repositories</a>
+        <div class="button-bar">
+            <a href="{{_links.cont:repos.href}}" rel="cont:repos" class="button">View all repositories</a>
+        </div>
     {{else}}
         <p>No repositories found</p>
     {{/if}}
