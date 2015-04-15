@@ -13,7 +13,7 @@ class Template extends \LightnCandy
         $this->compiledPath = $compiledPath;
         $this->markdown = $markdown;
         $this->options = array(
-            'flags' => self::FLAG_SPVARS | self::FLAG_THIS | self::FLAG_ERROR_EXCEPTION | self::FLAG_ADVARNAME,
+            'flags' => self::FLAG_SPVARS | self::FLAG_PARENT | self::FLAG_THIS | self::FLAG_ERROR_EXCEPTION | self::FLAG_ADVARNAME,
             'basedir' => array(
                 'src/Contentacle/Views'
             ),
@@ -70,6 +70,9 @@ class Template extends \LightnCandy
                 },
                 'wordcount' => function ($args) {
                     return str_word_count($args[0]);
+                },
+                'arraysize' => function ($args) {
+                    return count($args[0]);
                 }
             ),
             'blockhelpers' => array(

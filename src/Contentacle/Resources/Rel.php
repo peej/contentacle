@@ -7,6 +7,46 @@ namespace Contentacle\Resources;
  */
 class Rel extends Resource {
 
+    private $resourceMap = array(
+        'branch' => 'Branch',
+        'branches' => 'Branches',
+        'commit' => 'Commit',
+        'commits' => 'Commits',
+        'doc' => 'Rel',
+        'document' => 'Document',
+        'documents' => 'Document',
+        'history' => 'History',
+        'merge' => 'Merge',
+        'merges' => 'Merges',
+        'repo' => 'Repo',
+        'repos' => 'Repos',
+        'profile' => 'User',
+        'raw' => 'Raw',
+        'user' => 'User',
+        'users' => 'Users'
+    );
+
+    function __construct($deps)
+    {
+        parent::__construct($deps);
+
+        $this->resourceMap['error'] = array(
+            'title' => 'Error',
+            'description' => 'An error',
+            'actions' => array(
+                'get' => array(
+                    'description' => 'Get a validation error.',
+                    'response' => array(
+                        'field' => array(
+                            'logref' => 'Field name',
+                            'message' => 'Error message'
+                        )
+                    )
+                )
+            )
+        );
+    }
+
     private function parseDocComment($docComment)
     {
         $data = array();
@@ -30,14 +70,23 @@ class Rel extends Resource {
         return $data;
     }
 
-    private function getDocumentationFromDocComment($rel)
+    private function getResourceDocumentation($className)
     {
-        $className = 'Contentacle\Resources\\'.ucfirst($rel);
+        $data = array();
+        $classReflector = new \ReflectionClass($className);
+        $docComment = $classReflector->getDocComment();
+        $classData = $this->parseDocComment($docComment);
 
-        if (!isset($this->app->resources[$className])) {
-            throw new \Tonic\NotFoundException;
+        foreach ($classData as $item) {
+            $key = array_shift($item);
+            $data[$key] = join(' ', $item);
         }
 
+        return $data;
+    }
+
+    private function getMethodDocumentation($className)
+    {
         $data = array();
 
         foreach (get_class_methods($className) as $methodName) {
@@ -87,23 +136,28 @@ class Rel extends Resource {
 
     private function getDocumentation($rel)
     {
-        if ($rel == 'error') {
-            return array(
-                'get' => array(
-                    'description' => 'Get a validation error.',
-                    'request' => array(
-                        'method' => array('get')
-                    ),
-                    'response' => array(
-                        'code' => array('200 OK'),
-                        'provides' => array('application/yaml', 'application/json')
-                    )
-                )
-            );
+        if (isset($this->resourceMap[$rel])) {
 
-        } else {
-            return $this->getDocumentationFromDocComment($rel);
+            if (is_array($this->resourceMap[$rel])) {
+                return $this->resourceMap[$rel];
+            }
+
+            $className = 'Contentacle\\Resources\\'.$this->resourceMap[$rel];
+
+            if (isset($this->app->resources[$className])) {
+                $data = $this->getResourceDocumentation($className);
+
+                if (!isset($data['title'])) {
+                    $data['title'] = ucwords($rel);
+                }
+
+                $data['actions'] = $this->getMethodDocumentation($className);
+
+                return $data;
+            }
         }
+
+        throw new \Tonic\NotFoundException;
     }
 
     /**
@@ -119,8 +173,14 @@ class Rel extends Resource {
     {
         $response = $this->response(200, 'rel');
 
-        $response->addData('title', '/rels/'.$rel);
-        $response->addData('actions', $this->getDocumentation($rel));
+        $data = $this->getDocumentation($rel);
+
+        $response->addData('title', $data['title']);
+        $response->addData('actions', $data['actions']);
+
+        if (isset($data['description']) && $data['description']) {
+            $response->addData('description', $data['description']);
+        }
 
         return $response;
     }

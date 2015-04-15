@@ -125,6 +125,12 @@ caption {
     font-size: 1.3em;
 }
 
+thead th {
+    background: $blue-colour;
+    border-bottom-color: $blue-colour-highlight;
+    color: #fff;
+}
+
 th,
 td {
     border-bottom: 1px solid $grey-colour-medium;
