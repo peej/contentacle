@@ -108,7 +108,7 @@ abstract class Resource extends \Tonic\Resource
 
     protected function formatExtension($prefix = '.')
     {
-        if (isset($this->request->accept[0])) {
+        if (!$this->extension && isset($this->request->accept[0])) {
             switch ($this->request->accept[0]) {
             case 'application/yaml':
             case 'text/yaml':
