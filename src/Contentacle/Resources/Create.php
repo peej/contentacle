@@ -41,11 +41,8 @@ class Create extends Resource
             $this->configureResponseWithBranch($response, $repo, $branchName);
 
             $response->addVar('footer', false);
-
             $response->addData('path', $path);
-
             $response->addLink('self', $this->buildUrl($username, $repoName, $branchName, 'new', $path));
-            $response->addLink('cont:doc', '/rels/new');
 
             return $response;
         }
