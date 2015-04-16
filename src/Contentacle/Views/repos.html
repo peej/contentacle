@@ -6,13 +6,17 @@
             Repository:
             <input name="q" type="search" value="{{_get.q}}">
             <button type="submit">Search</button>
+            {{#if _links.create-form}}<a href="{{_links.create-form.href}}" class="button okay">New</a>{{/if}}
         </label>
     </form>
 
     {{#if _embedded.cont:repo}}
         <ul>
             {{#each _embedded.cont:repo}}
-                <li><a href="{{_links.self.href}}" rel="cont:repo">{{name}}</a></li>
+                <li>
+                    <a href="{{_links.self.href}}" rel="cont:repo">{{name}}</a>
+                    {{#if description}}- {{description}}{{/if}}
+                </li>
             {{/each}}
         </ul>
         {{#if nextOrPrev}}

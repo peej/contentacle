@@ -31,6 +31,7 @@ class Repos extends Resource
         $response->addData('username', $username);
         $response->addLink('self', $this->buildUrlWithFormat($username, false, false, 'repos'));
         $response->addLink('cont:doc', '/rels/repos');
+        $response->addLink('create-form', $this->buildUrlWithFormat($username, false, false, 'new'));
 
         try {
             $search = isset($_GET['q']) ? $_GET['q'] : null;
