@@ -37,6 +37,7 @@ body {
 @import 'diff';
 @import 'edit';
 @import 'files';
+@import 'form';
 @import 'home';
 @import 'stage';
 @import 'footer';
@@ -53,11 +54,6 @@ a {
 a:hover {
     color: $grey-colour;
     text-decoration: underline;
-}
-
-input:focus,
-textarea:focus {
-    outline-color: $grey-colour;
 }
 
 section {
@@ -173,24 +169,4 @@ th {
 
 tr:nth-child(even) td {
     background: $grey-colour-light-even;
-}
-
-label {
-    display: block;
-    margin: 1em 0 4px;
-}
-
-input,
-textarea {
-    display: block;
-    margin: 4px 0 1em;
-    width: 100%;
-    border: 1px solid $grey-colour-light;
-    padding: 4px;
-    background: #fff;
-    color: #210;
-}
-
-textarea {
-    height: 6em;
 }

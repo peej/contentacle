@@ -49,6 +49,7 @@ a.button.cancel {
 button.okay,
 a.button.okay {
     background-color: $green-colour;
+    color: #fff;
 }
 
 button.okay:hover,
@@ -60,6 +61,7 @@ button.danger,
 a.button.danger {
     color: #fff;
     background-color: $red-colour;
+    color: #fff;
 }
 
 button.danger:hover,

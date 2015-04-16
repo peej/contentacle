@@ -1,0 +1,31 @@
+label {
+    display: block;
+    margin: 1em 0 4px;
+}
+
+input,
+textarea {
+    display: block;
+    margin: 4px 0 1em;
+    width: 100%;
+    border: 1px solid $grey-colour-light;
+    padding: 4px;
+    background: #fff;
+    color: #210;
+}
+
+textarea {
+    height: 6em;
+}
+
+input:focus,
+textarea:focus {
+    outline-color: $grey-colour;
+}
+
+label.inline {
+    input, button {
+        display: inline-block;
+        width: auto;
+    }
+}
