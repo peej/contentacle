@@ -187,6 +187,9 @@ class Response extends \Tonic\Response
             echo json_encode($this->data, JSON_PRETTY_PRINT);
             break;
 
+        case 'application/hal+yaml':
+        case 'application/yaml':
+        case 'text/yaml':
         default:
             $this->sendFriendlyMimetypeIfBrowser();
             $this->addCuries();
