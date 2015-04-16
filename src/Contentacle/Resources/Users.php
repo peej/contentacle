@@ -32,6 +32,7 @@ class Users extends Resource
         $response->addVar('title', 'Contentacle users');
         $response->addLink('self', '/users'.$this->formatExtension());
         $response->addLink('cont:doc', '/rels/users');
+        $response->addLink('search', '/users{?q}'.$this->formatExtension(), true);
 
         if ($this->embed) {
 

@@ -1,7 +1,7 @@
 <div>
     <h1>Search for Users</h1>
 
-    <form action="/users" method="get">
+    <form action="{{_links.self.href}}" method="get" rel="search">
         <label class="inline">
             Username:
             <input name="q" type="search" value="{{_get.q}}">
