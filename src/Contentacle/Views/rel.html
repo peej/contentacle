@@ -1,84 +1,86 @@
-<h1>{{title}}</h1>
-<p>{{description}}</p>
-
-{{#each actions}}
-    <h2>{{uppercase @key}}</h2>
+<div>
+    <h1>{{title}}</h1>
     <p>{{description}}</p>
 
-    <table>
-        {{#if request}}
+    {{#each actions}}
+        <h2>{{uppercase @key}}</h2>
+        <p>{{description}}</p>
+
+        <table>
+            {{#if request}}
+                <thead>
+                    <tr><th colspan="3">Request</th></tr>
+                </thead>
+                {{#each request.method}}
+                    <tr>
+                        {{#if @first}}<th rowspan="{{arraysize ../../request.method}}">Method</th>{{/if}}
+                        <td colspan="2">{{uppercase .}}</td>
+                    </tr>
+                {{/each}}
+                {{#each request.accepts}}
+                    <tr>
+                        {{#if @first}}<th rowspan="{{arraysize ../../request.accepts}}">Format</th>{{/if}}
+                        <td colspan="2">{{.}}</td>
+                    </tr>
+                {{/each}}
+                {{#each request.field}}
+                    <tr>
+                        {{#if @first}}<th rowspan="{{arraysize ../../request.field}}">Fields</th>{{/if}}
+                        <td>{{@key}}</td>
+                        <td>{{.}}</td>
+                    </tr>
+                {{/each}}
+                {{#if request.secure}}
+                    <tr>
+                        <th>Secure</th>
+                        <td colspan="2">The request must be authenticated to succeed.</td>
+                    </tr>
+                {{/if}}
+            {{/if}}
+
             <thead>
-                <tr><th colspan="3">Request</th></tr>
+                <tr><th colspan="3">Response</th></tr>
             </thead>
-            {{#each request.method}}
+            {{#each response.code}}
                 <tr>
-                    {{#if @first}}<th rowspan="{{arraysize ../../request.method}}">Method</th>{{/if}}
-                    <td colspan="2">{{uppercase .}}</td>
-                </tr>
-            {{/each}}
-            {{#each request.accepts}}
-                <tr>
-                    {{#if @first}}<th rowspan="{{arraysize ../../request.accepts}}">Format</th>{{/if}}
+                    {{#if @first}}<th rowspan="{{arraysize ../../response.code}}">Code</th>{{/if}}
                     <td colspan="2">{{.}}</td>
                 </tr>
             {{/each}}
-            {{#each request.field}}
+            {{#each response.provides}}
                 <tr>
-                    {{#if @first}}<th rowspan="{{arraysize ../../request.field}}">Fields</th>{{/if}}
+                    {{#if @first}}<th rowspan="{{arraysize ../../response.provides}}">Format</th>{{/if}}
+                    <td colspan="2">{{.}}</td>
+                </tr>
+            {{/each}}
+            {{#each response.field}}
+                <tr>
+                    {{#if @first}}<th rowspan="{{arraysize ../../response.field}}">Field</th>{{/if}}
                     <td>{{@key}}</td>
                     <td>{{.}}</td>
                 </tr>
             {{/each}}
-            {{#if request.secure}}
+            {{#each response.header}}
                 <tr>
-                    <th>Secure</th>
-                    <td colspan="2">The request must be authenticated to succeed.</td>
+                    {{#if @first}}<th rowspan="{{arraysize ../../response.header}}">Headers</th>{{/if}}
+                    <td>{{@key}}</td>
+                    <td>{{.}}</td>
                 </tr>
-            {{/if}}
-        {{/if}}
-
-        <thead>
-            <tr><th colspan="3">Response</th></tr>
-        </thead>
-        {{#each response.code}}
-            <tr>
-                {{#if @first}}<th rowspan="{{arraysize ../../response.code}}">Code</th>{{/if}}
-                <td colspan="2">{{.}}</td>
-            </tr>
-        {{/each}}
-        {{#each response.provides}}
-            <tr>
-                {{#if @first}}<th rowspan="{{arraysize ../../response.provides}}">Format</th>{{/if}}
-                <td colspan="2">{{.}}</td>
-            </tr>
-        {{/each}}
-        {{#each response.field}}
-            <tr>
-                {{#if @first}}<th rowspan="{{arraysize ../../response.field}}">Field</th>{{/if}}
-                <td>{{@key}}</td>
-                <td>{{.}}</td>
-            </tr>
-        {{/each}}
-        {{#each response.header}}
-            <tr>
-                {{#if @first}}<th rowspan="{{arraysize ../../response.header}}">Headers</th>{{/if}}
-                <td>{{@key}}</td>
-                <td>{{.}}</td>
-            </tr>
-        {{/each}}
-        {{#each response.links}}
-            <tr>
-                {{#if @first}}<th rowspan="{{arraysize ../../response.links}}">Links</th>{{/if}}
-                <td>{{{rel @key}}}</td>
-                <td>{{.}}</td>
-            </tr>
-        {{/each}}
-        {{#each response.embeds}}
-            <tr>
-                {{#if @first}}<th rowspan="{{arraysize ../../response.embeds}}">Embedded</th>{{/if}}
-                <td>{{{rel @key}}}</td>
-                <td>{{.}}</td>
-            </tr>
-        {{/each}}
-    </table>
-{{/each}}
+            {{/each}}
+            {{#each response.links}}
+                <tr>
+                    {{#if @first}}<th rowspan="{{arraysize ../../response.links}}">Links</th>{{/if}}
+                    <td>{{{rel @key}}}</td>
+                    <td>{{.}}</td>
+                </tr>
+            {{/each}}
+            {{#each response.embeds}}
+                <tr>
+                    {{#if @first}}<th rowspan="{{arraysize ../../response.embeds}}">Embedded</th>{{/if}}
+                    <td>{{{rel @key}}}</td>
+                    <td>{{.}}</td>
+                </tr>
+            {{/each}}
+        </table>
+    {{/each}}
+</div>
