@@ -29,3 +29,20 @@ label.inline {
         width: auto;
     }
 }
+
+label.error {
+    input {
+        border-color: $red-colour;
+        color: $red-colour;
+    }
+
+    p {
+        margin: 1em 0;
+        color: $red-colour;
+        font-weight: bold;
+    }
+
+    a {
+        color: $red-colour;
+    }
+}
