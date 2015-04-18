@@ -102,16 +102,23 @@ class Response extends \Tonic\Response
 
     public function addError($field, $message = null)
     {
-        $this->vars['error'][$field] = true;
+        $this->addErrors(array($field => $message));
+    }
 
-        if (!$message) {
-            $message = '"'.$field.'" field failed validation';
+    public function addErrors($errors)
+    {
+        foreach ($errors as $field => $message) {
+            $this->vars['error'][$field] = true;
+
+            if (!$message) {
+                $message = '"'.$field.'" field failed validation';
+            }
+
+            $this->embed('cont:error', array(
+                'logref' => $field,
+                'message' => $message
+            ));
         }
-
-        $this->embed('cont:error', array(
-            'logref' => $field,
-            'message' => $message
-        ));
     }
 
     private function addCuries() {
