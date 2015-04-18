@@ -15,6 +15,12 @@ class Repo extends Model
             throw new \Contentacle\Exceptions\RepoException("No repo name provided when creating repo");
         }
 
+        parent::__construct(array(
+            'username' => '/^[a-z]{2,40}$/',
+            'name' => '/^[a-z0-9-]{2,40}$/',
+            'description' => true
+        ), $data);
+
         $this->git = $gitProvider($data['username'], $data['name'].'.git');
         $this->gitProvider = $gitProvider;
         $this->repoDir = $repoDir;
@@ -25,12 +31,6 @@ class Repo extends Model
 
         $user = $userRepo->getUser($data['username']);
         $this->git->setUser($user->name, $user->email);
-
-        parent::__construct(array(
-            'username' => '/^[a-z]{2,40}$/',
-            'name' => '/^[a-z0-9-]{2,40}$/',
-            'description' => true
-        ), $data);
 
         if (!isset($data['description'])) {
             $this->readMetadata();

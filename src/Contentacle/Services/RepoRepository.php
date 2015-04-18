@@ -54,7 +54,20 @@ class RepoRepository
         $data['username'] = $user->username;
 
         if (!isset($data['name']) || $data['name'] == '') {
-            throw new \Contentacle\Exceptions\RepoException('Can not create a repo without a name');
+            $e = new \Contentacle\Exceptions\ValidationException('Can not create a repo without a name');
+            $e->errors[] = 'name';
+            throw $e;
+        }
+
+        try {
+            $this->getRepo($data['username'], $data['name']);
+            $repoExists = true;
+        } catch (\Contentacle\Exceptions\RepoException $e) {
+            $repoExists = false;
+        }
+
+        if ($repoExists) {
+            throw new \Contentacle\Exceptions\RepoException('Repo already exists, can\'t create again');
         }
 
         if (!isset($data['description']) || $data['description'] == '') {
