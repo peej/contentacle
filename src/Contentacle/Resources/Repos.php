@@ -63,11 +63,13 @@ class Repos extends Resource
      * @accepts application/hal+json
      * @accepts application/yaml
      * @accepts application/json
+     * @accepts application/x-www-form-urlencoded
      * @secure
      * @response 201 Created
      * @response 400 Bad request
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @provides text/html
      * @header Location The URL of the created repository.
      * @embeds cont:error A list of errored fields.
      */
@@ -80,13 +82,13 @@ class Repos extends Resource
             $response->location = '/users/'.$user->username.'/repos/'.$repo->name;
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
-            $response = $this->response(400);
-            foreach ($e->errors as $field) {
-                $response->embed('errors', array(
-                    'logref' => $field,
-                    'message' => '"'.$field.'" field failed validation'
-                ));
-            }
+            $response = $this->response(400, 'new-repo');
+            $response->addErrors(array_fill_keys($e->errors, null));
+
+        } catch (\Contentacle\Exceptions\RepoException $e) {
+            $response = $this->response(400, 'new-repo');
+            $response->addError('exists');
+            $response->addLink('cont:repo', $this->buildUrlWithFormat($username, $this->request->getData()['name']));
         }
 
         return $response;
