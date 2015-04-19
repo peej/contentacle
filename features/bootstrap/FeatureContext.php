@@ -95,12 +95,30 @@ TABLE
     }
 
     /**
-     * @BeforeScenario
+     * @AfterScenario
      */
-    public function setHeaders()
+    public function resetSession()
     {
         $this->getSession()->setRequestHeader('Accept', '*/*');
         $this->getSession()->setRequestHeader('Authorization', null);
+        $this->getSession()->reset();
+    }
+
+    /**
+     * @BeforeScenario @api
+     */
+    public function apiRequest()
+    {
+        $this->getSession()->setRequestHeader('Accept', 'application/hal+yaml');
+    }
+
+    /**
+     * @BeforeScenario @html
+     */
+    public function htmlRequest()
+    {
+        $this->getSession()->setRequestHeader('Accept', 'text/html');
+        $this->getSession()->setRequestHeader('Content-Type', "application/x-www-form-urlencoded");
     }
 
     private function getResponseBody()

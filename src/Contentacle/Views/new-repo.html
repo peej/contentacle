@@ -6,17 +6,17 @@
             Name:
             <input name="name" type="text" value="{{_post.name}}" required>
             {{#if var.error.name}}
-                <p>Name can't be blank, and can only contain lowercase letters and numbers.</p>
+                <p class="error-name">Name can't be blank, and can only contain lowercase letters and numbers.</p>
             {{/if}}
             {{#if var.error.exists}}
-                <p>A repository with this name already exists, <a href="{{_links.cont:repo.href}}">view it here</a>.</p>
+                <p class="error-exists">A repository with this name already exists, <a href="{{_links.cont:repo.href}}">view it here</a>.</p>
             {{/if}}
         </label>
         <label>
             Description:
             <input name="description" type="text" value="{{_post.description}}">
         </label>
-        <button type="submit" class="okay">Create</button>
+        <button type="submit" class="okay" name="submit">Create</button>
         <a href="{{_links.up.href}}" class="button">Cancel</a>
     </form>
 </div>

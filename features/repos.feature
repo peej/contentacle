@@ -2,6 +2,7 @@ Feature:
     As a user
     I should be able to see a users repos
 
+    @api
     Scenario: View a list of repos
         When I send a GET request on "/users/peej/repos"
         Then the content-type response header should be "application/hal+yaml"
@@ -10,25 +11,50 @@ Feature:
         And response property "_embedded->cont:repo->1->name" should be "test"
         And response property "_embedded->cont:repo->1->description" should be "No description"
 
+    @html
+    Scenario: View a list of repos
+        When I send a GET request on "/users/peej/repos"
+        Then the response status code should be 200
+        And I should see "test"
+        And I should see "No description"
+        And I should see a link to "/users/peej/repos/test"
+
+    @api
     Scenario: Have the correct HTTP methods
         Given I send an OPTIONS request to "/users/peej/repos"
         Then the "Allow" response header should be "OPTIONS,GET,POST"
         Given I send an OPTIONS request to "/users/peej/repos/test"
         Then the "Allow" response header should be "OPTIONS,GET,PATCH,PUT,DELETE"
 
+    @api
     Scenario: Search for repos
         When I send a GET request to "/users/peej/repos?q=test"
         Then response property "_embedded->cont:repo->0->name" should be "test"
 
+    @html
+    Scenario: Search for repos
+        When I send a GET request to "/users/peej/repos?q=test"
+        Then I should see "test"
+        And I should see "No description"
+        And I should see a link to "/users/peej/repos/test"
+
+    @api
     Scenario: View an empty list of repos
         When I send a GET request on "/users/empty/repos"
         Then response property "_embedded" should not exist
         And response property "_links->self->href" should be "/users/empty/repos"
 
+    @html
+    Scenario: View an empty list of repos
+        When I send a GET request on "/users/empty/repos"
+        Then I should not see a "ul" element
+
+    @api
     Scenario: Link to documentation
         When I send a GET request to "/users/peej/repos"
         Then response property "_links->cont:doc->href" should be "/rels/repos"
 
+    @api
     Scenario: View a repos details
         When I send a GET request on "/users/peej/repos/test"
         Then the response status code should be 200
@@ -43,6 +69,13 @@ Feature:
         And response property "_embedded->cont:branch->1->_links->self->href" should be "/users/peej/repos/test/branches/master"
         And the directory "peej/test.git" should exist
 
+    @html
+    Scenario: Get redirected to the repos master branch
+        When I send a GET request on "/users/peej/repos/test"
+        Then the response status code should be 302
+        And the "Location" response header should be "/users/peej/repos/test/branches/master"
+
+    @api
     Scenario: Recieve a 404 for a non-existant repo
         When I send a GET request to "/users/peej/repos/missing"
         Then the response status code should be 404
@@ -64,6 +97,7 @@ Feature:
         Then the response status code should be 404
         And the directory "peej/missing.git" should not exist
 
+    @api
     Scenario: Create a repo
         Given I add "Content-Type" header equal to "application/json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
@@ -82,6 +116,19 @@ Feature:
         And response property "name" should be "another"
         And response property "description" should be "This is a test repo"
 
+    @html
+    Scenario: Create a repo
+        Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        And I am on "/users/peej/new"
+        When I fill in "name" with "another"
+        And I fill in "description" with "This is a test repo"
+        And I press "submit"
+        Then the response status code should be 200
+        And the URL should match "/users/peej/repos/another"
+        And the "h1" element should contain "another"
+        And the "p" element should contain "This is a test repo"
+
+    @api
     Scenario: Try to create an invalid repo
         Given I add "Content-Type" header equal to "application/json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
@@ -93,8 +140,19 @@ Feature:
             """
         Then the response status code should be 400
         And the content-type response header should be "application/hal+yaml"
-        And response property "_embedded->errors->0->logref" should be "name"
+        And response property "_embedded->cont:error->0->logref" should be "name"
 
+    @html
+    Scenario: Try to create an invalid repo
+        Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        And I am on "/users/peej/new"
+        When I fill in "name" with "***"
+        And I press "submit"
+        Then the response status code should be 400
+        And I should see an ".error" element
+        And I should see an ".error-name" element
+
+    @api
     Scenario: Fail to provide correct auth credentials for user when creating a repo
         Given I add "Content-Type" header equal to "application/json"
         And I add "Authorization" header equal to "Basic wrong"
@@ -107,6 +165,7 @@ Feature:
             """
         Then the response status code should be 401
 
+    @api
     Scenario: Patch a repo
         Given I add "Content-Type" header equal to "application/json-patch+json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
@@ -129,6 +188,7 @@ Feature:
         And response property "name" should be "test"
         And response property "description" should be "Not a test"
 
+    @api
     Scenario: Rename a repo
         Given I add "Content-Type" header equal to "application/json-patch+json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
@@ -150,6 +210,7 @@ Feature:
         And response property "username" should be "peej"
         And response property "name" should be "not-a-test"
 
+    @api
     Scenario: Move a repo to a different user
         Given I add "Content-Type" header equal to "application/json-patch+json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
@@ -173,6 +234,7 @@ Feature:
         And response property "username" should be "empty"
         And response property "name" should be "test"
 
+    @api
     Scenario: Update a repo
         Given I add "Content-Type" header equal to "application/json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
@@ -190,6 +252,7 @@ Feature:
         And response property "name" should be "test"
         And response property "description" should be "This is an updated description"
 
+    @api
     Scenario: Delete a repo
         Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         When I send a DELETE request to "/users/peej/repos/test"
@@ -197,11 +260,13 @@ Feature:
         When I send a GET request to "/users/peej/repos/test"
         Then the response status code should be 404
 
+    @api
     Scenario: Fail to provide correct auth credentials
         Given I add "Authorization" header equal to "Basic wrong"
         When I send a DELETE request to "/users/peej/repos/test"
         Then the response status code should be 401
 
+    @api
     Scenario: Navigate to a repo
         Given I am on the homepage
         When I follow the "cont:users" relation
@@ -212,6 +277,7 @@ Feature:
         And response property "name" should be "test"
         And response property "description" should be "No description"
 
+    @api
     Scenario: The cont:repos link relation has documentation
         Given I send a GET request to "/users/peej/repos"
         When I uncurie the "cont:repos" relation
@@ -242,6 +308,7 @@ Feature:
         And response property "actions->createRepo->response->provides" should contain "application/hal+yaml"
         And response property "actions->createRepo->response->provides" should contain "application/hal+json"
 
+    @api
     Scenario: The cont:repo link relation has documentation
         Given I send a GET request to "/users/peej/repos/test"
         When I uncurie the "cont:repo" relation
