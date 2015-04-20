@@ -71,12 +71,6 @@ class EditSpec extends ObjectBehavior
         $response->data['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/edit/new-york/the-hotel/totem.txt');
     }
 
-    function it_should_link_to_its_own_documentation()
-    {
-        $response = $this->get('cobb', 'extraction', 'master', 'new-york/the-hotel/totem.txt');
-        $response->data['_links']['cont:doc']['href']->shouldBe('/rels/edit');
-    }
-
     function it_should_show_a_single_document($repo)
     {
         $repo->document('master', 'new-york/the-hotel/totem.txt')->shouldBeCalled();
@@ -84,7 +78,6 @@ class EditSpec extends ObjectBehavior
         $response->data['filename']->shouldBe('totem.txt');
         $response->data['content']->shouldBe('An elegant solution for keeping track of reality.');
         $response->data['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/edit/new-york/the-hotel/totem.txt');
-        $response->data['_links']['cont:doc']['href']->shouldBe('/rels/edit');
         $response->data['_links']['cont:history']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/history/new-york/the-hotel/totem.txt');
         $response->data['_links']['cont:raw']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/raw/new-york/the-hotel/totem.txt');
         $response->data['_links']['cont:commit']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/commits/111111');

@@ -134,7 +134,7 @@ class ReposSpec extends ObjectBehavior
 
         $response->code->shouldBe(400);
         $response->contentType->shouldBe('application/hal+yaml');
-        $response->data['_embedded']['errors'][0]['logref']->shouldBe('name');
-        $response->data['_embedded']['errors'][1]['logref']->shouldBe('title');
+        $response->data['_embedded']['cont:error'][0]['logref']->shouldBe('name');
+        $response->data['_embedded']['cont:error'][1]['logref']->shouldBe('title');
     }
 }

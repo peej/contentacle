@@ -66,12 +66,6 @@ class CreateSpec extends ObjectBehavior
         $response->data['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/new/new-york/the-hotel');
     }
 
-    function it_should_link_to_its_own_documentation()
-    {
-        $response = $this->get('cobb', 'extraction', 'master', 'new-york/the-hotel');
-        $response->data['_links']['cont:doc']['href']->shouldBe('/rels/new');
-    }
-
     function it_should_error_for_unknown_user()
     {
         $this->shouldThrow('\Tonic\NotFoundException')->duringGet('eames', 'extraction', 'master');
