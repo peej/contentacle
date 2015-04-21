@@ -1,3 +1,19 @@
+@font-face {
+    font-family: 'contentacle';
+    src:url('/fonts/contentacle.eot');
+    src:url('/fonts/contentacle.eot?#iefix') format('embedded-opentype'),
+        url('/fonts/contentacle.ttf') format('truetype'),
+        url('/fonts/contentacle.woff') format('woff'),
+        url('/fonts/contentacle.svg#contentacle') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+    text-align: center;
+}
+
 .cthulhu:before,
 #nav-toggle:before,
 #commit-toggle:before,
@@ -15,24 +31,24 @@
 }
 
 .cthulhu:before { content: "\e600"; }
-#nav-toggle:before { content: "\e601"; }
-.icon-prop:before { content: "\e603"; }
-.icon-pages:before { content: "\e604"; }
-.icon-page:before { content: "\e605"; }
-.icon-folder:before { content: "\e606"; }
-.icon-commits:before { content: "\e607"; }
-.icon-stage:before { content: "\e608"; }
-.icon-history:before { content: "\e609"; }
-.icon-edit:before { content: "\e60a"; }
-.icon-settings:before { content: "\e60b"; }
-.icon-user:before { content: "\e60c"; }
-.icon-signout:before { content: "\e60d"; }
-.icon-plus:before { content: "\e60e"; }
-.icon-minus:before { content: "\e60f"; }
-.icon-cancel:before { content: "\e602"; }
-.icon-okay:before { content: "\e610"; }
-.icon-revert:before { content: "\e611"; }
-.icon-signin:before { content: "\e612"; }
-.icon-join:before { content: "\e613"; }
-#commit-toggle:before { content: "\e614"; }
-.icon-undo:before { content: "\e615"; }
+#nav-toggle:before { content: "\e602"; }
+.icon-pages:before { content: "\e609"; }
+.icon-page:before { content: "\e609"; }
+.icon-folder:before { content: "\e60a"; }
+.icon-commits:before { content: "\e603"; }
+.icon-history:before { content: "\e603"; }
+.icon-edit:before { content: "\e60b"; }
+.icon-settings:before { content: "\e605"; }
+.icon-user:before { content: "\e60d"; }
+.icon-signout:before { content: "\e606"; }
+.icon-revert:before { content: "\e604"; }
+.icon-signin:before { content: "\e60c"; }
+.icon-join:before { content: "\e607"; }
+#commit-toggle:before { content: "\e608"; }
+.icon-undo:before { content: "\e601"; }
+.icon-branch:before { content: "\f020"; }
+.icon-commit:before { content: "\f01f"; }
+.icon-compare:before { content: "\f0ac"; }
+.icon-merge:before { content: "\f023"; }
+.icon-pull:before { content: "\f009"; }
+.icon-fork:before { content: "\f002"; }
