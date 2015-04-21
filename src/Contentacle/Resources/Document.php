@@ -73,15 +73,6 @@ class Document extends Resource
             $response->addLink('cont:doc', '/rels/document');
             $response->addLink('create-form', $this->buildUrl($username, $repoName, $branchName, 'new', $path));
 
-            foreach ($repo->branches() as $branch) {
-                $response->addLink(
-                    'cont:branches',
-                    $this->buildUrlWithFormat($username, $repoName, $branch),
-                    false,
-                    $branch
-                );
-            }
-
             $documents = $repo->documents($branchName, $path);
 
             if ($this->embed) {
@@ -107,6 +98,11 @@ class Document extends Resource
                     $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $commit['sha'])));
                     $response->addLink('cont:commit', $this->buildUrl($username, $repoName, $branchName, 'commits', $commit['sha']));
                 }
+
+                foreach ($repo->branches() as $branch) {
+                    $response->embed('cont:branches', $this->getChildResource('\Contentacle\Resources\Branch', array($username, $repoName, $branch)));
+                }
+
             }
 
             return $response;

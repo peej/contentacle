@@ -1,13 +1,13 @@
 <div class="select">
     <span>{{branch}}</span>
     <ul>
-        {{#each _links.cont:branches}}
+        {{#each _embedded.cont:branches}}
             <li
-                {{#equal @root.branch title}}
+                {{#equal @root.branch name}}
                     class="active"
                 {{/equal}}
-            ><a href="{{href}}">
-                {{title}}
+            ><a href="{{_links.self.href}}">
+                {{name}}
             </a></li>
         {{/each}}
     </ul>

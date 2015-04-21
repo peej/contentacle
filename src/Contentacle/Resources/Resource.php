@@ -161,6 +161,7 @@ abstract class Resource extends \Tonic\Resource
 
         $response->addLink('cont:user', $this->buildUrlWithFormat($username));
         $response->addLink('cont:repo', $this->buildUrlWithFormat($username, $repoName));
+        $response->addLink('cont:branches', $this->buildUrlWithFormat($username, $repoName, false, 'branches'));
         $response->addLink('cont:branch', $this->buildUrlWithFormat($username, $repoName, $branchName));
         $response->addLink('cont:documents', $this->buildUrl($username, $repoName, $branchName, 'documents'));
         $response->addLink('cont:commits', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits'));

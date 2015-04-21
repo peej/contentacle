@@ -41,20 +41,15 @@ class Commits extends Resource {
             $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits'));
             $response->addLink('cont:doc', '/rels/commits');
 
-            foreach ($repo->branches() as $branch) {
-                $response->addLink(
-                    'cont:branches',
-                    $this->buildUrlWithFormat($username, $repoName, $branch),
-                    false,
-                    $branch
-                );
-            }
-
             if ($this->embed) {
                 $commits = $repo->commits($branchName, $start, $end);
 
                 foreach ($commits as $commit) {
                     $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $commit['sha'])));
+                }
+
+                foreach ($repo->branches() as $branch) {
+                    $response->embed('cont:branches', $this->getChildResource('\Contentacle\Resources\Branch', array($username, $repoName, $branch)));
                 }
             }
             
