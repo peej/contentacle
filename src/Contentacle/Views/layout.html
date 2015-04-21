@@ -23,9 +23,11 @@
                         <li><span class="icon-pages"></span><a href="{{_links.cont:documents.href}}" rel="cont:documents">Documents</a></li>
                     {{/if}}
                     {{#if _links.cont:commits}}
-                        <li><span class="icon-commits"></span><a href="{{_links.cont:commits.href}}" rel="cont:commits">Revisions</a></li>
+                        <li><span class="icon-commits"></span><a href="{{_links.cont:commits.href}}" rel="cont:commits">Commits</a></li>
                     {{/if}}
-                    {{*<li><span class="icon-stage"></span><a href="/stage">Stage</a> <sup>3</sup></li>*}}
+                    {{#if _links.cont:branches}}
+                        <li><span class="icon-branch"></span><a href="{{_links.cont:branches.href}}" rel="cont:branches">Branches</a></li>
+                    {{/if}}
                 </ul>
             {{/if}}
             {{#if filename}}
