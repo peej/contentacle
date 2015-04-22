@@ -92,12 +92,14 @@ class Response extends \Tonic\Response
 
     public function embed($rel, $document)
     {
-        if (isset($document['_links']['curies'])) {
-            unset($document['_links']['curies']);
+        if ($document) {
+            if (isset($document['_links']['curies'])) {
+                unset($document['_links']['curies']);
+            }
+            $this->embedded[$rel][] = $document;
+            $this->hasContent();
+            $this->data['_embedded'] = $this->embedded;
         }
-        $this->embedded[$rel][] = $document;
-        $this->hasContent();
-        $this->data['_embedded'] = $this->embedded;
     }
 
     public function addError($field, $message = null)

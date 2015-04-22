@@ -69,8 +69,12 @@ abstract class Resource extends \Tonic\Resource
     {
         $resource = new $resourceName($this->deps);
         $resource->embed = $embedChildren;
-        $response = call_user_func_array(array($resource, 'get'), $parameters);
-        return $response->data;
+        try {
+            $response = call_user_func_array(array($resource, 'get'), $parameters);
+            return $response->data;
+        } catch (\Tonic\NotFoundException $e) {
+            return;
+        }
     }
 
     protected function buildUrl($username, $repoName = null, $branchName = null)
