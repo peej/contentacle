@@ -7,12 +7,7 @@
             {{path}}
         </h1>
         <div class="commit-metadata">
-            {{#if _embedded.cont:commit.0._links.author.href}}
-                <a href="{{_embedded.cont:commit.0._links.author.href}}" rel="author" title="{{_embedded.cont:commit.0.email}}">{{_embedded.cont:commit.0.author}}</a>
-            {{else}}
-                <span title="{{_embedded.cont:commit.0.email}}">{{_embedded.cont:commit.0.author}}</span>
-            {{/if}}
-            wrote <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time> -
+            {{> author _embedded.cont:commit.0}} wrote {{> date}} -
             <a href="{{_embedded.cont:commit.0._links.self.href}}" rel="cont:commit">{{_embedded.cont:commit.0.message}}</a>
         </div>
         <div class="document-info">
@@ -20,14 +15,8 @@
             <a href="{{_links.cont:history.href}}" rel="cont:history" class="button"><span class="icon-history"></span> History</a>
             <table class="document-metadata">
                 <caption>Info</caption>
-                <tr><th>author</th><td>
-                    {{#if _links.author.href}}
-                        <a href="{{_links.author.href}}" rel="author">{{author}}</a>
-                    {{else}}
-                        {{author}}
-                    {{/if}}
-                </td></tr>
-                <tr><th>created</th><td>{{date date}}</td></tr>
+                <tr><th>author</th><td>{{> author}}</td></tr>
+                <tr><th>created</th><td>{{> date}}</td></tr>
                 <tr><th>size</th><td>{{size content}}kb</td></tr>
                 <tr><th>words</th><td>{{wordcount content}}</td></tr>
             </table>

@@ -20,14 +20,7 @@
             {{/showDay}}
             <li>
                 <a href="{{_links.self.href}}" rel="cont:commit">{{message}}</a>
-                <span>
-                    {{#if _links.author.href}}
-                        <a href="{{_links.author.href}}" rel="author" title="{{email}}">{{author}}</a>
-                    {{else}}
-                        <span title="{{email}}">{{author}}</span>
-                    {{/if}}
-                    wrote <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time>
-                </span>
+                <span>{{> author}} wrote {{> date}}</span>
             </li>
         {{/each}}
         </ol>

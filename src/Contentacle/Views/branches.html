@@ -5,11 +5,17 @@
     </h1>
 
     {{#if _embedded.cont:branch}}
-        <ul>
+        <table>
+            <tr>
+                <th colspan="2">Branch</th>
+            </tr>
             {{#each _embedded.cont:branch}}
-                <li><a href="{{_links.self.href}}" rel="cont:branch">{{name}}</a></li>
+                <tr>
+                    <td><a href="{{_links.self.href}}" rel="cont:branch">{{name}}</a></td>
+                    <td>Updated {{> date}} by {{> author}}</td>
+                </tr>
             {{/each}}
-        </ul>
+        </table>
     {{else}}
         <p>No branches found</p>
     {{/if}}

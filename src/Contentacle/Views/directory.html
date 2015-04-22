@@ -46,15 +46,7 @@
                             <a href="{{_links.cont:commit.href}}" rel="cont:commit">{{truncate _embedded.cont:commit.0.message 80}}</a>
                         </td>
                         <td>
-                            {{#if _links.author.href}}
-                                <a href="{{_links.author.href}}" rel="author">{{author}}</a>
-                            {{else}}
-                                {{author}}
-                            {{/if}}
-                            wrote
-                            <a href="{{_links.cont:commit.href}}" rel="cont:commit">
-                                <time datetime="{{isodate date}}" title="{{date date}}">{{since date}}</time>
-                            </a>
+                            {{> author}} wrote <a href="{{_links.cont:commit.href}}" rel="cont:commit">{{> date}}</a>
                         </td>
                     {{/if}}
                 </tr>

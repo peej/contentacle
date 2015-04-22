@@ -13,7 +13,7 @@ class Template extends \LightnCandy
         $this->compiledPath = $compiledPath;
         $this->markdown = $markdown;
         $this->options = array(
-            'flags' => self::FLAG_SPVARS | self::FLAG_PARENT | self::FLAG_THIS | self::FLAG_ERROR_EXCEPTION | self::FLAG_ADVARNAME,
+            'flags' => self::FLAG_SPVARS | self::FLAG_PARENT | self::FLAG_THIS | self::FLAG_ERROR_EXCEPTION | self::FLAG_ADVARNAME | self::FLAG_RUNTIMEPARTIAL,
             'basedir' => array(
                 'src/Contentacle/Views'
             ),
