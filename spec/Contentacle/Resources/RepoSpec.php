@@ -22,6 +22,9 @@ class RepoSpec extends ObjectBehavior
         $repo->branches()->willReturn(array('master', 'branch'));
         $repo->hasBranch('master')->willReturn(true);
         $repo->hasBranch('branch')->willReturn(true);
+        $repo->commits(Argument::cetera())->willReturn(array(
+            array()
+        ));
         
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
         $repoRepo->getRepo(Argument::cetera())->willThrow(new \Git\Exception);

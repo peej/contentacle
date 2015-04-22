@@ -16,6 +16,8 @@ class DocumentSpec extends ObjectBehavior
             'master', 'branch'
         ));
         $repo->isHead('master', '111111')->willReturn(true);
+        $repo->hasBranch('master')->willReturn(true);
+        $repo->hasBranch('branch')->willReturn(true);
         $repo->documents('master', '')->willReturn(array('new-york'));
         $repo->documents('master', 'new-york')->willReturn(array('new-york/the-hotel'));
         $repo->documents('master', 'new-york/the-hotel')->willReturn(array('new-york/the-hotel/totem.txt'));
@@ -51,8 +53,11 @@ class DocumentSpec extends ObjectBehavior
             ));
         });
         $repo->deleteDocument('master', 'new-york/the-hotel/totem.txt', Argument::any())->willReturn();
-        $repo->commits('master', null, 1)->willReturn(array(array(
-            'sha' => '111111'
+        $repo->commits(Argument::any(), null, 1)->willReturn(array(array(
+            'sha' => '111111',
+            'date' => '1234567890',
+            'authorname' => 'cobb',
+            'author' => 'Dominick Cobb'
         )));
         $repo->commit('master', 111111)->willReturn(array(
             'authorname' => 'cobb'

@@ -29,37 +29,36 @@ class Commits extends Resource {
         
         try {
             $repo = $this->repoRepository->getRepo($username, $repoName);
-
-            if (!$repo->hasBranch($branchName)) {
-                throw new \Tonic\NotFoundException;
-            }
-
-            $response = $this->response(200, 'commits');
-
-            $this->configureResponseWithBranch($response, $repo, $branchName);
-
-            $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits'));
-            $response->addLink('cont:doc', '/rels/commits');
-
-            if ($this->embed) {
-                $commits = $repo->commits($branchName, $start, $end);
-
-                foreach ($commits as $commit) {
-                    $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $commit['sha'])));
-                }
-
-                foreach ($repo->branches() as $branch) {
-                    $response->embed('cont:branches', $this->getChildResource('\Contentacle\Resources\Branch', array($username, $repoName, $branch)));
-                }
-            }
-            
-            return $response;
-
         } catch (\Contentacle\Exceptions\RepoException $e) {
             throw new \Tonic\NotFoundException;
         } catch (\Git\Exception $e) {
             throw new \Tonic\NotFoundException;
         }
+
+        if (!$repo->hasBranch($branchName)) {
+            throw new \Tonic\NotFoundException;
+        }
+
+        $response = $this->response(200, 'commits');
+
+        $this->configureResponseWithBranch($response, $repo, $branchName);
+
+        $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits'));
+        $response->addLink('cont:doc', '/rels/commits');
+
+        if ($this->embed) {
+            $commits = $repo->commits($branchName, $start, $end);
+
+            foreach ($commits as $commit) {
+                $response->embed('cont:commit', $this->getChildResource('\Contentacle\Resources\Commit', array($username, $repoName, $branchName, $commit['sha'])));
+            }
+
+            foreach ($repo->branches() as $branch) {
+                $response->embed('cont:branches', $this->getChildResource('\Contentacle\Resources\Branch', array($username, $repoName, $branch)));
+            }
+        }
+        
+        return $response;
     }
 
 }

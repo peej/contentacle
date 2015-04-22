@@ -19,7 +19,7 @@ class CommitsSpec extends ObjectBehavior
         ));
         $repo->isHead('master', '123456')->willReturn(true);
         $repo->isHead('master', '654321')->willReturn(false);
-        
+
         $repo->commit('master', '123456')->willReturn(array(
             'sha' => '123456',
             'username' => 'cobb'
@@ -34,6 +34,10 @@ class CommitsSpec extends ObjectBehavior
         ));
         $repo->commits('master', 25, 49)->willReturn(array(
             array('sha' => '654321')
+        ));
+
+        $repo->commits(Argument::cetera())->willReturn(array(
+            array()
         ));
         
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);

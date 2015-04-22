@@ -49,6 +49,15 @@ class Branch extends Resource
 
             $this->configureResponseWithBranch($response, $repo, $branchName);
 
+            $commits = $repo->commits($branchName, null, 1);
+            if ($commits && $commits[0]) {
+                $response->addData(array(
+                    'date' => $commits[0]['date'],
+                    'author' => $commits[0]['author']
+                ));
+                $response->addLink('author', $this->buildUrlWithFormat($commits[0]['authorname']));
+            }
+
             return $response;
 
         } catch (\Contentacle\Exceptions\RepoException $e) {
