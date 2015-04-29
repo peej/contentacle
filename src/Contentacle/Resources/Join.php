@@ -19,6 +19,7 @@ class Join extends Resource
         $response = $this->response(200, 'join');
 
         $this->configureResponse($response);
+        $response->addLink('cont:users', '/users'.$this->formatExtension());
 
         return $response;
     }
