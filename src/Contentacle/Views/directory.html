@@ -9,16 +9,23 @@
         {{{markdown var.description}}}
     {{/if}}
 
-    <div class="path">
+    <div class="button-bar">
         {{>branch-select}}
-        <a href="{{_links.cont:documents.href}}" rel="cont:documents">{{repo}}</a> /
-        {{#if var.breadcrumb}}
-            {{#each var.breadcrumb}}
-                <a href="{{@key}}">{{this}}</a> /
-            {{/each}}
-        {{/if}}
-        {{#if _links.create-form}}
-            <a href="{{_links.create-form.href}}" rel="create-form" title="Create a new document">+</a>
+        <div class="path">
+            <a href="{{_links.cont:documents.href}}" rel="cont:documents">{{repo}}</a> /
+            {{#if var.breadcrumb}}
+                {{#each var.breadcrumb}}
+                    <a href="{{@key}}">{{this}}</a> /
+                {{/each}}
+            {{/if}}
+            {{#if _links.create-form}}
+                <a href="{{_links.create-form.href}}" rel="create-form" title="Create a new document">+</a>
+            {{/if}}
+        </div>
+        {{#if _links.cont:fork}}
+            <form class="button-right" action="{{_links.cont:fork.href}}" method="post" rel="cont:fork">
+                <button class="icon-fork" title="Fork this repository">Fork</button>
+            </form>
         {{/if}}
     </div>
 
