@@ -169,8 +169,17 @@ class Response extends \Tonic\Response
     {
         $this->contentType = $this->calculateContentType($request->accept);
 
+        if ($this->contentType == 'text/html' && $this->code == 401) {
+            $this->wwwAuthenticate = '';
+        }
+
         foreach ($this->headers as $name => $value) {
             header($name.': '.$value, true, $this->responseCode());
+        }
+
+        $statusGroup = substr($this->code, 0, 1);
+        if ($statusGroup == '1' || $statusGroup == '3') {
+            return;
         }
 
         switch ($this->contentType) {
