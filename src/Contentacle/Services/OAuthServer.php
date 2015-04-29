@@ -4,9 +4,19 @@ namespace Contentacle\Services;
 
 class OAuthServer extends \OAuth2\Server
 {
+    private $request;
+
+    private function request()
+    {
+        if (!$this->request) {
+            $this->request = \OAuth2\Request::createFromGlobals();
+        }
+        return $this->request;
+    }
+
     function generateToken()
     {
-        $tokenResponse = parent::handleTokenRequest(\OAuth2\Request::createFromGlobals());
+        $tokenResponse = parent::handleTokenRequest($this->request());
         return array(
             $tokenResponse->getStatusCode(),
             $tokenResponse->getParameters()
@@ -19,7 +29,7 @@ class OAuthServer extends \OAuth2\Server
             $_GET['access_token'] = $_COOKIE['access_token'];
         }
 
-        return $this->verifyResourceRequest(\OAuth2\Request::createFromGlobals());
+        return $this->verifyResourceRequest($this->request());
     }
 
     function getUsername()
@@ -28,7 +38,7 @@ class OAuthServer extends \OAuth2\Server
             $_GET['access_token'] = $_COOKIE['access_token'];
         }
 
-        $tokenData = $this->getAccessTokenData(\OAuth2\Request::createFromGlobals());
+        $tokenData = $this->getAccessTokenData($this->request());
 
         return $tokenData['client_id'];
     }

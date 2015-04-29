@@ -77,6 +77,7 @@ class UserRepository
                 return $user;
             }
         }
+        return null;
     }
 
     private function readProfile($username)
