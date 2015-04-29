@@ -79,6 +79,7 @@ class Edit extends Resource
 
         if ($filename == null && $content == null) {
             $error = $this->response(400, 'error');
+            $error->addVar('message', 'Could not edit document');
             $error->addError('nothing-to-do', 'Either a changed filename, content or metadata must be provided');
             return $error;
         }
