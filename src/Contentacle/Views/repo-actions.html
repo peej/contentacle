@@ -1,0 +1,13 @@
+{{#if _links.cont:fork}}
+    <form class="button-right" action="{{_links.cont:fork.href}}" method="post" rel="cont:fork">
+        <button class="icon-fork" title="Fork this repository">Fork</button>
+    </form>
+{{/if}}
+{{#if _links.cont:pull}}
+    <form class="button-right" action="{{_links.cont:pull.href}}" method="post" rel="cont:pull">
+        <button class="icon-merge" title="Pull in changes from parent repository">Pull</button>
+    </form>
+{{/if}}
+{{#if _links.cont:pull-request}}
+    <a class="button button-right okay icon-compare" href="{{_links.cont:pull-request.href}}" rel="cont:pull-request" title="Create pull request">Pull Request</a>
+{{/if}}

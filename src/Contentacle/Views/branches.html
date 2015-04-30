@@ -1,8 +1,5 @@
 <div>
-    <h1>
-        <a href="{{_links.cont:user.href}}" rel="cont:user">{{username}}</a> /
-        <a href="{{_links.cont:repo.href}}" rel="cont:repo">{{repo}}</a>
-    </h1>
+    {{>repo-header}}
 
     {{#if _embedded.cont:branch}}
         <table>

@@ -1,0 +1,15 @@
+<h1>
+    <a href="{{_links.cont:user.href}}" rel="cont:user">{{username}}</a>
+    / <a href="{{_links.cont:repo.href}}" rel="cont:repo">{{repo}}</a>
+    {{#if branch}}/ {{branch}}{{/if}}
+    {{#if _links.cont:parent-repo}}
+        <p><span class="icon-fork"></span> Forked from <a href="{{_links.cont:parent-repo.href}}" rel="cont:parent-repo" title="Parent repository">{{_links.cont:parent-repo.title}}</a></p>
+    {{/if}}
+    {{#if _links.cont:child-repo}}
+        <p><span class="icon-fork"></span> <a href="{{_links.cont:child-repo.href}}" rel="cont:child-repo">Your fork of this repository</a></p>
+    {{/if}}
+</h1>
+
+{{#if var.description}}
+    {{{markdown var.description}}}
+{{/if}}
