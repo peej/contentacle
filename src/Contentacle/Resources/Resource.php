@@ -146,9 +146,9 @@ abstract class Resource extends \Tonic\Resource
     }
 
     /**
-     * Add user, repo and branch data to the response.
+     * Add user and repo data to the response.
      */
-    protected function configureResponseWithBranch($response, $repo, $branchName)
+    protected function configureResponseWithRepo($response, $repo, $branchName = 'master')
     {
         $username = $repo->username;
         $repoName = strtolower($repo->name);
@@ -156,19 +156,55 @@ abstract class Resource extends \Tonic\Resource
         $this->configureResponse($response);
 
         $response->addVar('nav', true);
+        $response->addVar('description', $repo->description);
 
         $response->addData(array(
             'username' => $username,
-            'repo' => $repoName,
-            'branch' => $branchName
+            'repo' => $repoName
         ));
 
         $response->addLink('cont:user', $this->buildUrlWithFormat($username));
         $response->addLink('cont:repo', $this->buildUrlWithFormat($username, $repoName));
         $response->addLink('cont:branches', $this->buildUrlWithFormat($username, $repoName, false, 'branches'));
-        $response->addLink('cont:branch', $this->buildUrlWithFormat($username, $repoName, $branchName));
         $response->addLink('cont:documents', $this->buildUrl($username, $repoName, $branchName, 'documents'));
         $response->addLink('cont:commits', $this->buildUrlWithFormat($username, $repoName, $branchName, 'commits'));
+
+        if (isset($this->app->user) && $this->app->user->username != $username) {
+            $childRepo = $this->repoRepository->getRepo($this->app->user->username, $repoName);
+            if ($childRepo) {
+                $response->addLink('cont:child-repo', $this->buildUrl($childRepo->username, $childRepo->name), false, $childRepo->username.'/'.$childRepo->name);
+            }
+        }
+
+        $parent = $repo->parentRepo();
+        if ($parent['username'] && $parent['repoName']) {
+            $response->addLink('cont:parent-repo', $this->buildUrl($parent['username'], $parent['repoName']), false, $parent['username'].'/'.$parent['repoName']);
+        }
+    }
+
+    /**
+     * Add user, repo and branch data to the response.
+     */
+    protected function configureResponseWithBranch($response, $repo, $branchName)
+    {
+        $username = $repo->username;
+        $repoName = strtolower($repo->name);
+
+        $this->configureResponseWithRepo($response, $repo, $branchName);
+
+        $response->addData('branch', $branchName);
+
+        $response->addLink('cont:branch', $this->buildUrlWithFormat($username, $repoName, $branchName));
+
+        if (isset($this->app->user) && $this->app->user->username != $username) {
+            $response->addLink('cont:fork', $this->buildUrlWithFormat($username, $repoName, false, 'fork'));
+        }
+
+        $parent = $repo->parentRepo();
+        if ($parent['username'] && $parent['repoName']) {
+            $response->addLink('cont:pull', $this->buildUrl($parent['username'], $parent['repoName'], false, 'pull'));
+            $response->addLink('cont:pull-request', $this->buildUrl($parent['username'], $parent['repoName'], false, 'pull-request'));
+        }
     }
 
     protected function configureResponseWithDocument($response, $repo, $branchName, $document)

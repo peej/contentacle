@@ -57,8 +57,8 @@ class Document extends Resource
         if ($fixPath) {
             $path = $this->fixPath($path, $username, $repoName, $branchName, 'documents');
         }
-        $repo = $this->repoRepository->getRepo($username, $repoName);
         try {
+            $repo = $this->repoRepository->getRepo($username, $repoName);
             $response = $this->response(200, 'directory');
 
             $this->configureResponseWithBranch($response, $repo, $branchName);
@@ -88,7 +88,6 @@ class Document extends Resource
                 }
 
                 $response->addVar('breadcrumb', $breadcrumb);
-                $response->addVar('description', $repo->description);
 
                 foreach ($documents as $filename) {
                     $response->embed('cont:document', $this->getChildResource('\Contentacle\Resources\Document', array($username, $repoName, $branchName, $filename, false)));
@@ -108,15 +107,17 @@ class Document extends Resource
             return $response;
 
         } catch (\Contentacle\Exceptions\RepoException $e) {
-            try {
-                $document = $repo->document($branchName, $path);
-                $response = $this->response(200, 'document');
+            if (isset($repo) && $repo) {
+                try {
+                    $document = $repo->document($branchName, $path);
+                    $response = $this->response(200, 'document');
 
-                $this->configureResponseWithDocument($response, $repo, $branchName, $document);
-                
-                return $response;
+                    $this->configureResponseWithDocument($response, $repo, $branchName, $document);
 
-            } catch (\Contentacle\Exceptions\RepoException $e) {}
+                    return $response;
+
+                } catch (\Contentacle\Exceptions\RepoException $e) {}
+            }
         } catch (\Git\Exception $e) {
             return $response;
         }

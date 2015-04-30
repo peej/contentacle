@@ -27,7 +27,7 @@ class Branches extends Resource
             
             $response = $this->response(200, 'branches');
 
-            $this->configureResponse($response);
+            $this->configureResponseWithRepo($response, $repo);
 
             $response->addData('username', $repo->username);
             $response->addData('repo', $repo->name);
