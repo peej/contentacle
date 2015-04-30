@@ -273,6 +273,14 @@ abstract class Resource extends \Tonic\Resource
 
     function secure()
     {
+        if (isset($this->app->user)) {
+            return;
+        }
+        throw new \Tonic\UnauthorizedException;
+    }
+
+    function owner()
+    {
         if (
             isset($this->app->user) &&
             isset($this->request->getParams()['username']) &&
