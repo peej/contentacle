@@ -370,4 +370,37 @@ class Repo extends Model
         }
     }
 
+    public function parentRepo()
+    {
+        $remotes = $this->git->command('remote -v');
+        preg_match('/origin\t.+\/(.+)\/(.+)\.git \(fetch\)/', $remotes, $match);
+        return array(
+            'username' => $match[1],
+            'repoName' => $match[2]
+        );
+    }
+
+    public function fork($username)
+    {
+        $repoDir = $this->repoDir.'/'.$this->username.'/'.$this->name.'.git';
+        $forkDir = $this->repoDir.'/'.$username.'/'.$this->name.'.git';
+
+        if (file_exists($forkDir)) {
+            throw new \Contentacle\Exceptions\RepoException('User "'.$username.'" already has a fork of "'.$this->username.'/'.$this->name.'"');
+        }
+
+        try {
+            $this->git->command('clone -l -q --bare -b master -- '.escapeshellcmd($repoDir).' '.escapeshellcmd($forkDir));
+            $clone = new Repo(array(
+                'name' => $this->name,
+                'username' => $username,
+                'description' => $this->description
+            ), $this->gitProvider, $this->repoDir, $this->userRepo, $this->fileAccess, $this->yaml, $this->diffCalculator);
+            $clone->writeMetadata();
+            return true;
+        } catch (\Git\Exception $e) {
+            return false;
+        }
+    }
+
 }
