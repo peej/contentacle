@@ -36,6 +36,7 @@ class CreateSpec extends ObjectBehavior
                 'commit' => '111111'
             ));
         });
+        $repo->parentRepo()->willReturn(null);
 
         $repoRepo->getRepo('eames', 'extraction')->willThrow(new \Contentacle\Exceptions\RepoException('Repo "eames/extraction" does not exist'));
         $repoRepo->getRepo('cobb', 'inception')->willThrow(new \Contentacle\Exceptions\RepoException('Repo "cobb/inception" does not exist'));

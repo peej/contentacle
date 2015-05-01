@@ -42,6 +42,7 @@ class EditSpec extends ObjectBehavior
         $repo->commit('master', 111111)->willReturn(array(
             'username' => 'cobb'
         ));
+        $repo->parentRepo()->willReturn(null);
 
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
 

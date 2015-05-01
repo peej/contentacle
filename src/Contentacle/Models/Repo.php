@@ -374,10 +374,12 @@ class Repo extends Model
     {
         $remotes = $this->git->command('remote -v');
         preg_match('/origin\t.+\/(.+)\/(.+)\.git \(fetch\)/', $remotes, $match);
-        return array(
-            'username' => $match[1],
-            'repoName' => $match[2]
-        );
+        if ($match) {
+            return array(
+                'username' => $match[1],
+                'repoName' => $match[2]
+            );
+        }
     }
 
     public function fork($username)

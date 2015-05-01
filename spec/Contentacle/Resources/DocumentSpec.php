@@ -62,6 +62,7 @@ class DocumentSpec extends ObjectBehavior
         $repo->commit('master', 111111)->willReturn(array(
             'authorname' => 'cobb'
         ));
+        $repo->parentRepo()->willReturn(null);
         
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
 

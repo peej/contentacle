@@ -177,7 +177,7 @@ abstract class Resource extends \Tonic\Resource
         }
 
         $parent = $repo->parentRepo();
-        if ($parent['username'] && $parent['repoName']) {
+        if ($parent) {
             $response->addLink('cont:parent-repo', $this->buildUrl($parent['username'], $parent['repoName']), false, $parent['username'].'/'.$parent['repoName']);
         }
     }

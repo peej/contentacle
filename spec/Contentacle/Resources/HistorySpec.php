@@ -10,6 +10,7 @@ class HistorySpec extends ObjectBehavior
     function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
     {
         $repo->prop('name')->willReturn('Extraction');
+        $repo->prop('description')->willReturn('Extraction instructions for Ariadne');
         $repo->prop('username')->willReturn('cobb');
         $repo->history('master', 'new-york/the-hotel/totem.txt')->willReturn(array(
             array('sha' => '123456')
@@ -22,6 +23,7 @@ class HistorySpec extends ObjectBehavior
             'master', 'branch'
         ));
         $repo->isHead('master', '123456')->willReturn(true);
+        $repo->parentRepo()->willReturn(null);
 
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
 

@@ -18,6 +18,7 @@ class BranchSpec extends ObjectBehavior
         $repo->commits(Argument::cetera())->willReturn(array(
             array()
         ));
+        $repo->parentRepo()->willReturn(null);
         
         $repo->hasBranch('master')->willReturn(true);
         $repo->hasBranch('branch')->willReturn(true);

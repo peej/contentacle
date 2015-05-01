@@ -10,6 +10,7 @@ class CommitSpec extends ObjectBehavior
     function let(\Tonic\Application $app, \Tonic\Request $request, \Contentacle\Services\RepoRepository $repoRepo, \Contentacle\Models\Repo $repo)
     {
         $repo->prop('name')->willReturn('Extraction');
+        $repo->prop('description')->willReturn('Extraction is the art of infiltrating the mind of any person to steal their secrets.');
         $repo->prop('username')->willReturn('cobb');
         $repo->commit('master', '123456')->willReturn(array(
             'sha' => '123456',
@@ -30,6 +31,7 @@ class CommitSpec extends ObjectBehavior
             'master', 'branch'
         ));
         $repo->isHead('master', '123456')->willReturn(true);
+        $repo->parentRepo()->willReturn(null);
 
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
         $repoRepo->getRepo(Argument::cetera())->willThrow(new \Git\Exception);
