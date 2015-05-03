@@ -106,6 +106,19 @@ Feature:
         Then response property "_embedded->cont:commit->0->message" should be "My commit message"
         And response property "_embedded->cont:commit->0->authorname" should be "peej"
 
+    Scenario: Create a new document via the HTML form
+        Given I set the "Accept" header to "text/html"
+        And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        And I am on "/users/peej/repos/test/branches/master/documents"
+        And I follow the "create-form" relation
+        Then the response status code should be 200
+        When I fill in "filename" with "test"
+        And I fill in "content" with "This is test content"
+        And I fill in "message" with "Test commit message"
+        And I press "Commit changes"
+        Then the response status code should be 200
+        And I should see "Test commit message"
+
     Scenario: Update a document raw
         Given I add "Content-Type" header equal to "text/plain"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"

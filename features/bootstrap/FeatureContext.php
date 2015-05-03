@@ -121,15 +121,38 @@ TABLE
         $this->getSession()->setRequestHeader('Content-Type', "application/x-www-form-urlencoded");
     }
 
+    private function getResponseType()
+    {
+        $session = $this->getSession();
+        $headers = $session->getResponseHeaders();
+        $contentType = 'json';
+
+        if (isset($headers['Content-Type'])) {
+            if (strpos($headers['Content-Type'][0], 'yaml') !== false) {
+                $contentType = 'yaml';
+            } elseif (strpos($headers['Content-Type'][0], 'html') !== false) {
+                $contentType = 'html';
+            }
+        }
+
+        return $contentType;
+    }
+
     private function getResponseBody()
     {
         $session = $this->getSession();
         $response = $session->getPage()->getContent();
         
-        $data = json_decode($response, true);
-        if ($data == false) {
+        switch ($this->getResponseType()) {
+        case 'html':
+            $data = $response;
+            break;
+        case 'yaml':
             $yaml = new Yaml;
             $data = $yaml->decode($response);
+            break;
+        default:
+            $data = json_decode($response, true);
         }
 
         return $data;
@@ -446,28 +469,38 @@ TABLE
     {
         if (!$num) $num = 1;
 
-        $data = $this->getResponseBody();
+        if ($this->getResponseType() == 'html') {
 
-        if (!isset($data['_links']) && !isset($data['_embedded'])) {
-            throw new Exception('No relations in the response');
-        }
-
-        if (isset($data['_links'][$rel])) {
-            if (!isset($data['_links'][$rel]['href'])) {
-                $href = $data['_links'][$rel][$num - 1]['href'];
-            } else {
-                $href = $data['_links'][$rel]['href'];
-            }
-
-        } elseif (isset($data['_embedded'][$rel])) {
-            $items = $data['_embedded'][$rel];
-            if (!isset($items[$num - 1])) {
-                throw new Exception('Relation "'.$rel.'" does not have '.$num.' items');
-            }
-            $href = $items[$num - 1]['_links']['self']['href'];
+            $session = $this->getSession();
+            $page = $session->getPage();
+            $link = $page->find('xpath', '//a[@rel="'.$rel.'"]');
+            $href = $link->getAttribute('href');
 
         } else {
-            throw new Exception('Relation "'.$rel.'" not found');
+
+            $data = $this->getResponseBody();
+
+            if (!isset($data['_links']) && !isset($data['_embedded'])) {
+                throw new Exception('No relations in the response');
+            }
+
+            if (isset($data['_links'][$rel])) {
+                if (!isset($data['_links'][$rel]['href'])) {
+                    $href = $data['_links'][$rel][$num - 1]['href'];
+                } else {
+                    $href = $data['_links'][$rel]['href'];
+                }
+
+            } elseif (isset($data['_embedded'][$rel])) {
+                $items = $data['_embedded'][$rel];
+                if (!isset($items[$num - 1])) {
+                    throw new Exception('Relation "'.$rel.'" does not have '.$num.' items');
+                }
+                $href = $items[$num - 1]['_links']['self']['href'];
+
+            } else {
+                throw new Exception('Relation "'.$rel.'" not found');
+            }
         }
 
         return new Given('I send a GET request to "'.$href.'"');
@@ -528,5 +561,4 @@ TABLE
     {
         echo $this->shas[$shaNumber - 1], "\n";
     }
-
 }
