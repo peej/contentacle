@@ -63,6 +63,8 @@ class Document extends Resource
 
             $this->configureResponseWithBranch($response, $repo, $branchName);
 
+            $parentPath = dirname($path);
+
             $response->addData(array(
                 'path' => $path,
                 'filename' => basename($path),
@@ -72,6 +74,14 @@ class Document extends Resource
             $response->addLink('self', $this->buildUrl($username, $repoName, $branchName, 'documents', $path));
             $response->addLink('cont:doc', '/rels/document');
             $response->addLink('create-form', $this->buildUrl($username, $repoName, $branchName, 'new', $path));
+
+            if ($parentPath) {
+                if ($parentPath == '.') {
+                    $response->addLink('up', $this->buildUrl($username, $repoName, $branchName, 'documents'));
+                } else {
+                    $response->addLink('up', $this->buildUrl($username, $repoName, $branchName, 'documents', $parentPath));
+                }
+            }
 
             $documents = $repo->documents($branchName, $path);
 

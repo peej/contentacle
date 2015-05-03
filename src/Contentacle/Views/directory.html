@@ -23,20 +23,24 @@
 
     {{#if _embedded.cont:document}}
         <table>
+            {{#if _links.up}}
+                <tr>
+                    <td></td>
+                    <td><a href="{{_links.up.href}}" rel="up" title="Go to parent folder">..</a></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            {{/if}}
             {{#each _embedded.cont:document}}
                 <tr>
                     {{#if dir}}
-                        <td>
-                            <span class="icon-folder"></span>
-                            <a href="{{_links.self.href}}" rel="cont:document">{{filename}}</a>
-                        </td>
+                        <td><span class="icon-folder"></span></td>
+                        <td><a href="{{_links.self.href}}" rel="cont:document">{{filename}}</a></td>
                         <td></td>
                         <td></td>
                     {{else}}
-                        <td>
-                            <span class="icon-page"></span>
-                            <a href="{{_links.self.href}}" rel="cont:document">{{filename}}</a>
-                        </td>
+                        <td><span class="icon-page"></span></td>
+                        <td><a href="{{_links.self.href}}" rel="cont:document">{{filename}}</a></td>
                         <td>
                             <a href="{{_links.cont:commit.href}}" rel="cont:commit">{{truncate _embedded.cont:commit.0.message 80}}</a>
                         </td>

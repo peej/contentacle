@@ -12,15 +12,20 @@
     margin: 0 20px;
 
     td:first-child {
+        width: 15px;
+        padding-right: 0;
+    }
+
+    td:nth-child(2) {
         white-space: nowrap;
-
-    }
-    
-    span {
-        padding: 0 4px;
+        padding-left: 4px;
     }
 
-    td:nth-child(3) {
+    td:nth-child(4) {
         text-align: right;
+    }
+
+    a[rel="up"] {
+        font-weight: bold;
     }
 }
