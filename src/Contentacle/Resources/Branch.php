@@ -19,6 +19,8 @@ class Branch extends Resource
         $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, $branchName));
         $response->addLink('cont:doc', '/rels/branch');
         $response->addLink('cont:merges', $this->buildUrlWithFormat($username, $repoName, $branchName, 'merges'));
+        $response->addLink('create-form', $this->buildUrl($username, $repoName, false, 'new?branch='.$branchName));
+        $response->addLink('delete-form', $this->buildUrl($username, $repoName, false, 'delete?branch='.$branchName));
     }
 
     /**

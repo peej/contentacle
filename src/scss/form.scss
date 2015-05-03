@@ -4,14 +4,19 @@ label {
 }
 
 input,
-textarea {
+textarea,
+select {
     display: block;
     margin: 4px 0 1em;
-    width: 100%;
     border: 1px solid $grey-colour-light;
     padding: 4px;
     background: #fff;
     color: #210;
+}
+
+input,
+textarea {
+    width: 100%;
 }
 
 textarea {

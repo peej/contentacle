@@ -17,6 +17,15 @@
     }
 }
 
+form.button {
+    display: inline-block;
+    margin: 0;
+}
+
+td.buttons {
+    text-align: right;
+}
+
 button,
 a.button {
     display: inline-block;

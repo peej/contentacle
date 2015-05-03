@@ -1,0 +1,26 @@
+<div>
+    <h1>Create Branch</h1>
+
+    <form action="{{_links.cont:branches.href}}" method="post">
+        <label{{#if var.error}} class="error"{{/if}}>
+            Name:
+            <input name="name" type="text" value="{{_post.name}}" required>
+            {{#if var.error.name}}
+                <p class="error-name">Name can't be blank, and can only contain lowercase letters and numbers.</p>
+            {{/if}}
+            {{#if var.error.exists}}
+                <p class="error-exists">A branch with this name already exists, <a href="{{_links.cont:branch.href}}">view it here</a>.</p>
+            {{/if}}
+        </label>
+        <label>
+            Branch from:
+            <select name="branch">
+                {{#each var.branches}}
+                    <option value="{{this}}" {{#equal this @root.var.branch}}selected{{/equal}}>{{this}}</option>
+                {{/each}}
+            </select>
+        </label>
+        <button type="submit" class="okay" name="submit">Create</button>
+        <a href="{{_links.up.href}}" class="button">Cancel</a>
+    </form>
+</div>

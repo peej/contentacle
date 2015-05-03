@@ -4,12 +4,23 @@
     {{#if _embedded.cont:branch}}
         <table>
             <tr>
-                <th colspan="2">Branch</th>
+                <th>Branch</th>
+                <th colspan="2">Last updated</th>
             </tr>
             {{#each _embedded.cont:branch}}
                 <tr>
-                    <td><a href="{{_links.self.href}}" rel="cont:branch">{{name}}</a></td>
+                    <td><span class="icon-branch"></span> <a href="{{_links.self.href}}" rel="cont:branch">{{name}}</a></td>
                     <td>Updated {{> date}} by {{> author}}</td>
+                    <td class="buttons">
+                        {{#if _links.create-form}}
+                            <a class="button button-right icon-branch" href="{{_links.create-form.href}}" rel="create-form" title="Create new branch from branch '{{name}}'">New Branch</a>
+                        {{/if}}
+                        {{#if _links.delete-form.href}}
+                            <form class="button" method="post" action="{{_links.delete-form.href}}" rel="delete-form">
+                                <button class="button danger" title="Remove this branch">Delete</button>
+                            </form>
+                        {{/if}}
+                    </td>
                 </tr>
             {{/each}}
         </table>
