@@ -24,30 +24,34 @@ class Branches extends Resource
     {
         try {
             $repo = $this->repoRepository->getRepo($username, $repoName);
-            
-            $response = $this->response(200, 'branches');
+        } catch (\Contentacle\Exceptions\RepoException $e) {
+            throw new \Tonic\NotFoundException;
+        }
 
-            $this->configureResponseWithRepo($response, $repo);
+        $response = $this->response(200, 'branches');
 
-            $response->addData('username', $repo->username);
-            $response->addData('repo', $repo->name);
+        $this->configureResponseWithRepo($response, $repo);
 
-            $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, true));
-            $response->addLink('cont:doc', '/rels/branches');
-            $response->addLink('cont:user', $this->buildUrlWithFormat($username));
-            $response->addLink('cont:repo', $this->buildUrlWithFormat($username, $repoName));
+        $response->addData('username', $repo->username);
+        $response->addData('repo', $repo->name);
 
-            if ($this->embed) {
+        $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, true));
+        $response->addLink('cont:doc', '/rels/branches');
+        $response->addLink('cont:user', $this->buildUrlWithFormat($username));
+        $response->addLink('cont:repo', $this->buildUrlWithFormat($username, $repoName));
+
+        if ($this->embed) {
+            try {
                 foreach ($repo->branches() as $branchName) {
                     $response->embed('cont:branch', $this->getChildResource('\Contentacle\Resources\Branch', array($username, $repoName, $branchName)));
                 }
+            } catch (\Git\Exception $e) {
+                throw new \Tonic\NotFoundException;
             }
-
-            return $response;
-
-        } catch (\Git\Exception $e) {
-            throw new \Tonic\NotFoundException;
         }
+
+        return $response;
+
     }
 
     /**
