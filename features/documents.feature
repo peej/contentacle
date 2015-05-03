@@ -106,9 +106,9 @@ Feature:
         Then response property "_embedded->cont:commit->0->message" should be "My commit message"
         And response property "_embedded->cont:commit->0->authorname" should be "peej"
 
+    @html
     Scenario: Create a new document via the HTML form
-        Given I set the "Accept" header to "text/html"
-        And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
+        Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         And I am on "/users/peej/repos/test/branches/master/documents"
         And I follow the "create-form" relation
         Then the response status code should be 200
