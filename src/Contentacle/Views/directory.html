@@ -4,17 +4,17 @@
     <div class="button-bar">
         {{>branch-select}}
         <div class="path">
-            <a href="{{_links.cont:documents.href}}" rel="cont:documents">{{repo}}</a> /
+            <a href="{{_links.cont:documents.href}}" rel="cont:documents">{{repo}}</a>
             {{#if var.breadcrumb}}
                 {{#each var.breadcrumb}}
-                    <a href="{{@key}}">{{this}}</a> /
+                    / <a href="{{@key}}">{{this}}</a>
                 {{/each}}
-            {{/if}}
-            {{#if _links.create-form}}
-                <a href="{{_links.create-form.href}}" rel="create-form" title="Create a new document">+</a>
             {{/if}}
         </div>
         {{>repo-actions}}
+        {{#if _links.create-form}}
+            <a href="{{_links.create-form.href}}" rel="create-form" class="button button-right" title="Create a new document"><span class="icon-page"></span> Create</a>
+        {{/if}}
     </div>
 
     {{#each _embedded.cont:commit}}
