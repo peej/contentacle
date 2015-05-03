@@ -37,8 +37,6 @@ class Branches extends Resource
 
         $response->addLink('self', $this->buildUrlWithFormat($username, $repoName, true));
         $response->addLink('cont:doc', '/rels/branches');
-        $response->addLink('cont:user', $this->buildUrlWithFormat($username));
-        $response->addLink('cont:repo', $this->buildUrlWithFormat($username, $repoName));
         $response->addLink('create-form', $this->buildUrlWithFormat($username, $repoName, false, 'new'));
 
         if ($this->embed) {
