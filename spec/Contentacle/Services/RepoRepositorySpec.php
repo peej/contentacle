@@ -76,6 +76,11 @@ class RepoRepositorySpec extends ObjectBehavior
         $repo->description->shouldBe('Extraction information for Ariadne');
     }
 
+    function it_should_error_when_a_repo_does_not_exist()
+    {
+        $this->shouldThrow('\Contentacle\Exceptions\RepoException')->duringGetRepo('cobb', 'inception');
+    }
+
     function it_should_create_a_new_repo(\Contentacle\Models\User $user)
     {
         $user->prop('username')->willReturn('cobb');

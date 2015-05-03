@@ -19,7 +19,7 @@ class BranchesSpec extends ObjectBehavior
         $repo->parentRepo()->willReturn(null);
 
         $repoRepo->getRepo('cobb', 'extraction')->willReturn($repo);
-        $repoRepo->getRepo(Argument::cetera())->willThrow(new \Git\Exception);
+        $repoRepo->getRepo(Argument::cetera())->willThrow(new \Contentacle\Exceptions\RepoException);
 
         $this->beConstructedWith(array(
             'app' => $app,
