@@ -62,12 +62,15 @@ class Branches extends Resource
      * @accepts application/hal+json
      * @accepts application/yaml
      * @accepts application/json
+     * @accepts application/x-www-form-urlencoded
      * @field name Name of the branch
+     * @field branch The existing branch to branch off of.
      * @secure
      * @response 201 Created
      * @response 400 Bad request
      * @provides application/hal+yaml
      * @provides application/hal+json
+     * @provides text/html
      * @header Location The URL of the created branch.
      * @embeds cont:error A list of errored fields.
      */
@@ -83,11 +86,20 @@ class Branches extends Resource
                 throw $e;
             }
 
+            if (!isset($data['branch'])) {
+                if (!$repo->hasBranch('master')) {
+                    $e = new \Contentacle\Exceptions\ValidationException;
+                    $e->errors = array('branch');
+                    throw $e;
+                }
+                $data['branch'] = 'master';
+            }
+
             try {
-                $repo->createBranch($data['name']);
+                $repo->createBranch($data['name'], $data['branch']);
             } catch (\Contentacle\Exceptions\RepoException $e) {
                 $e = new \Contentacle\Exceptions\ValidationException;
-                $e->errors = array('name');
+                $e->errors = array('name', 'branch');
                 throw $e;
             }
 

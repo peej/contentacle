@@ -66,12 +66,12 @@ class Repo extends Model
         return in_array($branchName, $this->git->getBranches());
     }
 
-    public function createBranch($branchName)
+    public function createBranch($branchName, $branchFrom)
     {
         if (!preg_match('/^[a-zA-Z0-9][a-zA-Z0-9 .-]+$/', $branchName)) {
             throw new \Contentacle\Exceptions\RepoException("Branch name '$branchName' is not valid");
         }
-        $this->git->createBranch($branchName);
+        $this->git->createBranch($branchName, $branchFrom);
     }
 
     public function renameBranch($branchName, $newName)
