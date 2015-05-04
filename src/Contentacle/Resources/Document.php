@@ -67,8 +67,7 @@ class Document extends Resource
 
             $response->addData(array(
                 'path' => $path,
-                'filename' => basename($path),
-                'dir' => true
+                'dir' => basename($path)
             ));
 
             $response->addLink('self', $this->buildUrl($username, $repoName, $branchName, 'documents', $path));
