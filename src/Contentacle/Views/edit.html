@@ -4,16 +4,16 @@
             <a href="{{_links.cont:user.href}}" rel="cont:user">{{username}}</a> /
             <a href="{{_links.cont:repo.href}}" rel="cont:repo">{{repo}}</a> /
             <a href="{{_links.cont:branch.href}}" rel="cont:branch">{{branch}}</a>
+            {{#if path}}/ {{path}}{{/if}}
+            <input id="filename" type="text" name="filename" placeholder="filename" value="" form="commit-form" required>
         </h1>
-        <div class="commit-metadata">
-            {{> author _embedded.cont:commit.0}} wrote {{> date _embedded.cont:commit.0}} - <a href="{{_embedded.cont:commit.0._links.self.href}}" rel="cont:commit">{{_embedded.cont:commit.0.message}}</a>
-        </div>
     </div>
 </header>
+
+<textarea name="content" id="edit" form="commit-form" autofocus>{{content}}</textarea>
+<div id="preview" form="commit-form">{{markdown content}}</div>
+
 <form action="{{_links.self.href}}" method="post" id="commit-form">
-    <input id="filename" type="text" name="filename" placeholder="filename" value="{{path}}">
-    <textarea name="content" id="edit">{{content}}</textarea>
-    <div id="preview">{{markdown content}}</div>
     <div id="commit">
         <h1>Commit</h1>
         <p>Some words about your changes.</p>

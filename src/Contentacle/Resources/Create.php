@@ -59,11 +59,18 @@ class Create extends Resource
      */
     function commit($username, $repoName, $branchName, $path = null)
     {
-        if (
-            !isset($this->request->data['content']) ||
-            !isset($this->request->data['filename'])
-        ) {
-            return new \Tonic\Response(400);
+        if (!isset($this->request->data['content'])) {
+            $error = $this->response(400, 'error');
+            $error->addVar('message', 'Could not create document');
+            $error->addError('content', 'Content not provided');
+            return $error;
+        }
+
+        if (!isset($this->request->data['filename'])) {
+            $error = $this->response(400, 'error');
+            $error->addVar('message', 'Could not create document');
+            $error->addError('filename', 'Filename not provided');
+            return $error;
         }
 
         if (!isset($this->request->data['message'])) {
@@ -84,14 +91,21 @@ class Create extends Resource
             }
         }
 
-        $repo = $this->repoRepository->getRepo($username, $repoName);
-        if ($path) {
-            $path .= '/'.$this->request->data['filename'];
-        } else {
-            $path = $this->request->data['filename'];
-        }
+        try {
+            $repo = $this->repoRepository->getRepo($username, $repoName);
+            if ($path) {
+                $path .= '/'.$this->request->data['filename'];
+            } else {
+                $path = $this->request->data['filename'];
+            }
 
-        $repo->createDocument($branchName, $path, $this->request->data['content'], $this->request->data['message']);
+            $repo->createDocument($branchName, $path, $this->request->data['content'], $this->request->data['message']);
+        } catch (\Contentacle\Exceptions\RepoException $e) {
+            $error = $this->response(400, 'error');
+            $error->addVar('message', 'Could not create document');
+            $error->addError('repository-error', 'Filename not provided');
+            return $error;
+        }
 
         return new \Tonic\Response(302, null, array(
             'Location' => $this->buildUrlWithFormat($username, $repoName, $branchName, 'documents', $path)

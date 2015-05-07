@@ -2,7 +2,6 @@ $(function () {
 
     var $body = $("body"),
         $section = $("body > section"),
-        $filename = $("#filename"),
         $edit = $("#edit"),
         $preview = $("#preview"),
         $commit = $("#commit"),
@@ -108,15 +107,10 @@ $(function () {
         }
     });
 
-    $filename.detach();
     $edit.detach();
     $preview.detach();
-    $("header > div > h1").append("/ ", $filename);
     $section.append($edit).append($preview).append("<div id=\"commit-toggle\"></div>");
-    $body.prepend($("#commit-form").detach().append(
-        "<input type=\"hidden\" name=\"filename\">" +
-        "<input type=\"hidden\" name=\"content\">"
-    ));
+    $body.prepend($("#commit-form").detach());
 
     $("#commit").on("blur", "input[type=text]:last", function () {
         if (this.value != "") {
@@ -137,11 +131,6 @@ $(function () {
     $("#commit-toggle").click(function (e) {
         e.stopPropagation();
         $body.addClass("commit");
-    });
-
-    $("#commit-form").submit(function () {
-        $(this).find("input[name='filename']").val($filename.val());
-        $(this).find("input[name='content']").val($edit.val());
     });
 
 });
