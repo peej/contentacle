@@ -57,7 +57,7 @@ class Create extends Resource
      * @provides text/html
      * @secure
      */
-    function commit($username, $repoName, $branchName, $path = null)
+    function commit($username, $repoName, $branchName)
     {
         if (!isset($this->request->data['content'])) {
             $error = $this->response(400, 'error');
@@ -74,7 +74,7 @@ class Create extends Resource
         }
 
         if (!isset($this->request->data['message'])) {
-            $this->request->data['message'] = 'Created '.$path;
+            $this->request->data['message'] = 'Created '.$this->request->data['filename'];
         }
 
         if (isset($this->request->data['metadata']) && is_array($this->request->data['metadata'])) {
@@ -93,13 +93,8 @@ class Create extends Resource
 
         try {
             $repo = $this->repoRepository->getRepo($username, $repoName);
-            if ($path) {
-                $path .= '/'.$this->request->data['filename'];
-            } else {
-                $path = $this->request->data['filename'];
-            }
 
-            $repo->createDocument($branchName, $path, $this->request->data['content'], $this->request->data['message']);
+            $repo->createDocument($branchName, $this->request->data['filename'], $this->request->data['content'], $this->request->data['message']);
         } catch (\Contentacle\Exceptions\RepoException $e) {
             $error = $this->response(400, 'error');
             $error->addVar('message', 'Could not create document');
@@ -108,7 +103,7 @@ class Create extends Resource
         }
 
         return new \Tonic\Response(302, null, array(
-            'Location' => $this->buildUrlWithFormat($username, $repoName, $branchName, 'documents', $path)
+            'Location' => $this->buildUrlWithFormat($username, $repoName, $branchName, 'documents', $this->request->data['filename'])
         ));
     }
 
