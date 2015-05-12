@@ -3,7 +3,7 @@ Feature:
     I should be able to see a branches commits
 
     Scenario: View a list of commits
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits"
+        Given I send a GET request to "/users/peej/repos/test/branches/master/commits"
         Then the response status code should be 200
         And the content-type response header should be "application/hal+yaml"
         And response property "_links->self->href" should be "/users/peej/repos/test/branches/master/commits"
@@ -14,7 +14,7 @@ Feature:
         And response property "_embedded->cont:commit->3->sha" should be sha 2
 
     Scenario: View a commit
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 1
+        Given I send a GET request to "/users/peej/repos/test/branches/master/commits/{sha}" with sha 1
         Then the response status code should be 200
         And the content-type response header should be "application/hal+yaml"
         And response property "_links->cont:doc->href" should be "/rels/commit"
@@ -33,23 +33,23 @@ Feature:
         Then the "Allow" response header should be "OPTIONS,GET"
 
     Scenario: Commit should link to all documents it contains changes for
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 1
+        Given I send a GET request to "/users/peej/repos/test/branches/master/commits/{sha}" with sha 1
         And response property "_links->cont:document->0->href" should be "/users/peej/repos/test/branches/master/documents/adir/emptyFile.txt"
         And response property "_links->cont:document->1->href" should be "/users/peej/repos/test/branches/master/documents/afile.txt"
         And response property "_links->cont:document->2->href" should be "/users/peej/repos/test/branches/master/documents/anotherFile.txt"
 
     Scenario: 404 for a non-existant commit
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/1234567890123546789012345678901234567890"
+        Given I send a GET request to "/users/peej/repos/test/branches/master/commits/1234567890123546789012345678901234567890"
         Then the response status code should be 404
 
     Scenario: Undo a single commit
         Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         And I add "Content-Type" header equal to ""
-        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/undo" with sha 2
+        And I send a POST request to "/users/peej/repos/test/branches/master/commits/{sha}/undo" with sha 2
         Then the response status code should be 201
         And a "Location" response header should exist
         And I remember the commit sha from the location header
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 7
+        Given I send a GET request to "/users/peej/repos/test/branches/master/commits/{sha}" with sha 7
         Then the response status code should be 200
         And the content-type response header should be "application/hal+yaml"
         And response property "message" should be "Undo change “2nd commit”" with sha 2
@@ -57,13 +57,13 @@ Feature:
     Scenario: Undo a single commit with a custom commit message
         Given I add "Content-Type" header equal to "text/plain"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
-        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/undo" with sha 2 and body:
+        And I send a POST request to "/users/peej/repos/test/branches/master/commits/{sha}/undo" with sha 2 and body:
             """
             Custom commit message
             """
         Then the response status code should be 201
         And I remember the commit sha from the location header
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 7
+        Given I send a GET request to "/users/peej/repos/test/branches/master/commits/{sha}" with sha 7
         Then the response status code should be 200
         And the content-type response header should be "application/hal+yaml"
         And response property "message" should be "Custom commit message"
@@ -71,7 +71,7 @@ Feature:
     Scenario: Undo a single commit with a custom commit message in JSON
         Given I add "Content-Type" header equal to "application/json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
-        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/undo" with sha 2 and body:
+        And I send a POST request to "/users/peej/repos/test/branches/master/commits/{sha}/undo" with sha 2 and body:
             """
             {
                 "message": "Custom commit message"
@@ -79,7 +79,7 @@ Feature:
             """
         Then the response status code should be 201
         And I remember the commit sha from the location header
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 7
+        Given I send a GET request to "/users/peej/repos/test/branches/master/commits/{sha}" with sha 7
         And the content-type response header should be "application/hal+yaml"
         And response property "message" should be "Custom commit message"
 
@@ -88,17 +88,17 @@ Feature:
             | file               | content         |
             | afile.txt          | Changed content |
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
-        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/undo" with sha 1
+        And I send a POST request to "/users/peej/repos/test/branches/master/commits/{sha}/undo" with sha 1
         Then the response status code should be 409
 
     Scenario: Revert to a commit
         Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         And I add "Content-Type" header equal to ""
-        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 2
+        And I send a POST request to "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 2
         Then the response status code should be 201
         And a "Location" response header should exist
         And I remember the commit sha from the location header
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 7
+        Given I send a GET request to "/users/peej/repos/test/branches/master/commits/{sha}" with sha 7
         Then the response status code should be 200
         And the content-type response header should be "application/hal+yaml"
         And response property "message" should be "Revert back to “2nd commit”" with sha 2
@@ -109,13 +109,13 @@ Feature:
     Scenario: Revert to a commit with a custom commit message
         Given I add "Content-Type" header equal to "text/plain"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
-        And I send a POST request on "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 2 and body:
+        And I send a POST request to "/users/peej/repos/test/branches/master/commits/{sha}/revert" with sha 2 and body:
             """
             Custom commit message
             """
         Then the response status code should be 201
         And I remember the commit sha from the location header
-        Given I send a GET request on "/users/peej/repos/test/branches/master/commits/{sha}" with sha 7
+        Given I send a GET request to "/users/peej/repos/test/branches/master/commits/{sha}" with sha 7
         Then response property "message" should be "Custom commit message"
 
     Scenario: Navigate to a commit

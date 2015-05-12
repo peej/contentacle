@@ -4,7 +4,7 @@ Feature:
 
     @api
     Scenario: View a list of repos
-        When I send a GET request on "/users/peej/repos"
+        When I send a GET request to "/users/peej/repos"
         Then the content-type response header should be "application/hal+yaml"
         And response property "_embedded->cont:repo->1->_links->self->href" should be "/users/peej/repos/test"
         And response property "_embedded->cont:repo->1->username" should be "peej"
@@ -13,7 +13,7 @@ Feature:
 
     @html
     Scenario: View a list of repos
-        When I send a GET request on "/users/peej/repos"
+        When I send a GET request to "/users/peej/repos"
         Then the response status code should be 200
         And I should see "test"
         And I should see "No description"
@@ -40,13 +40,13 @@ Feature:
 
     @api
     Scenario: View an empty list of repos
-        When I send a GET request on "/users/empty/repos"
+        When I send a GET request to "/users/empty/repos"
         Then response property "_embedded" should not exist
         And response property "_links->self->href" should be "/users/empty/repos"
 
     @html
     Scenario: View an empty list of repos
-        When I send a GET request on "/users/empty/repos"
+        When I send a GET request to "/users/empty/repos"
         Then I should not see a "ul" element
 
     @api
@@ -56,7 +56,7 @@ Feature:
 
     @api
     Scenario: View a repos details
-        When I send a GET request on "/users/peej/repos/test"
+        When I send a GET request to "/users/peej/repos/test"
         Then the response status code should be 200
         And the content-type response header should be "application/hal+yaml"
         And response property "_links->self->href" should be "/users/peej/repos/test"
@@ -71,7 +71,7 @@ Feature:
 
     @html
     Scenario: Get redirected to the repos master branch
-        When I send a GET request on "/users/peej/repos/test"
+        When I send a GET request to "/users/peej/repos/test"
         Then the response status code should be 302
         And the "Location" response header should be "/users/peej/repos/test/branches/master"
 

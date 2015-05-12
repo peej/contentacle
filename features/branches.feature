@@ -3,7 +3,7 @@ Feature:
     I should be able to see a repos branches
 
     Scenario: View a list of branches
-        Given I send a GET request on "/users/peej/repos/test/branches"
+        Given I send a GET request to "/users/peej/repos/test/branches"
         Then response property "_links->self->href" should be "/users/peej/repos/test/branches"
         And the content-type response header should be "application/hal+yaml"
         And response property "_links->cont:doc->href" should be "/rels/branches"
@@ -13,7 +13,7 @@ Feature:
         And response property "_embedded->cont:branch->1->name" should be "master"
 
     Scenario: View a branches details
-        Given I send a GET request on "/users/peej/repos/test/branches/master"
+        Given I send a GET request to "/users/peej/repos/test/branches/master"
         Then response property "_links->self->href" should be "/users/peej/repos/test/branches/master"
         And the content-type response header should be "application/hal+yaml"
         And response property "name" should be "master"
