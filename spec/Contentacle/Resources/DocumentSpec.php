@@ -102,7 +102,7 @@ class DocumentSpec extends ObjectBehavior
         $repo->documents('master', null)->shouldBeCalled();
         $response = $this->get('cobb', 'extraction', 'master');
         $response->data['_embedded']['cont:document'][0]['_links']['self']['href']->shouldBe('/users/cobb/repos/extraction/branches/master/documents/new-york');
-        $response->data['_embedded']['cont:document'][0]['filename']->shouldBe('new-york');
+        $response->data['_embedded']['cont:document'][0]['dir']->shouldBe('new-york');
     }
 
     function it_should_show_document_listing_within_a_subdirectory($repo, $request)

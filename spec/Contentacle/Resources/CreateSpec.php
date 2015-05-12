@@ -95,12 +95,12 @@ class CreateSpec extends ObjectBehavior
     function it_should_create_a_document($request)
     {
         $request->getData()->willReturn(array(
-            'filename' => 'kick.txt',
+            'filename' => 'new-york/the-hotel/kick.txt',
             'content' => 'Arthur is forced to improvise a new kick using an elevator.',
             'message' => 'Update the document about the kick in the New York hotel'
         ));
 
-        $response = $this->commit('cobb', 'extraction', 'master', 'new-york/the-hotel');
+        $response = $this->commit('cobb', 'extraction', 'master');
 
         $response->code->shouldBe(302);
         $response->Location->shouldBe('/users/cobb/repos/extraction/branches/master/documents/new-york/the-hotel/kick.txt');

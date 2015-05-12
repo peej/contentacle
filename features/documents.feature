@@ -3,25 +3,24 @@ Feature:
     I should be able to see a branches documents
 
     Scenario: View a list of documents
-        Given I send a GET request on "/users/peej/repos/test/branches/master/documents"
+        Given I send a GET request to "/users/peej/repos/test/branches/master/documents"
         Then the response status code should be 200
         And the content-type response header should be "application/hal+yaml"
-        And response property "filename" should be ""
+        And response property "dir" should be ""
         And response property "_links->self->href" should be "/users/peej/repos/test/branches/master/documents"
-        And response property "_embedded->cont:document->0->filename" should be "adir"
+        And response property "_embedded->cont:document->0->dir" should be "adir"
         And response property "_embedded->cont:document->0->_links->self->href" should be "/users/peej/repos/test/branches/master/documents/adir"
         And response property "_embedded->cont:document->1->filename" should be "afile.txt"
         And response property "_embedded->cont:document->1->_links->self->href" should be "/users/peej/repos/test/branches/master/documents/afile.txt"
 
     Scenario: View a list of documents within a directory
-        Given I send a GET request on "/users/peej/repos/test/branches/master/documents/adir"
+        Given I send a GET request to "/users/peej/repos/test/branches/master/documents/adir"
         Then the response status code should be 200
         And the content-type response header should be "application/hal+yaml"
-        And response property "filename" should be "adir"
-        And response property "dir" should be "true"
+        And response property "dir" should be "adir"
         And response property "path" should be "adir"
         And response property "_links->self->href" should be "/users/peej/repos/test/branches/master/documents/adir"
-        And response property "_embedded->cont:document->0->filename" should be "and"
+        And response property "_embedded->cont:document->0->dir" should be "and"
         And response property "_embedded->cont:document->0->_links->self->href" should be "/users/peej/repos/test/branches/master/documents/adir/and"
         And response property "_embedded->cont:document->1->filename" should be "emptyFile.txt"
         And response property "_embedded->cont:document->1->_links->self->href" should be "/users/peej/repos/test/branches/master/documents/adir/emptyFile.txt"
@@ -33,24 +32,23 @@ Feature:
         Then the "Allow" response header should be "OPTIONS,GET,PUT,DELETE"
 
     Scenario: View a documents details
-        Given I send a GET request on "/users/peej/repos/test/branches/master/documents/afile.txt"
+        Given I send a GET request to "/users/peej/repos/test/branches/master/documents/afile.txt"
         Then the response status code should be 200
         And the content-type response header should be "application/hal+yaml"
         And response property "_links->self->href" should be "/users/peej/repos/test/branches/master/documents/afile.txt"
         And response property "filename" should be "afile.txt"
-        And response property "dir" should be "false"
         And response property "path" should be "afile.txt"
         And response property "content" should be "Some content"
         And response property "_links->cont:raw->href" should be "/users/peej/repos/test/branches/master/raw/afile.txt"
         And response property "_links->cont:history->href" should be "/users/peej/repos/test/branches/master/history/afile.txt"
 
     Scenario: View a documents raw content
-        Given I send a GET request on "/users/peej/repos/test/branches/master/raw/afile.txt"
+        Given I send a GET request to "/users/peej/repos/test/branches/master/raw/afile.txt"
         Then the content-type response header should be "text/plain"
         And the response should contain "Some content"
 
     Scenario: View a documents history
-        Given I send a GET request on "/users/peej/repos/test/branches/master/history/afile.txt"
+        Given I send a GET request to "/users/peej/repos/test/branches/master/history/afile.txt"
         Then the response status code should be 200
         And the content-type response header should be "application/hal+yaml"
         And response property "_embedded->cont:commit->0->_links->self->href" should be "/users/peej/repos/test/branches/master/commits/{sha}" with sha 1
@@ -80,7 +78,7 @@ Feature:
         When I send a GET request to "/users/peej/repos/test/branches/master/commits"
         Then response property "_embedded->cont:commit->0->message" should be "Create new.txt"
         And response property "_embedded->cont:commit->0->authorname" should be "peej"
-    
+
     Scenario: Create a new document from JSON document
         Given I add "Content-Type" header equal to "application/json"
         And I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
@@ -105,19 +103,6 @@ Feature:
         When I send a GET request to "/users/peej/repos/test/branches/master/commits"
         Then response property "_embedded->cont:commit->0->message" should be "My commit message"
         And response property "_embedded->cont:commit->0->authorname" should be "peej"
-
-    @html
-    Scenario: Create a new document via the HTML form
-        Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
-        And I am on "/users/peej/repos/test/branches/master/documents"
-        And I follow the "create-form" relation
-        Then the response status code should be 200
-        When I fill in "filename" with "test"
-        And I fill in "content" with "This is test content"
-        And I fill in "message" with "Test commit message"
-        And I press "Commit changes"
-        Then the response status code should be 200
-        And I should see "Test commit message"
 
     Scenario: Update a document raw
         Given I add "Content-Type" header equal to "text/plain"

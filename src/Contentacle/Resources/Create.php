@@ -103,7 +103,7 @@ class Create extends Resource
         }
 
         return new \Tonic\Response(302, null, array(
-            'Location' => $this->buildUrlWithFormat($username, $repoName, $branchName, 'documents', $this->request->data['filename'])
+            'Location' => $this->buildUrl($username, $repoName, $branchName, 'documents', $this->request->data['filename'])
         ));
     }
 
