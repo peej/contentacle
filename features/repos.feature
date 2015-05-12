@@ -17,7 +17,7 @@ Feature:
         Then the response status code should be 200
         And I should see "test"
         And I should see "No description"
-        And I should see a link to "/users/peej/repos/test"
+        And I should see a link to "/users/peej/repos/test.html"
 
     @api
     Scenario: Have the correct HTTP methods
@@ -36,7 +36,7 @@ Feature:
         When I send a GET request to "/users/peej/repos?q=test"
         Then I should see "test"
         And I should see "No description"
-        And I should see a link to "/users/peej/repos/test"
+        And I should see a link to "/users/peej/repos/test.html"
 
     @api
     Scenario: View an empty list of repos
@@ -124,7 +124,7 @@ Feature:
         And I fill in "description" with "This is a test repo"
         And I press "submit"
         Then the response status code should be 200
-        And the URL should match "/users/peej/repos/another"
+        And the URL should match "/users/peej/repos/another/branches/master/documents.html"
         And the "h1" element should contain "another"
         And the "p" element should contain "This is a test repo"
 

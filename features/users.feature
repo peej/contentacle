@@ -127,7 +127,7 @@ Feature:
             username=test1&name=Behat Tester&password=test1
             """
         Then the response status code should be 303
-        And the header "Location" should be equal to "/users/test1"
+        And the header "Location" should be equal to "/users/test1.html"
 
     Scenario: Patch a user
         Given I add "Content-Type" header equal to "application/json-patch+json"

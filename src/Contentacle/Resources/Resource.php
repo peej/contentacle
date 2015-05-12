@@ -122,6 +122,9 @@ abstract class Resource extends \Tonic\Resource
             case 'text/json':
                 $this->extension = $prefix.'json';
                 break;
+            case 'text/html':
+                $this->extension = $prefix.'html';
+                break;
             }
         }
         return $this->extension;

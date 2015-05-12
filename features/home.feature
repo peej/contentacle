@@ -18,6 +18,11 @@ Feature:
         Then response property "_links->self->href" should be "/.yaml"
         And the content-type response header should be "application/hal+yaml"
 
+    Scenario: Link to itself with explicit content type
+        When I send a GET request to "/.json"
+        Then response property "_links->self->href" should be "/.json"
+        And the content-type response header should be "application/hal+json"
+
     Scenario: Link to user list
         When I send a GET request to "/"
         Then response property "_links->cont:users->href" should be "/users"
@@ -39,11 +44,11 @@ Feature:
 
     Scenario: HTML homepage links to itself
         When I send a GET request to "/.html"
-        Then I should see a link with relation "self" to "/"
+        Then I should see a link with relation "self" to "/.html"
 
     Scenario: HTML homepage links to users
         When I send a GET request to "/.html"
-        Then I should see a link with relation "cont:users" to "/users"
+        Then I should see a link with relation "cont:users" to "/users.html"
 
     Scenario: YAML homepage links to login page
         When I send a GET request to "/.yaml"
@@ -51,7 +56,7 @@ Feature:
 
     Scenario: HTML homepage links to login page
         When I send a GET request to "/.html"
-        Then I should see a link with relation "cont:login" to "/login"
+        Then I should see a link with relation "cont:login" to "/login.html"
 
     Scenario: YAML homepage links to join page
         When I send a GET request to "/.yaml"
@@ -59,7 +64,7 @@ Feature:
 
     Scenario: HTML homepage links to join page
         When I send a GET request to "/.html"
-        Then I should see a link with relation "cont:join" to "/join"
+        Then I should see a link with relation "cont:join" to "/join.html"
 
     Scenario: YAML homepage links to user profile page
         Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
@@ -69,4 +74,4 @@ Feature:
     Scenario: HTML homepage links to user profile page
         Given I add "Authorization" header equal to "Basic cGVlajp0ZXN0"
         When I send a GET request to "/.html"
-        Then I should see a link with relation "cont:profile" to "/users/peej"
+        Then I should see a link with relation "cont:profile" to "/users/peej.html"

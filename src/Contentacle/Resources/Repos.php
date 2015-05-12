@@ -79,7 +79,7 @@ class Repos extends Resource
         try {
             $repo = $this->repoRepository->createRepo($user, $this->request->getData());
             $response = $this->response(201);
-            $response->location = '/users/'.$user->username.'/repos/'.$repo->name;
+            $response->location = '/users/'.$user->username.'/repos/'.$repo->name.$this->formatExtension();
 
         } catch (\Contentacle\Exceptions\ValidationException $e) {
             $response = $this->response(400, 'new-repo');
