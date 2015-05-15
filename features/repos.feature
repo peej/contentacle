@@ -47,7 +47,7 @@ Feature:
     @html
     Scenario: View an empty list of repos
         When I send a GET request to "/users/empty/repos"
-        Then I should not see a "ul" element
+        Then I should not see a "section.user ul" element
 
     @api
     Scenario: Link to documentation
