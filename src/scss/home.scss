@@ -4,6 +4,10 @@
     text-align: center;
 }
 
+.home p:nth-child(3) {
+    text-align: center;
+}
+
 .home ul {
     padding: 0;
 }
@@ -12,9 +16,30 @@
     margin: 1em;
 }
 
-.home a.button {
-    display: block;
-    width: 140px;
+.home .button-bar {
     margin: 1em auto;
-    text-align: center;
+    width: 454px;
+
+    a.button {
+        width: 140px;
+        text-align: center;
+        padding: 8px 32px;
+    }
+}
+
+.home .promo-box {
+    width: 100%;
+    max-width: none;
+    background: $green-background;
+    border-top: 2px solid $green-colour-highlight;
+    border-bottom: 2px solid $green-colour-highlight;
+
+    h2, ul {
+        margin: 32px auto;
+        width: 860px;
+    }
+
+    h2 {
+        color: $green-colour;
+    }
 }
