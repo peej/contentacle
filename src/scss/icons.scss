@@ -14,6 +14,7 @@
     text-align: center;
 }
 
+h1:before,
 .cthulhu:before,
 #nav-toggle:before,
 #commit-toggle:before,
@@ -30,6 +31,7 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+h1:before { content: "\e600"; }
 .cthulhu:before { content: "\e600"; }
 #nav-toggle:before { content: "\e602"; }
 .icon-pages:before { content: "\e609"; }
