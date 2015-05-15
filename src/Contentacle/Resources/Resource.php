@@ -135,7 +135,7 @@ abstract class Resource extends \Tonic\Resource
      */
     protected function configureResponse($response)
     {
-        $response->addVar('nav', false);
+        $response->addVar('nav', true);
 
         if (isset($this->app->user) && $this->app->user->username) {
             $response->addData(array(

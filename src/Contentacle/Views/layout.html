@@ -62,15 +62,6 @@
                 </ul>
             {{/if}}
         </nav>
-    {{else}}
-        <nav id="small">
-            <span class="cthulhu"></span>
-            {{#if profile}}
-                <a href="{{_links.cont:profile.href}}" rel="cont:profile">{{profile}}</a>
-            {{else}}
-                <a href="{{_links.cont:login.href}}" rel="cont:login">Login</a>
-            {{/if}}
-        </nav>
     {{/if}}
     <section class="{{section}}">
         {{#if var.nav}}

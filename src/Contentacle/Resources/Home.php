@@ -20,6 +20,7 @@ class Home extends Resource
 
         $this->configureResponse($response);
 
+        $response->addVar('nav', false);
         $response->addLink('self', '/'.$this->formatExtension());
         $response->addLink('cont:users', '/users'.$this->formatExtension());
 
